@@ -21,17 +21,16 @@ use App\Http\Controllers\VisitorController;
 Route::group(['middleware' => ['cors', 'json.response']], function () {
     // public routes
     Route::post('/login', [AuthController::class, 'login'])->name('login.api');
-    Route::post('/register',[AuthController::class, 'register'])->name('register.api');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.api');
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password.api');
     Route::post('/reset-password', [AuthController::class, 'passwordReset'])->name('password.reset');
-
-    Route::apiResource('visitors', VisitorController::class);
-    Route::apiResource('profiles', ProfileController::class);
-    Route::apiResource('users', UserController::class);
-
 });
 
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [VisitorController::class, 'logout'])->name('logout.api');
+
+    Route::apiResource('visitors', VisitorController::class);
+    Route::apiResource('profiles', ProfileController::class);
+    Route::apiResource('users', UserController::class);
     // our routes to be protected will go in here
 });
