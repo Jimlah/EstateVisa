@@ -1,9 +1,11 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\VisitorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\VisitorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,10 +26,12 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
     Route::post('/reset-password', [AuthController::class, 'passwordReset'])->name('password.reset');
 
     Route::apiResource('visitors', VisitorController::class);
+    Route::apiResource('profiles', ProfileController::class);
+    Route::apiResource('users', UserController::class);
 
 });
 
 Route::middleware('auth:api')->group(function () {
-    Route::post('/logout', 'Auth\ApiAuthController@logout')->name('logout.api');
+    Route::post('/logout', [VisitorController::class, 'logout'])->name('logout.api');
     // our routes to be protected will go in here
 });
