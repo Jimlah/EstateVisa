@@ -16,10 +16,9 @@ class CreateVisitorsTable extends Migration
         Schema::create('visitors', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id')->nullable();
-            $table->integer('org_id')->nullable();
+            $table->integer('estate_id')->nullable();
             $table->string('firstname')->nullable();
             $table->string('lastname')->nullable();
-            $table->string('email')->nullable()->unique();
             $table->string('phone_number')->nullable();
             $table->string('visitor_token')->nullable();
             $table->string('gender')->nullable();
