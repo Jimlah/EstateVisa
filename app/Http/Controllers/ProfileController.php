@@ -30,35 +30,6 @@ class ProfileController extends Controller
      */
     public function store(ProfileRequest $request)
     {
-        $user = User::create([
-            'email' => $request->input('email'),
-            'role_id' => $request->input('role_id'),
-        ]);
-
-        $profile = Profile::create([
-            'firstname' => $request->input('firstname'),
-            'lastname' => $request->input('lastname'),
-            'phone_number' => $request->input('phone_number'),
-            'gender' => $request->input('gender'),
-            'user_id' => $user->id,
-        ]);
-
-        if ($request->input('estate_name')) {
-            $estate = Estate::create([
-                'name' => $request->input('estate_name'),
-                'code' => $request->input('estate_code'),
-            ]);
-        }
-
-        if ($request->input('house_id')) {
-            UsersHouse::create([
-                'user_id' => $user->id,
-                'house_id' => $request->input('house_id'),
-            ]);
-        }
-
-        $profile->estate_id = $estate->id ?? auth()->user()->profile->estate_id;
-        $profile->save();
 
         return response()->json([
             'status' => 'success',

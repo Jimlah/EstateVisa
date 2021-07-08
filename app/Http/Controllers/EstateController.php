@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EstateRequest;
+use App\Models\User;
 use App\Models\Estate;
 use Illuminate\Http\Request;
 
@@ -14,7 +16,7 @@ class EstateController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**
@@ -23,9 +25,22 @@ class EstateController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(EstateRequest $request)
     {
-        //
+        $user = User::create([
+            'email' => $request->input('email'),
+        ]);
+
+        $estate = Estate::create([
+            'name' => $request->input('estate_name'),
+            'code' => $request->input('estate_code'),
+            'user_id' => $request->input('user_id'),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'You have successfully created a new Estate'
+        ]);
     }
 
     /**
@@ -36,7 +51,10 @@ class EstateController extends Controller
      */
     public function show(Estate $estate)
     {
-        //
+        return response()->json([
+            'success' => true,
+            'estate' => $estate,
+        ]);
     }
 
     /**
@@ -46,9 +64,19 @@ class EstateController extends Controller
      * @param  \App\Models\Estate  $estate
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Estate $estate)
+    public function update(EstateRequest $request, Estate $estate)
     {
-        //
+        $estate->name = $request->estate_name;
+        $estate->code = $request->estate_code;
+        $estate->address = $request->estate_address;
+        $estate->logo = $request->estate_logo;
+
+        $estate->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'You have successfully updated Resource'
+        ]);
     }
 
     /**
@@ -59,6 +87,11 @@ class EstateController extends Controller
      */
     public function destroy(Estate $estate)
     {
-        //
+        Estate::destroy($estate->id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'You have successfully deleted'
+        ]);
     }
 }
