@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\HouseRequest;
 use App\Models\House;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class HouseController extends Controller
 {
@@ -23,9 +26,27 @@ class HouseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(HouseRequest $request)
     {
-        //
+        $user = auth()->user();
+        if (!$user->estateUser || $user->estate ) {
+            return response()->json([
+                'error' => true,
+                'message' => 'You are not authorized to make this request'
+            ]);
+        }
+
+        House::create([
+            'estate_id' => $user->estateUser->user_id,
+            'house_types_id' => $request->house_types,
+            'code' => $request->input("code"),
+            'description' => $request->input("description"),
+        ]);
+
+        return response()->json([
+            'error' => true,
+            'message' => 'You have successfully added a new house to the estate'
+        ]);
     }
 
     /**
@@ -36,7 +57,7 @@ class HouseController extends Controller
      */
     public function show(House $house)
     {
-        //
+        return $house;
     }
 
     /**
