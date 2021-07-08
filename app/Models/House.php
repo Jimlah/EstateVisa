@@ -13,4 +13,9 @@ class House extends Model
     {
         $this->belongsTo(Estate::class);
     }
+
+    public function houseType()
+    {
+        return $this->hasOne(House_type::class);
+    }
 }

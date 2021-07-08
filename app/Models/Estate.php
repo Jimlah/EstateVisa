@@ -19,8 +19,18 @@ class Estate extends Model
         'code',
     ];
 
-    public function Profile()
+    public function user()
     {
-        $this->belongsTo(Profile::class);
+        return $this->belongsTo(User::class);
+    }
+
+    public function houses()
+    {
+        return $this->hasMany(Estate::class);
+    }
+
+    public function estateAdmin()
+    {
+        return $this->hasMany(EstateUser::class);
     }
 }
