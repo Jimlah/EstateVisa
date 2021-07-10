@@ -4,8 +4,9 @@
 Hello User, thank you for signing up on the platform.
 
 Below is your Login details
-    Email: {{$user->email}}
-    Password: {{$password}}
+
+Email: {{$user->email}}<br>
+Password: {{$password}}
 
 Thanks,<br>
 {{ config('app.name') }}
