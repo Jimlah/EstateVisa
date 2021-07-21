@@ -48,8 +48,23 @@ class User extends Authenticatable
         return $this->hasOne(Profile::class);
     }
 
-    public function role()
+    public function estates()
     {
-        return $this->hasOne(Role::class);
+        return $this->hasMany(Estate::class);
+    }
+
+    public function estateAdmin()
+    {
+        return $this->hasMany(EstateUser::class);
+    }
+
+    public function houseOwner()
+    {
+        return $this->hasMany(UsersHouse::class);
+    }
+
+    public function houseSubOwner()
+    {
+        return $this->hasMany(HouseSubUser::class, 'house_owner_id');
     }
 }
