@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Mail\UserCreated;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class UserObserver
@@ -22,7 +23,11 @@ class UserObserver
         $user->password = Hash::make($password_token);
         $user->save();
 
-        Mail::to($user->email)->send(new UserCreated($user, $password_token));
+        try {
+            Mail::to($user->email)->send(new UserCreated($user, $password_token));
+        } catch (\Throwable $th) {
+            Log::error("Unable to send Welcome Email to " . $user->email );
+        }
 
     }
 
