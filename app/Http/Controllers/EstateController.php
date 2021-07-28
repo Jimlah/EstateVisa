@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\EstateRequest;
+use App\Http\Resources\EstateResource;
 use App\Models\User;
 use App\Models\Estate;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ class EstateController extends Controller
      */
     public function index()
     {
-
+        return EstateResource::collection(Estate::all());
     }
 
     /**
@@ -27,9 +28,9 @@ class EstateController extends Controller
      */
     public function store(EstateRequest $request)
     {
-        $user = User::create([
-            'email' => $request->input('email'),
-        ]);
+        $userInstance = new User();
+        $user = $userInstance->store($request);
+
 
         $estate = Estate::create([
             'name' => $request->input('estate_name'),
@@ -51,10 +52,7 @@ class EstateController extends Controller
      */
     public function show(Estate $estate)
     {
-        return response()->json([
-            'success' => true,
-            'estate' => $estate,
-        ]);
+        return EstateResource::make($estate);
     }
 
     /**
