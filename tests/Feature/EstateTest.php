@@ -20,7 +20,7 @@ class EstateTest extends TestCase
 
         $response = $this->json('GET', '/api/estates', [], ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']);
         $response->assertStatus(200)
-        ->assertJson(fn (AssertableJson $json) => $json->has('data'));
+            ->assertJson(fn (AssertableJson $json) => $json->has('data'));
     }
 
     public function test_api_get_single_estate()
@@ -29,8 +29,7 @@ class EstateTest extends TestCase
 
         $response = $this->json('GET', '/api/estates/' . Estate::all()->random()->first()->id, [], ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']);
         $response->assertStatus(200)
-        ->assertJson(fn (AssertableJson $json) => $json->has('data'));
-
+            ->assertJson(fn (AssertableJson $json) => $json->has('data'));
     }
 
 
@@ -42,17 +41,18 @@ class EstateTest extends TestCase
             'estate_name' => $faker->word(),
             'estate_code' => $faker->word(),
             'estate_logo' => $faker->word(),
-            'email' => $faker->unique()->safeEmail];
+            'email' => $faker->unique()->safeEmail
+        ];
 
         $response = $this->json('POST', '/api/estates', $data, ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']);
         if ($response->status() == 201) {
             $response->assertStatus(201)
-        ->assertJson(fn (AssertableJson $json) => $json->has('message')->has('status'));
+                ->assertJson(fn (AssertableJson $json) => $json->has('message')->has('status'));
         }
 
         if ($response->status() == 422) {
             $response->assertStatus(422)
-            ->assertJson(fn (AssertableJson $json) => $json->has('message')->has('error'));
+                ->assertJson(fn (AssertableJson $json) => $json->has('message')->has('error'));
         }
 
         $this->assertDatabaseHas('users', ['email' => $data['email']]);
@@ -68,12 +68,12 @@ class EstateTest extends TestCase
             'estate_name' => $faker->word(),
             'estate_code' => $faker->word(),
             'estate_logo' => $faker->word(),
-            'email' =>User::first()->email
+            'email' => User::first()->email
         ];
 
         $response = $this->json('POST', '/api/estates', $data, ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']);
         $response->assertStatus(422)
-        ->assertJson(fn (AssertableJson $json) => $json->has('message')->has('errors'));
+            ->assertJson(fn (AssertableJson $json) => $json->has('message')->has('errors'));
     }
 
     public function test_api_update_estate()
@@ -88,7 +88,7 @@ class EstateTest extends TestCase
 
         $response = $this->json('PUT', '/api/estates/' . Estate::all()->random()->first()->id, $data, ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']);
         $response->assertStatus(200)
-        ->assertJson(fn (AssertableJson $json) => $json->has('message')->has('status'));
+            ->assertJson(fn (AssertableJson $json) => $json->has('message')->has('status'));
 
         $response->dump();
     }
@@ -97,26 +97,23 @@ class EstateTest extends TestCase
     {
         $this->login();
         $response = $this->json('DELETE', '/api/estates/' . Estate::all()->random()->first()->id, [], ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']);
-        if($response->status() == 200){
+        if ($response->status() == 200) {
             $response->assertStatus(200)
-            ->assertJson(fn (AssertableJson $json) => $json->has('message')->has('status'));
+                ->assertJson(fn (AssertableJson $json) => $json->has('message')->has('status'));
         }
 
         if ($response->status() == 422) {
             $response->assertStatus(422)
-            ->assertJson(fn (AssertableJson $json) => $json->has('message')->has('errors'));
+                ->assertJson(fn (AssertableJson $json) => $json->has('message')->has('errors'));
         }
 
         $response->dump();
     }
 
-     protected function login()
+    protected function login()
     {
         $user = User::first();
         $token = $user->createToken('Application')->accessToken;
         $this->bearer = "Bearer $token";
-
-   }
-
-
+    }
 }
