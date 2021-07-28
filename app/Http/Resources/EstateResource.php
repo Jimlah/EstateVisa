@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProfileResource extends JsonResource
+class EstateResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,10 +16,10 @@ class ProfileResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'firstname' => $this->firstname,
-            'lastname' => $this->lastname,
-            'gender' => $this->gender,
-            'phone_number' => $this->phone_number,
+            'user' => UserResource::make($this->user),
+            'name' => $this->name,
+            'code' => $this->code,
+            'logo' => $this->logo,
         ];
     }
 }

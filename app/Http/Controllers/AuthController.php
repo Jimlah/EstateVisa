@@ -51,7 +51,7 @@ class AuthController extends Controller
         $token = $request->user()->token();
         $token->revoke();
         $response = ['message' => 'You have been successfully logged out!'];
-        return response($response, 200);
+        return response()->json($response, 200);
     }
 
     public function forgotPassword(Request $request)
@@ -61,8 +61,8 @@ class AuthController extends Controller
         $status = Password::sendResetLink($request->only('email'));
 
         return $status === Password::RESET_LINK_SENT
-        ? response()->json(['message' => 'Reset link sent to your email.', 'status' => true], 201)
-        : response()->json(['message' => 'Unable to send reset link', 'status' => false], 401);
+        ? response()->json(['message' => 'Reset link sent to your email.', 'status' => "success"], 201)
+        : response()->json(['message' => 'Unable to send reset link', 'status' => "error"], 401);
     }
 
     public function passwordReset(Request $request)

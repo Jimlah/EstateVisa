@@ -27,7 +27,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
 });
 
 Route::middleware('auth:api')->group(function () {
-    Route::post('/logout', [VisitorController::class, 'logout'])->name('logout.api');
+    Route::get('/logout', [AuthController::class, 'logout'])->name('logout.api');
 
     Route::apiResource('visitors', VisitorController::class);
     Route::apiResource('profiles', ProfileController::class);
