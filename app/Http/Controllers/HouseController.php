@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\HouseRequest;
 use App\Http\Resources\HouseResource;
+use App\Models\Estate;
 use App\Models\House;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class HouseController extends Controller
      */
     public function index()
     {
-        return HouseResource::collection(House::all());
+        return HouseResource::collection(Estate::all()->house);
     }
 
     /**
@@ -31,7 +32,7 @@ class HouseController extends Controller
     {
         House::create([
             'estate_id' => $request->input('estate'),
-            'house_type_id' => $request->input('house_type'),
+            'houses_types_id' => $request->input('house_type'),
             'code' => $request->input('code')
         ]);
 
@@ -62,7 +63,7 @@ class HouseController extends Controller
     public function update(HouseRequest $request, House $house)
     {
         $house->estate_id = $request->estate;
-        $house->house_type = $request->house_type;
+        $house->houses_types_id = $request->house_type;
         $house->code = $request->code;
         $house->description = $request->description;
         $house->save();
