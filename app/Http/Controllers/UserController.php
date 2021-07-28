@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 
@@ -27,6 +28,11 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+
+        $validator = $this->validate($request, [
+            'email' => 'required|email|unique:users',
+        ]);
+
         $user = User::create([
             'email' => $request->input('email'),
         ]);

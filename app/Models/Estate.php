@@ -15,8 +15,11 @@ class Estate extends Model
      * @var array
      */
     protected $fillable = [
+        'user_id',
         'name',
         'code',
+        'address',
+        'logo'
     ];
 
     public function user()

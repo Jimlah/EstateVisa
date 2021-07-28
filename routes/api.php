@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EstateController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VisitorController;
@@ -29,6 +30,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
 Route::middleware('auth:api')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout.api');
 
+    Route::apiResource("estates", EstateController::class);
     Route::apiResource('visitors', VisitorController::class);
     Route::apiResource('profiles', ProfileController::class);
     Route::apiResource('users', UserController::class);

@@ -28,20 +28,19 @@ class EstateController extends Controller
      */
     public function store(EstateRequest $request)
     {
-        $userInstance = new User();
+        $userInstance = new UserController();
         $user = $userInstance->store($request);
 
-
         $estate = Estate::create([
+            'user_id' => $user->id,
             'name' => $request->input('estate_name'),
             'code' => $request->input('estate_code'),
-            'user_id' => $request->input('user_id'),
         ]);
 
         return response()->json([
-            'success' => true,
+            'status' => 'success',
             'message' => 'You have successfully created a new Estate'
-        ]);
+        ], 201);
     }
 
     /**
@@ -72,7 +71,7 @@ class EstateController extends Controller
         $estate->save();
 
         return response()->json([
-            'success' => true,
+            'status' => "success",
             'message' => 'You have successfully updated Resource'
         ]);
     }
@@ -85,10 +84,10 @@ class EstateController extends Controller
      */
     public function destroy(Estate $estate)
     {
-        Estate::destroy($estate->id);
+        $estate->delete();
 
         return response()->json([
-            'success' => true,
+            'status' => 'success',
             'message' => 'You have successfully deleted'
         ]);
     }

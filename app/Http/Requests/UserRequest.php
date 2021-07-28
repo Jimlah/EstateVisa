@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class EstateRequest extends FormRequest
+class UserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class EstateRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -24,8 +24,7 @@ class EstateRequest extends FormRequest
     public function rules()
     {
         return [
-            'estate_name' => "required|string",
-            'estate_code' => "required|string|unique:estates,code",
+            'email' => 'required|email|unique:users',
         ];
     }
 }
