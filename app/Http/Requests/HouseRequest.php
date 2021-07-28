@@ -13,7 +13,7 @@ class HouseRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,9 @@ class HouseRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'estate' => 'required|numeric',
+            'house_type' => 'required|numeric',
+            'code' => 'required'
         ];
     }
 }

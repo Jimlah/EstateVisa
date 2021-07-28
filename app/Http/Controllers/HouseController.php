@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\HouseRequest;
+use App\Http\Resources\HouseResource;
 use App\Models\House;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class HouseController extends Controller
      */
     public function index()
     {
-        //
+        return HouseResource::collection(House::all());
     }
 
     /**
@@ -28,19 +29,10 @@ class HouseController extends Controller
      */
     public function store(HouseRequest $request)
     {
-        $user = auth()->user();
-        if (!$user->estateUser || $user->estate ) {
-            return response()->json([
-                'error' => true,
-                'message' => 'You are not authorized to make this request'
-            ]);
-        }
-
         House::create([
-            'estate_id' => $user->estateUser->user_id,
-            'house_types_id' => $request->house_types,
-            'code' => $request->input("code"),
-            'description' => $request->input("description"),
+            'estate_id' => $request->input('estate'),
+            'house_type_id' => $request->input('house_type'),
+            'code' => $request->input('code')
         ]);
 
         return response()->json([
@@ -57,7 +49,7 @@ class HouseController extends Controller
      */
     public function show(House $house)
     {
-        return $house;
+        return HouseResource::make($house);
     }
 
     /**
@@ -67,9 +59,18 @@ class HouseController extends Controller
      * @param  \App\Models\House  $house
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, House $house)
+    public function update(HouseRequest $request, House $house)
     {
-        //
+        $house->estate_id = $request->estate;
+        $house->house_type = $request->house_type;
+        $house->code = $request->code;
+        $house->description = $request->description;
+        $house->save();
+
+        return response()->json([
+            'error' => true,
+            'message' => 'You have successfully  updated the house'
+        ]);
     }
 
     /**
@@ -80,6 +81,11 @@ class HouseController extends Controller
      */
     public function destroy(House $house)
     {
-        //
+        $house->delete();
+
+        return response()->json([
+            'error' => true,
+            'message' => 'You have successfully deleted house from the estate'
+        ]);
     }
 }
