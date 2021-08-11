@@ -19,7 +19,9 @@ class HouseController extends Controller
      */
     public function index()
     {
-        return HouseResource::collection(Estate::all()->house);
+        // dd(House::all());
+        // return HouseResource::collection(Estate::all()->load("houses"));
+        return Estate::all()->load("houses");
     }
 
     /**

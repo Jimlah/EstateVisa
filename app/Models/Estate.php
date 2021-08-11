@@ -29,7 +29,7 @@ class Estate extends Model
 
     public function houses()
     {
-        return $this->hasMany(Estate::class);
+        return $this->hasMany(House::class);
     }
 
     public function estateAdmin()

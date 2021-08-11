@@ -15,11 +15,11 @@ class HouseResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'estate' => $this->estate->name,
-            'house_type_id' => $this->house_type->name,
+            'id' => $this->id,
+            'estate' => $this->estate_id,
             'code' =>  $this->code,
             'description' => $this->description,
-            'created_at' => $this->create_at,
+            'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
     }

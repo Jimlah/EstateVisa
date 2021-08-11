@@ -26,7 +26,7 @@ class HouseFactory extends Factory
         $faker = FakerFactory::create();
         return [
             'estate_id' => Estate::all()->random()->first(),
-            'houses_types_id' => $faker->random_int(1, 20),
+            'houses_types_id' => $faker->randomDigitNotZero(),
             'code' => $faker->word(),
             'description' => $faker->sentence(10),
         ];

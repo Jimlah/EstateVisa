@@ -34,7 +34,7 @@ class House extends Model
 
     public function estate()
     {
-        $this->belongsTo(Estate::class);
+        return "hey";
     }
 
     public function houseType()
