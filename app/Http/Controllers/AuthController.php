@@ -42,7 +42,7 @@ class AuthController extends Controller
         }
 
 
-        $response = ["message" => 'Email or Password Invalid'];
+        $response = ["message" => 'Email or Password Invalid', 'status' => 'error'];
         return response($response, 422);
     }
 
@@ -61,8 +61,8 @@ class AuthController extends Controller
         $status = Password::sendResetLink($request->only('email'));
 
         return $status === Password::RESET_LINK_SENT
-        ? response()->json(['message' => 'Reset link sent to your email.', 'status' => "success"], 201)
-        : response()->json(['message' => 'Unable to send reset link', 'status' => "error"], 401);
+            ? response()->json(['message' => 'Reset link sent to your email.', 'status' => "success"], 201)
+            : response()->json(['message' => 'Unable to send reset link', 'status' => "error"], 401);
     }
 
     public function passwordReset(Request $request)
