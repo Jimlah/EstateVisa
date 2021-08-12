@@ -10,6 +10,12 @@ use Illuminate\Http\Request;
 
 class EstateController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->authorizeResource(Estate::class);
+    }
+
     /**
      * Display a listing of the resource.
      *
