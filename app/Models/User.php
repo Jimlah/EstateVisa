@@ -13,6 +13,13 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
     use HasApiTokens;
 
+    const SUPER_ADMIN = 'super_admin';
+    const ADMIN = 'admin';
+    const ESTATE_OWNER = 'estate_owner';
+    const ESTATE_ADMIN = 'estate_admin';
+    const HOUSE_OWNER = 'house_owner';
+    const HOUSE_SUB_OWNER = 'house_sub_owner';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -52,7 +59,7 @@ class User extends Authenticatable
 
     public function estates()
     {
-        return $this->hasMany(Estate::class);
+        return $this->hasOne(Estate::class);
     }
 
     public function estateAdmin()
@@ -68,5 +75,23 @@ class User extends Authenticatable
     public function houseSubOwner()
     {
         return $this->hasMany(HouseSubUser::class, 'house_owner_id');
+    }
+
+    public function hasRole($role)
+    {
+        switch ($role) {
+            case self::SUPER_ADMIN:
+                return $this->id == 1;
+                break;
+            case self::ADMIN:
+                return $this->role_id == 2;
+                break;
+            case self::ESTATE_OWNER:
+                return $this->estateAdmin->user_id != null;
+                break;
+            default:
+                return false;
+                break;
+        }
     }
 }
