@@ -27,7 +27,7 @@ class EstateFactory extends Factory
 
         return [
             'name' => $faker->name,
-            'code' => $faker->word,
+            'code' => $faker->unique()->word(),
             'address' => $faker->address,
             'logo' => $faker->imageUrl,
         ];
