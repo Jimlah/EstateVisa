@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Estate;
+use App\Models\House;
 use App\Models\House_type;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class HouseTypeController extends Controller
@@ -14,7 +17,9 @@ class HouseTypeController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(
+            ['data' => House_type::all()]
+        );
     }
 
     /**
