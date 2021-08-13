@@ -19,7 +19,6 @@ class EstatePolicy
      */
     public function viewAny(User $user)
     {
-        // dd('Are you sure you want to do that?');
         return $user->hasRole(User::SUPER_ADMIN);
     }
 
@@ -32,7 +31,15 @@ class EstatePolicy
      */
     public function view(User $user, Estate $estate)
     {
-        //
+        if ($user->hasRole(User::SUPER_ADMIN) || $user->hasRole(User::ADMIN)) {
+            return true;
+        }
+
+        if ($user->hasRole(User::ESTATE_OWNER)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -43,7 +50,7 @@ class EstatePolicy
      */
     public function create(User $user)
     {
-        //
+        return $user->hasRole(User::SUPER_ADMIN);
     }
 
     /**
@@ -55,7 +62,14 @@ class EstatePolicy
      */
     public function update(User $user, Estate $estate)
     {
-        //
+        if ($user->hasRole(User::SUPER_ADMIN) || $user->hasRole(User::ADMIN)) {
+            return true;
+        }
+
+        if ($user->hasRole(User::ESTATE_OWNER)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -67,7 +81,11 @@ class EstatePolicy
      */
     public function delete(User $user, Estate $estate)
     {
-        //
+        if ($user->hasRole(User::SUPER_ADMIN) || $user->hasRole(User::ADMIN)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
