@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EstateController;
 use App\Http\Controllers\HouseController;
+use App\Http\Controllers\HouseTypeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VisitorController;
@@ -36,5 +37,6 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('visitors', VisitorController::class);
     Route::apiResource('profiles', ProfileController::class);
     Route::apiResource('users', UserController::class);
+    Route::apiResource('house-types', HouseTypeController::class);
     // our routes to be protected will go in here
 });
