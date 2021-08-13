@@ -6,6 +6,8 @@ use Throwable;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -37,13 +39,15 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->renderable(function (NotFoundHttpException $e) {
-            return response()->json(['message' => "Object not found"]);
+            return response()->json(['message' => "Object not found"], 404);
         });
 
         $this->renderable(function (BindingResolutionException $e) {
-            return response()->json(['message' => $e->getMessage()]);
+            return response()->json(['message' => $e->getMessage()], 500);
         });
 
-        
+        $this->renderable(function (AccessDeniedHttpException $e) {
+            return response()->json(['message' => $e->getMessage()], 403);
+        });
     }
 }
