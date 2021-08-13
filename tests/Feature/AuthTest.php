@@ -50,7 +50,6 @@ class AuthTest extends TestCase
         $response = $this->json("POST", '/api/login', $body, ['Accept' => 'application/json']);
         $response->assertStatus(422);
         $response->assertJson(fn (AssertableJson $json) => $json->has('message')->has('status'));
-        $response->dump();
     }
 
 
