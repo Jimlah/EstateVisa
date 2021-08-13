@@ -38,94 +38,245 @@ class EstateTest extends TestCase
     }
 
 
-    // public function test_api_get_single_estate()
-    // {
-    //     $this->login();
-
-    //     $response = $this->json('GET', '/api/estates/' . Estate::all()->random()->first()->id, [], ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']);
-    //     $response->assertStatus(200)
-    //         ->assertJson(fn (AssertableJson $json) => $json->has('data'));
-    // }
+    public function test_api_can_create_a_new_estate()
+    {
+        $this->login();
+        $estate = Estate::factory()->make();
+        $faker = Factory::create();
+        $estate->email = $faker->email;
 
 
-    // public function test_api_store_new_estate()
-    // {
-    //     $faker = Factory::create();
-    //     $this->login();
-    //     $data = [
-    //         'estate_name' => $faker->word(),
-    //         'estate_code' => $faker->word(),
-    //         'estate_logo' => $faker->word(),
-    //         'email' => $faker->unique()->safeEmail
-    //     ];
+        $response = $this->json(
+            'POST',
+            '/api/estates',
+            [
+                'email' => $estate->email,
+                'estate_name' => $estate->name,
+                'estate_code' => $estate->code,
+            ],
+            ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']
+        );
 
-    //     $response = $this->json('POST', '/api/estates', $data, ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']);
-    //     if ($response->status() == 201) {
-    //         $response->assertStatus(201)
-    //             ->assertJson(fn (AssertableJson $json) => $json->has('message')->has('status'));
-    //     }
+        $response->assertStatus(201)
+            ->assertJson(fn (AssertableJson $json) => $json->has('status')->has('message'));
+        $this->assertDatabaseHas('estates', [
+            'name' => $estate->name,
+            'code' => $estate->code,
+        ]);
 
-    //     if ($response->status() == 422) {
-    //         $response->assertStatus(422)
-    //             ->assertJson(fn (AssertableJson $json) => $json->has('message')->has('error'));
-    //     }
+        $this->assertDatabaseHas('users', [
+            'email' => $estate->email,
+        ]);
+    }
 
-    //     $this->assertDatabaseHas('users', ['email' => $data['email']]);
-    //     $this->assertDatabaseHas('estates', ['name' => $data['estate_name'], 'code' => $data['estate_code']]);
-    //     // $this->assertFalse();
-    // }
+    public function test_api_can_not_create_a_new_estate_without_email()
+    {
+        $this->login();
+        $estate = Estate::factory()->make();
 
-    // public function test_api_store_new_estate_with_existing_email()
-    // {
-    //     $faker = Factory::create();
-    //     $this->login();
-    //     $data = [
-    //         'estate_name' => $faker->word(),
-    //         'estate_code' => $faker->word(),
-    //         'estate_logo' => $faker->word(),
-    //         'email' => User::first()->email
-    //     ];
+        $response = $this->json(
+            'POST',
+            '/api/estates',
+            [
+                'estate_name' => $estate->name,
+                'estate_code' => $estate->code,
+            ],
+            ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']
+        );
+        $response->assertStatus(422);
 
-    //     $response = $this->json('POST', '/api/estates', $data, ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']);
-    //     $response->assertStatus(422)
-    //         ->assertJson(fn (AssertableJson $json) => $json->has('message')->has('errors'));
-    // }
+        $this->assertDatabaseMissing('estates', [
+            'name' => $estate->name,
+            'code' => $estate->code,
+        ]);
+    }
 
-    // public function test_api_update_estate()
-    // {
-    //     $faker = Factory::create();
-    //     $this->login();
-    //     $data = [
-    //         'estate_name' => $faker->word(),
-    //         'estate_code' => $faker->word(),
-    //         'estate_logo' => $faker->word(),
-    //     ];
+    public function test_api_can_not_create_a_new_estate_without_estate_name()
+    {
+        $this->login();
+        $estate = Estate::factory()->make();
+        $faker = Factory::create();
+        $estate->email = $faker->email;
 
-    //     $response = $this->json('PUT', '/api/estates/' . Estate::all()->random()->first()->id, $data, ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']);
-    //     $response->assertStatus(200)
-    //         ->assertJson(fn (AssertableJson $json) => $json->has('message')->has('status'));
-    // }
+        $response = $this->json(
+            'POST',
+            '/api/estates',
+            [
+                'email' => $estate->email,
+                'estate_code' => $estate->code,
+            ],
+            ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']
+        );
+        $response->assertStatus(422);
 
-    // public function test_api_delete_estate()
-    // {
-    //     $this->login();
-    //     $response = $this->json('DELETE', '/api/estates/' . Estate::all()->random()->first()->id, [], ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']);
-    //     if ($response->status() == 200) {
-    //         $response->assertStatus(200)
-    //             ->assertJson(fn (AssertableJson $json) => $json->has('message')->has('status'));
-    //     }
+        $this->assertDatabaseMissing('users', [
+            'email' => $estate->email,
+        ]);
+    }
 
-    //     if ($response->status() == 422) {
-    //         $response->assertStatus(422)
-    //             ->assertJson(fn (AssertableJson $json) => $json->has('message')->has('errors'));
-    //     }
-    // }
+    public function test_api_can_not_create_a_new_estate_without_estate_code()
+    {
+        $this->login();
+        $estate = Estate::factory()->make();
+        $faker = Factory::create();
+        $estate->email = $faker->email;
 
-    protected function login()
+        $response = $this->json(
+            'POST',
+            '/api/estates',
+            [
+                'email' => $estate->email,
+                'estate_name' => $estate->name,
+            ],
+            ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']
+        );
+
+        $response->assertStatus(422);
+        $this->assertDatabaseMissing('estates', [
+            'name' => $estate->name,
+            'code' => $estate->code,
+        ]);
+
+        $this->assertDatabaseMissing('users', [
+            'email' => $estate->email,
+        ]);
+    }
+
+    public function test_api_super_admin_get_single_estate()
+    {
+        $this->login();
+
+        $estate = Estate::factory()->create();
+        $response = $this->json('GET', '/api/estates/' . $estate->id, [], ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']);
+        $response->assertStatus(200)
+            ->assertJson(fn (AssertableJson $json) => $json->has('data'));
+    }
+
+    public function test_api_estate_owner_can_only_get_their_estate()
+    {
+        $user = User::factory()->create();
+        $estate = Estate::factory()->create(['user_id' => $user->id]);
+        $this->login($user);
+
+        $response = $this->json('GET', '/api/estates/' . $estate->id, [], ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']);
+        $response->assertStatus(200)
+            ->assertJson(fn (AssertableJson $json) => $json->has('data'));
+    }
+
+    public function test_api_estate_owner_can_not_get_other_estate()
+    {
+        $user = User::factory()->create();
+        $estate = Estate::factory()->create();
+        $this->login($user);
+
+        $response = $this->json('GET', '/api/estates/' . $estate->id, [], ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']);
+        $response->assertStatus(403);
+    }
+
+    public function test_api_super_admin_can_update_an_estate()
+    {
+        $this->login();
+        $estate = Estate::factory()->create();
+        $faker = Factory::create();
+        $name = $faker->name;
+
+        $response = $this->json(
+            'PUT',
+            '/api/estates/' . $estate->id,
+            [
+                'estate_name' => $name,
+                'estate_code' => $estate->code,
+            ],
+            ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']
+        );
+        $response->assertStatus(200)
+            ->assertJson(fn (AssertableJson $json) => $json->has('status')->has('message'));
+
+        $this->assertDatabaseHas('estates', [
+            'name' => $name,
+            'code' => $estate->code,
+        ]);
+    }
+
+    public function test_api_estate_owner_can_update_an_estate()
+    {
+        $user = User::factory()->create();
+        $estate = Estate::factory()->create(['user_id' => $user->id]);
+        $faker = Factory::create();
+        $name = $faker->name;
+
+        $this->login($user);
+        $response = $this->json(
+            'PUT',
+            '/api/estates/' . $estate->id,
+            [
+                'estate_name' => $name,
+                'estate_code' => $estate->code,
+            ],
+            ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']
+        );
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('estates', [
+            'name' => $name,
+            'code' => $estate->code,
+        ]);
+    }
+
+    public function test_api_estate_owner_can_not_update_other_estate()
+    {
+        $user = User::factory()->create();
+        $estate = Estate::factory()->create();
+        $faker = Factory::create();
+        $name = $faker->name;
+
+        $this->login($user);
+        $response = $this->json(
+            'PUT',
+            '/api/estates/' . $estate->id,
+            [
+                'estate_name' => $name,
+                'estate_code' => $estate->code,
+            ],
+            ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']
+        );
+        $response->assertStatus(403);
+        $this->assertDatabaseMissing('estates', [
+            'name' => $name,
+            'code' => $estate->code,
+        ]);
+
+        $this->assertDatabaseHas('estates', [
+            'name' => $estate->name,
+            'code' => $estate->code,
+        ]);
+    }
+
+    public function test_api_super_admin_can_delete_an_estate()
+    {
+        $this->login();
+        $estate = Estate::factory()->create();
+        $response = $this->json('DELETE', '/api/estates/' . $estate->id, [], ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']);
+        $response->assertStatus(200)
+            ->assertJson(fn (AssertableJson $json) => $json->has('status')->has('message'));
+    }
+
+
+    public function test_api_non_super_admin_can_not_delete_an_estate()
+    {
+        $user = User::factory()->create();
+        $estate = Estate::factory()->create();
+        $this->login($user);
+        $response = $this->json('DELETE', '/api/estates/' . $estate->id, [], ['Authorization' => $this->bearer, 'Content-Type' => 'application/json']);
+        $response->assertStatus(403);
+    }
+
+
+    protected function login(User $user = null)
     {
         Artisan::call('migrate');
-        User::all();
-        $user = User::first();
+        if (!$user) {
+            $user = User::first();
+        }
         $token = $user->createToken('Application')->accessToken;
         $this->bearer = "Bearer $token";
     }
