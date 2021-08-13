@@ -25,7 +25,7 @@ class EstateRequest extends FormRequest
     {
         return [
             'estate_name' => "required|string",
-            'estate_code' => "required|string|unique:estates,code",
+            'estate_code' => "required|string",
         ];
     }
 }
