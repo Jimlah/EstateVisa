@@ -68,7 +68,6 @@ class UserController extends Controller
             'status' => 'success',
             'message' => 'User updated successfully'
         ]);
-
     }
 
     /**
