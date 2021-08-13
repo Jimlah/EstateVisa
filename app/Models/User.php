@@ -87,7 +87,11 @@ class User extends Authenticatable
                 return $this->role_id == 2;
                 break;
             case self::ESTATE_OWNER:
-                return $this->estateAdmin->user_id != null;
+                return $this->estates?->user_id != null;
+                break;
+            case self::ESTATE_ADMIN:
+                $collection = collect($this->estateAdmin());
+                return $collection->contains('user_id', auth()->user()->id);
                 break;
             default:
                 return false;
