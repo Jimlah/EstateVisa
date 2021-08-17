@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Mail\UserCreated;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
@@ -12,7 +14,6 @@ use Illuminate\Testing\Fluent\AssertableJson;
 
 class AuthTest extends TestCase
 {
-
     private $bearer;
 
     /**
@@ -22,7 +23,6 @@ class AuthTest extends TestCase
      *  */
     public function test_api_login()
     {
-        Artisan::call('migrate');
         User::unsetEventDispatcher();
         $user =  User::factory()->create();
 
@@ -38,7 +38,6 @@ class AuthTest extends TestCase
 
     public function test_api_will_not_login_with_invalid_data()
     {
-        Artisan::call('migrate');
         User::unsetEventDispatcher();
         $user =  User::factory()->create();
 
