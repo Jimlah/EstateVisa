@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\HouseTypeRequest;
 use App\Models\Estate;
 use App\Models\House;
 use App\Models\House_type;
@@ -10,6 +11,12 @@ use Illuminate\Http\Request;
 
 class HouseTypeController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->authorizeResource(House_type::class);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -28,9 +35,18 @@ class HouseTypeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(HouseTypeRequest $request)
     {
-        //
+        House_type::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'code' => $request->code,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'You have successfully created a new House Type'
+        ], 201);
     }
 
     /**
@@ -41,7 +57,7 @@ class HouseTypeController extends Controller
      */
     public function show(House_type $house_type)
     {
-        //
+        return response()->json($house_type);
     }
 
     /**
@@ -51,9 +67,13 @@ class HouseTypeController extends Controller
      * @param  \App\Models\House_type  $house_type
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, House_type $house_type)
+    public function update(HouseTypeRequest $request, House_type $house_type)
     {
-        //
+        $house_type->name = $request->name;
+        $house_type->code = $request->code;
+        $house_type->description = $request->description;
+
+        $house_type->save();
     }
 
     /**

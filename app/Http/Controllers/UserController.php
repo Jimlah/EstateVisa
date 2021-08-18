@@ -30,10 +30,10 @@ class UserController extends Controller
     {
 
         $validator = $this->validate($request, [
-            'email' => 'required|email|unique:users',
+            'email' => 'required|email',
         ]);
 
-        $user = User::create([
+        $user = User::firstOrCreate([
             'email' => $request->input('email'),
         ]);
 

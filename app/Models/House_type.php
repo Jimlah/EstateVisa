@@ -23,7 +23,7 @@ class House_type extends Model
         static::addGlobalScope(
             'Estate_House_Type',
             function (Builder $builder) {
-                if (auth()->user()->hasRole(User::ESTATE_OWNER)) {
+                if (auth()->user()?->hasRole(User::ESTATE_OWNER)) {
                     $builder->where(
                         'estate_id',
                         '=',

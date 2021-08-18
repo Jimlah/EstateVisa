@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Estate;
 use App\Models\User;
 use App\Models\House_Type;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -24,7 +25,7 @@ class House_typeFactory extends Factory
     {
         return
             [
-                'estate_id' => User::all()->random()->id,
+                'estate_id' => Estate::factory()->create()->id,
                 'name' => $this->faker->word,
                 'description' => $this->faker->sentence,
                 'code' => $this->faker->word,
