@@ -24,7 +24,6 @@ class HouseRequest extends FormRequest
     public function rules()
     {
         return [
-            'estate' => 'required|numeric',
             'house_type' => 'required|numeric',
             'code' => 'required'
         ];

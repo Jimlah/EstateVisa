@@ -110,25 +110,23 @@ class HouseTypeTest extends TestCase
 
     public function test_api_estate_owner_can_update_only_their_house_types()
     {
-        User::factory()->create();
-        $house_type = House_type::factory(10)->create();
 
+        User::factory()->create();
+        House_type::factory(10)->create();
         $house_type =  House_type::find($this->faker->numberBetween(2, House_type::count()));
         $estate = Estate::find($house_type->estate_id);
 
-
-        $this->actingAs($estate->user, 'api');
         $attributes = [
             'name' => $this->faker->word,
             'description' => $this->faker->word,
             'code' => $this->faker->word,
         ];
 
-        $response = $this->putJson(
-            route('house-types.update', $house_type->id),
-            $attributes
-        );
-
+        $response = $this->actingAs($estate->user, 'api')
+                        ->putJson(
+                            route('house-types.update', $house_type->id),
+                            $attributes
+                    );
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('house_types', $attributes)

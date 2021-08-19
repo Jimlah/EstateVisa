@@ -57,7 +57,7 @@ class User extends Authenticatable
         return $this->hasOne(Profile::class);
     }
 
-    public function estates()
+    public function estate()
     {
         return $this->hasOne(Estate::class);
     }
@@ -87,7 +87,7 @@ class User extends Authenticatable
                 return $this->role_id == 2;
                 break;
             case self::ESTATE_OWNER:
-                return $this->estates?->user_id != null;
+                return $this->estate?->user_id != null;
                 break;
             case self::ESTATE_ADMIN:
                 $collection = collect($this->estateAdmin());

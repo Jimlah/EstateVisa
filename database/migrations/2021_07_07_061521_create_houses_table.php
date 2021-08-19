@@ -15,8 +15,8 @@ class CreateHousesTable extends Migration
     {
         Schema::create('houses', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('estate_id');
-            $table->unsignedInteger('houses_types_id');
+            $table->unsignedBigInteger('estate_id')->nullable();
+            $table->unsignedBigInteger('houses_types_id')->nullable();
             $table->string('code');
             $table->string('description')->nullable();
             $table->timestamps();

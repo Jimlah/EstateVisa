@@ -32,6 +32,11 @@ class Estate extends Model
         return $this->hasMany(House::class);
     }
 
+    public function houseTypes()
+    {
+        return $this->hasMany(House_type::class);
+    }
+
     public function estateAdmin()
     {
         return $this->hasMany(EstateUser::class);

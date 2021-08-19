@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Trait\FilterByEstateTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class House extends Model
 {
-    use HasFactory;
+    use HasFactory, FilterByEstateTrait;
 
 
     /**
@@ -17,7 +18,7 @@ class House extends Model
      */
     protected $fillable = [
         'estate_id',
-        'house_type_id',
+        'houses_types_id',
         'code',
         'description'
     ];
@@ -32,9 +33,10 @@ class House extends Model
         'updated_at' => 'datetime:Y-m-d'
     ];
 
+
     public function estate()
     {
-        return "hey";
+        return $this->belongsTo(Estate::class);
     }
 
     public function houseType()

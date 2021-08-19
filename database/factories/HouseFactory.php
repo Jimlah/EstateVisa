@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Estate;
 use App\Models\House;
+use App\Models\House_type;
 use Faker\Factory as FakerFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -25,8 +26,8 @@ class HouseFactory extends Factory
     {
         $faker = FakerFactory::create();
         return [
-            'estate_id' => Estate::all()->random()->first(),
-            'houses_types_id' => $faker->randomDigitNotZero(),
+            'estate_id' => Estate::factory()->create()->id,
+            'houses_types_id' => House_type::factory(5)->create()->random(1)->first()->id,
             'code' => $faker->word(),
             'description' => $faker->sentence(10),
         ];

@@ -19,9 +19,9 @@ class HouseController extends Controller
      */
     public function index()
     {
-        // dd(House::all());
-        // return HouseResource::collection(Estate::all()->load("houses"));
-        return Estate::all()->load("houses");
+        return response()->json(
+            ['data' => HouseResource::collection(House::all())]
+        );
     }
 
     /**
@@ -33,15 +33,15 @@ class HouseController extends Controller
     public function store(HouseRequest $request)
     {
         House::create([
-            'estate_id' => $request->input('estate'),
             'houses_types_id' => $request->input('house_type'),
-            'code' => $request->input('code')
+            'code' => $request->input('code'),
+            'description' => $request->input('description')
         ]);
 
         return response()->json([
-            'error' => true,
+            'status' => "error",
             'message' => 'You have successfully added a new house to the estate'
-        ]);
+        ], 201);
     }
 
     /**
@@ -71,7 +71,7 @@ class HouseController extends Controller
         $house->save();
 
         return response()->json([
-            'error' => true,
+            'status' => 'success',
             'message' => 'You have successfully  updated the house'
         ]);
     }
@@ -87,7 +87,7 @@ class HouseController extends Controller
         $house->delete();
 
         return response()->json([
-            'error' => true,
+            'status' => 'success',
             'message' => 'You have successfully deleted house from the estate'
         ]);
     }
