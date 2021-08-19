@@ -74,6 +74,11 @@ class HouseTypeController extends Controller
         $house_type->description = $request->description;
 
         $house_type->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'House type updated successfully'
+        ]);
     }
 
     /**
@@ -84,6 +89,12 @@ class HouseTypeController extends Controller
      */
     public function destroy(House_type $house_type)
     {
-        //
+        $house_type->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'House type deleted successfully '
+        ], 204);
+
     }
 }

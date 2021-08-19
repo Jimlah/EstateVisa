@@ -93,7 +93,14 @@ class HouseTypePolicy
      */
     public function delete(User $user, House_type $houseType)
     {
-        //
+        if ($user->hasRole(User::ESTATE_ADMIN) || $user->hasRole(User::ESTATE_OWNER)) {
+            if ($user->estates?->id == $houseType->estate_id) {
+                return true;
+            }
+        };
+
+
+        return false;
     }
 
     /**
