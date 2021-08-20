@@ -156,5 +156,66 @@ class HouseTest extends TestCase
         $response->assertStatus(404);
    }
 
+   public function test_api_estate_owner_can_update_house()
+   {
+        House::unsetEventDispatcher();
+        User::factory()->create();
+        $estate =Estate::factory()->create();
+        $house_type = House_type::factory()->create(['estate_id' => $estate->id]);
+        House::factory(10)->create(['estate_id' => $estate->id, 'houses_types_id' => $house_type->id]);
+        $house = House::find($this->faker->numberBetween(1,House::count()));
+
+        $attributes = [
+            'code' => $this->faker->word,
+            'description' => $this->faker->sentence,
+            'house_type' => $estate->houseTypes->random()->id
+        ];
+
+        $response = $this->actingAs($estate->user, 'api')
+            ->putJson(route('houses.update', $house->id), $attributes);
+
+        $response->assertStatus(200)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->has('status')->has('message')
+            );
+
+            $this->assertDatabaseHas('houses', [
+                'code' => $attributes['code'],
+                'description' => $attributes['description'],
+                'houses_types_id' => $attributes['house_type'],
+                'estate_id' => $estate->id
+                ])
+                ->assertDatabaseMissing('houses', [
+                    'code' => $house->code,
+                    'description' => $house->description,
+                    'houses_types_id' => $house->house_type,
+                    'estate_id' => $house->estate_id
+            ]);
+   }
+
+   public function test_api_estate_owner_and_estate_admin_can_delete_house()
+   {
+        House::unsetEventDispatcher();
+        User::factory()->create();
+        $estate =Estate::factory()->create();
+        $house_type = House_type::factory()->create(['estate_id' => $estate->id]);
+        House::factory(10)->create(['estate_id' => $estate->id, 'houses_types_id' => $house_type->id]);
+        $house = House::find($this->faker->numberBetween(1,House::count()));
+
+        $response = $this->actingAs($estate->user, 'api')
+            ->deleteJson(route('houses.destroy', $house->id));
+
+        $response->assertStatus(200)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->has('status')->has('message')
+            );
+
+            $this->assertDatabaseMissing('houses', [
+                'code' => $house->code,
+                'description' => $house->description,
+                'houses_types_id' => $house->house_type,
+                'estate_id' => $house->estate_id
+            ]);
+   }
 
 }

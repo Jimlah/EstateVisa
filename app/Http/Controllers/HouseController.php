@@ -68,7 +68,6 @@ class HouseController extends Controller
      */
     public function update(HouseRequest $request, House $house)
     {
-        $house->estate_id = $request->estate;
         $house->houses_types_id = $request->house_type;
         $house->code = $request->code;
         $house->description = $request->description;
