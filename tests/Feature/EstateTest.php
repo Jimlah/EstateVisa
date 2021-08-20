@@ -322,7 +322,6 @@ class EstateTest extends TestCase
 
        $this->actingAs($user, 'api');
        $response = $this->json('POST', route('estates.disable', $estate->id));
-       $response->dump();
        $response->assertStatus(200)
                  ->assertJson(fn (AssertableJson $json) =>
                     $json

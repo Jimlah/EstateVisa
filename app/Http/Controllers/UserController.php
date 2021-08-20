@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\StoreUserAction;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
@@ -26,18 +27,15 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserRequest $request, StoreUserAction $storeUserAction)
     {
 
-        $validator = $this->validate($request, [
-            'email' => 'required|email',
-        ]);
+        $storeUserAction->execute($request);
 
-        $user = User::firstOrCreate([
-            'email' => $request->input('email'),
-        ]);
-
-        return $user;
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User created successfully',
+            ], 201);
     }
 
     /**
@@ -82,5 +80,6 @@ class UserController extends Controller
         return response()->json([
             "message" => "Resource deleted successfully"
         ]);
-    }
+
+   }
 }

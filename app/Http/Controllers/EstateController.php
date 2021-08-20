@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\StoreUserAction;
 use App\Http\Requests\EstateRequest;
+use App\Http\Requests\UserRequest;
 use App\Http\Resources\EstateResource;
 use App\Models\User;
 use App\Models\Estate;
@@ -32,10 +34,9 @@ class EstateController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(EstateRequest $request)
+    public function store(EstateRequest $request, StoreUserAction $storeUserAction)
     {
-        $userInstance = new UserController();
-        $user = $userInstance->store($request);
+        $user = $storeUserAction->execute($request);
 
         $estate = Estate::create([
             'user_id' => $user->id,
@@ -116,7 +117,7 @@ class EstateController extends Controller
 
         return response()->json([
                     'status' => 'success',
-                    'message' => 'You have successfully disabled the Estate'
+                    'message' => 'You have successfully changed the status the Estate'
                 ]);
     }
 }
