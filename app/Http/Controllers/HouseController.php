@@ -12,6 +12,12 @@ use Illuminate\Support\Facades\Validator;
 
 class HouseController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->authorizeResource(House::class);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -19,9 +25,7 @@ class HouseController extends Controller
      */
     public function index()
     {
-        return response()->json(
-            ['data' => HouseResource::collection(House::all())]
-        );
+        return response()->json( ["data" => HouseResource::collection(House::all())] );
     }
 
     /**

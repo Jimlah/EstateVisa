@@ -54,7 +54,7 @@ class HouseTest extends TestCase
          );
    }
 
-   public function test_api_estate_owner_and_estate_admin_can_create_house()
+   public function test_api_estate_owner_and_estate_admin_can_create_houses()
    {
         User::factory()->create();
         Estate::factory(10)->create();
@@ -82,4 +82,51 @@ class HouseTest extends TestCase
             'estate_id' => $estate->id
         ]);
    }
+
+   public function test_api_house_owner_can_not_create_house_without_house_types()
+   {
+        User::factory()->create();
+        Estate::factory(10)->create();
+        $estate = Estate::find($this->faker->numberBetween(1,Estate::count()));
+        House_type::factory(5)->create(['estate_id' => $estate->id]);
+
+        $attributes = [
+            'code' => $this->faker->word,
+            'description' => $this->faker->sentence,
+        ];
+
+        $response = $this->actingAs($estate->user, 'api')
+            ->postJson(route('houses.store'), $attributes);
+
+        $response->assertStatus(422)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->has('message')->has('errors')
+            );
+   }
+
+   public function test_api_house_owner_can_not_create_house_without_house_code()
+   {
+    User::factory()->create();
+    Estate::factory(10)->create();
+    $estate = Estate::find($this->faker->numberBetween(1,Estate::count()));
+    House_type::factory(5)->create(['estate_id' => $estate->id]);
+
+    $attributes = [
+        'description' => $this->faker->sentence,
+        'house_type' => $estate->houseTypes->random()->id
+    ];
+
+    $response = $this->actingAs($estate->user, 'api')
+                    ->postJson(route('houses.store'), $attributes);
+
+    $response->assertStatus(422)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json->has('message')->has('errors')
+        );
+   }
+
+//    public function test_api_estate_owner_and_estate_admin_can_get_only_house(Type $var = null)
+//    {
+//        # code...
+//    }
 }
