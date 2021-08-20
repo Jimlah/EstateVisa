@@ -19,6 +19,7 @@ class CreateHousesTable extends Migration
             $table->unsignedBigInteger('houses_types_id')->nullable();
             $table->string('code');
             $table->string('description')->nullable();
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

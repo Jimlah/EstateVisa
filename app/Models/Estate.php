@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Trait\UseDisable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 
 class Estate extends Model
 {
-    use HasFactory;
+    use HasFactory, UseDisable;
 
     /**
      * The attributes that are mass assignable.
@@ -40,5 +42,13 @@ class Estate extends Model
     public function estateAdmin()
     {
         return $this->hasMany(EstateUser::class);
+    }
+
+    public function disableEstate()
+    {
+        $this->disable();
+        foreach ($this->houses as $house) {
+            $house->disableHouse();
+        }
     }
 }

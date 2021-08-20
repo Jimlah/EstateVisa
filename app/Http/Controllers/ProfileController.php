@@ -19,7 +19,7 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        return ProfileResource::collection(Profile::all());
+        return response()->json(ProfileResource::collection(Profile::all()), 200);
     }
 
     /**
@@ -33,7 +33,7 @@ class ProfileController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'New Account Created, login details Sent to user mail'
+            'message' => 'You have successfully created your profile',
         ]);
 
     }
@@ -46,7 +46,7 @@ class ProfileController extends Controller
      */
     public function show(Profile $profile)
     {
-        //
+        return response()->json(new ProfileResource($profile), 200);
     }
 
     /**
@@ -58,7 +58,7 @@ class ProfileController extends Controller
      */
     public function update(Request $request, Profile $profile)
     {
-        //
+
     }
 
     /**
@@ -69,6 +69,10 @@ class ProfileController extends Controller
      */
     public function destroy(Profile $profile)
     {
-        //
+        $profile->delete();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Profile Deleted'
+        ]);
     }
 }

@@ -7,6 +7,7 @@ use Faker\Factory;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Estate;
+use App\Models\House;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Auth\EloquentUserProvider;
@@ -307,4 +308,36 @@ class EstateTest extends TestCase
         $response->assertStatus(403);
 
    }
+
+   function test_api_super_admin_can_disable_an_estate()
+   {
+       House::unsetEventDispatcher();
+       $this->withoutEvents();
+       User::factory()->create();
+       $user = User::find(1);
+       House::factory(5)->create();
+       $estate = Estate::find($this->faker->numberBetween(1, 1));
+
+    //    dd($estate->toArray(), $estate->houses->toArray());
+
+       $this->actingAs($user, 'api');
+       $response = $this->json('POST', route('estates.disable', $estate->id));
+       $response->dump();
+       $response->assertStatus(200)
+                 ->assertJson(fn (AssertableJson $json) =>
+                    $json
+                        ->has('status')
+                        ->has('message'));
+
+       $this->assertDatabaseHas('estates', [
+           'id' => $estate->id,
+           'status' => false,
+       ]);
+
+       $this->assertDatabaseHas('houses', [
+           'estate_id' => $estate->id,
+           'status' => false,
+       ]);
+   }
+
 }

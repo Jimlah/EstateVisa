@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use App\Trait\FilterByEstateTrait;
+use App\Trait\UseDisable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class House extends Model
 {
     use HasFactory, FilterByEstateTrait;
+    use UseDisable;
 
 
     /**
@@ -42,5 +44,10 @@ class House extends Model
     public function houseType()
     {
         return $this->belongsTo(House_type::class);
+    }
+
+    public function disableHouse()
+    {
+        $this->disable();
     }
 }

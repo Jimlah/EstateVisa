@@ -23,7 +23,7 @@ class EstateController extends Controller
      */
     public function index()
     {
-        return EstateResource::collection(Estate::all());
+        return response()->json(['data' => EstateResource::collection(Estate::all())], 200);
     }
 
     /**
@@ -57,7 +57,10 @@ class EstateController extends Controller
      */
     public function show(Estate $estate)
     {
-        return EstateResource::make($estate);
+        return response()->json([
+            'data' => new EstateResource($estate)
+        ], 200);
+
     }
 
     /**
@@ -96,5 +99,24 @@ class EstateController extends Controller
             'status' => 'success',
             'message' => 'You have successfully deleted'
         ]);
+    }
+
+    /**
+     * Disable the specified resource from storage.
+     *
+     * @param  \App\Models\Estate  $estate
+     * @return \Illuminate\Http\Response
+     * @throws \Exception
+     * */
+    public function disable(Request $request)
+    {
+        $estate = Estate::findOrFail($request->id);
+
+        $estate->disableEstate();
+
+        return response()->json([
+                    'status' => 'success',
+                    'message' => 'You have successfully disabled the Estate'
+                ]);
     }
 }

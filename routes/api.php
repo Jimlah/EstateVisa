@@ -33,6 +33,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout.api');
 
     Route::apiResource("estates", EstateController::class);
+    Route::post('estates/{id}', [EstateController::class, 'disable'])->name('estates.disable');
+
     Route::apiResource("houses", HouseController::class);
     Route::apiResource('visitors', VisitorController::class);
     Route::apiResource('profiles', ProfileController::class);
