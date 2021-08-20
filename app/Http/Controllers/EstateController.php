@@ -117,7 +117,19 @@ class EstateController extends Controller
 
         return response()->json([
                     'status' => 'success',
-                    'message' => 'You have successfully changed the status the Estate'
+                    'message' => 'You have successfully disable the Estate'
                 ]);
+    }
+
+    public function enable(Request $request)
+    {
+    $estate = Estate::findOrFail($request->id);
+
+    $estate->enableEstate();
+
+    return response()->json([
+    'status' => 'success',
+    'message' => 'You have successfully enable the Estate'
+    ]);
     }
 }

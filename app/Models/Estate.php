@@ -51,4 +51,12 @@ class Estate extends Model
             $house->disableHouse();
         }
     }
+
+    public function enableEstate()
+    {
+        $this->enable();
+        foreach ($this->houses as $house) {
+            $house->enableHouse();
+        }
+    }
 }

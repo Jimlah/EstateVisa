@@ -339,4 +339,34 @@ class EstateTest extends TestCase
        ]);
    }
 
+   function test_api_super_admin_can_enable_an_estate()
+
+  {
+       House::unsetEventDispatcher();
+       $this->withoutEvents();
+       User::factory()->create();
+       $user = User::find(1);
+       House::factory(20)->create();
+       $estate = Estate::find($this->faker->numberBetween(1, 1));
+
+    //    dd($estate->toArray(), $estate->houses->toArray());
+
+       $this->actingAs($user, 'api');
+       $response = $this->json('POST', route('estates.enable', $estate->id));
+       $response->assertStatus(200)
+                 ->assertJson(fn (AssertableJson $json) =>
+                    $json
+                        ->has('status')
+                        ->has('message'));
+
+       $this->assertDatabaseHas('estates', [
+           'id' => $estate->id,
+           'status' => true,
+       ]);
+
+       $this->assertDatabaseHas('houses', [
+           'estate_id' => $estate->id,
+           'status' => true,
+       ]);
+   }
 }

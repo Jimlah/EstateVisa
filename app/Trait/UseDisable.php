@@ -8,4 +8,10 @@ trait UseDisable
         $this->status = false;
         $this->save();
     }
+
+    public function enable()
+    {
+        $this->status = true;
+        $this->save();
+    }
 }

@@ -50,4 +50,9 @@ class House extends Model
     {
         $this->disable();
     }
+
+    public function enableHouse()
+    {
+        $this->enable();
+    }
 }
