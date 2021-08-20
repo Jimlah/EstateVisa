@@ -19,7 +19,7 @@ class EstatePolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasRole(User::SUPER_ADMIN);
+        return $user->hasRole(User::SUPER_ADMIN) || $user->hasRole(User::ADMIN);
     }
 
     /**
