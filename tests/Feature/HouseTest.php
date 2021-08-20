@@ -125,8 +125,36 @@ class HouseTest extends TestCase
         );
    }
 
-//    public function test_api_estate_owner_and_estate_admin_can_get_only_house(Type $var = null)
-//    {
-//        # code...
-//    }
+   public function test_api_estate_owner_and_estate_admin_can_get_only_house()
+   {
+        House::unsetEventDispatcher();
+        User::factory()->create();
+        $estate =Estate::factory()->create();
+        $house = House::factory()->create(['estate_id' => $estate->id]);
+
+        $response = $this->actingAs($estate->user, 'api')
+            ->getJson(route('houses.show', $house->id));
+
+        $response->assertStatus(200);
+        $response->assertJson(fn (AssertableJson $json) =>
+            $json->has('data')
+         );
+   }
+
+
+   public function test_api_estate_owner_can_not_get_other_estate_house()
+   {
+        House::unsetEventDispatcher();
+        User::factory()->create();
+        $estate =Estate::factory()->create();
+        House::factory(10)->create();
+        $house = House::find($this->faker->numberBetween(1,House::count()));
+
+        $response = $this->actingAs($estate->user, 'api')
+            ->getJson(route('houses.show', $house->id));
+
+        $response->assertStatus(404);
+   }
+
+
 }

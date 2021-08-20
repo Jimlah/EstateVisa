@@ -56,7 +56,7 @@ class HouseController extends Controller
      */
     public function show(House $house)
     {
-        return HouseResource::make($house);
+        return response()->json(["data" => new HouseResource($house)]);
     }
 
     /**
