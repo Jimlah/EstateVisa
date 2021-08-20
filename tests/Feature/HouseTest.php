@@ -193,6 +193,25 @@ class HouseTest extends TestCase
             ]);
    }
 
+   public function test_api_estate_owner_can_not_update_other_estate_house()
+   {
+        House::unsetEventDispatcher();
+        User::factory()->create();
+        $estate =Estate::factory()->create();
+        House::factory(10)->create();
+        $house = House::find($this->faker->numberBetween(1,House::count()));
+
+        $attributes = [
+            'code' => $this->faker->word,
+            'description' => $this->faker->sentence
+        ];
+
+        $response = $this->actingAs($estate->user, 'api')
+            ->putJson(route('houses.update', $house->id), $attributes);
+
+        $response->assertStatus(404);
+   }
+
    public function test_api_estate_owner_and_estate_admin_can_delete_house()
    {
         House::unsetEventDispatcher();
@@ -217,5 +236,20 @@ class HouseTest extends TestCase
                 'estate_id' => $house->estate_id
             ]);
    }
+
+   public function test_api_estate_owner_and_estate_admin_can_not_delete_other_estate_house()
+   {
+        House::unsetEventDispatcher();
+        User::factory()->create();
+        $estate =Estate::factory()->create();
+        House::factory(10)->create();
+        $house = House::find($this->faker->numberBetween(1,House::count()));
+
+        $response = $this->actingAs($estate->user, 'api')
+            ->deleteJson(route('houses.destroy', $house->id));
+
+        $response->assertStatus(404);
+   }
+
 
 }
