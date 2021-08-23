@@ -33,7 +33,7 @@ class AuthTest extends TestCase
 
         $response = $this->json("POST", '/api/login', $body, ['Accept' => 'application/json']);
         $response->assertStatus(200)
-            ->assertJson(fn (AssertableJson $json) => $json->has('token'));
+            ->assertJson(fn (AssertableJson $json) => $json->has('token')->has('user'));
     }
 
     public function test_api_will_not_login_with_invalid_data()
