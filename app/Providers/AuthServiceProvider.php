@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\House;
 use App\Models\Estate;
 use App\Models\House_type;
+use App\Models\UsersHouse;
 use App\Policies\HousePolicy;
 use App\Policies\EstatePolicy;
 use App\Policies\HouseTypePolicy;
@@ -23,6 +24,7 @@ class AuthServiceProvider extends ServiceProvider
         Estate::class => EstatePolicy::class,
         House_type::class => HouseTypePolicy::class,
         House::class => HousePolicy::class,
+        UsersHouse::class => HousePolicy::class,
     ];
 
     /**

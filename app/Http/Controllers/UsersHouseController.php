@@ -6,9 +6,17 @@ use App\Models\User;
 use App\Models\UsersHouse;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\UsersHouseResource;
+use Illuminate\Support\Facades\DB;
 
 class UsersHouseController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->authorizeResource(UsersHouse::class);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +24,13 @@ class UsersHouseController extends Controller
      */
     public function index()
     {
-        
+        $users = UsersHouseResource::collection(UsersHouse::has('house')->get());
+
+        if (auth()->user()->hasRole(User::HOUSE_OWNER)) {
+            $users =UsersHouseResource::collection(UsersHouse::where('user_id', auth()->user()->id)->get());
+        }
+
+        return response()->json(['data' => $users]);
     }
 
     /**

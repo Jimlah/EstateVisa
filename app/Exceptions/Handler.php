@@ -39,15 +39,15 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->renderable(function (NotFoundHttpException $e) {
-            return response()->json(['message' => "Object not found"], 404);
+            return response()->json(['status'=> 'error','message' => "Object not found"], 404);
         });
 
         $this->renderable(function (BindingResolutionException $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         });
 
         $this->renderable(function (AccessDeniedHttpException $e) {
-            return response()->json(['message' => $e->getMessage()], 403);
+            return response()->json(['status'=>'warning','message' => $e->getMessage()], 403);
         });
     }
 }

@@ -26,6 +26,6 @@ class House_type extends Model
 
     public function house()
     {
-        $this->belongsTo(House::class);
+        return $this->belongsTo(House::class);
     }
 }

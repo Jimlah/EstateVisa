@@ -2,19 +2,18 @@
 
 namespace App\Policies;
 
-use App\Models\House;
 use App\Models\User;
+use App\Models\UsersHouse;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class HousePolicy
+class UsersHousePolicy
 {
     use HandlesAuthorization;
-
 
     public function before(User $user, $ability)
     {
         if ($user->hasRole(User::SUPER_ADMIN) || $user->hasRole(User::ADMIN)) {
-        return true;
+           return true;
         }
     }
 
@@ -26,10 +25,6 @@ class HousePolicy
      */
     public function viewAny(User $user)
     {
-        if ($user->hasRole(User::ESTATE_ADMIN) || $user->hasRole(User::ESTATE_OWNER)) {
-            return true;
-        };
-
         if ($user->hasRole(User::SUPER_ADMIN) || $user->hasRole(User::ADMIN)) {
             return true;
         }
@@ -45,26 +40,12 @@ class HousePolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\House  $house
+     * @param  \App\Models\UsersHouse  $usersHouse
      * @return mixed
      */
-    public function view(User $user, House $house)
+    public function view(User $user, UsersHouse $usersHouse)
     {
-        if ($user->hasRole(User::ESTATE_ADMIN) || $user->hasRole(User::ESTATE_OWNER)) {
-            if ($user->estate?->id == $house->estate_id) {
-                return true;
-            }
-        };
-
-        if ($user->hasRole(User::SUPER_ADMIN) || $user->hasRole(User::ADMIN)) {
-            return true;
-        }
-
-        if ($user->hasRole(User::HOUSE_OWNER)) {
-            return true;
-        }
-
-        return false;
+        //
     }
 
     /**
@@ -75,60 +56,41 @@ class HousePolicy
      */
     public function create(User $user)
     {
-        if ($user->hasRole(User::ESTATE_ADMIN) || $user->hasRole(User::ESTATE_OWNER)) {
-        return true;
-        };
-
-
-        return false;
+        //
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\House  $house
+     * @param  \App\Models\UsersHouse  $usersHouse
      * @return mixed
      */
-    public function update(User $user, House $house)
+    public function update(User $user, UsersHouse $usersHouse)
     {
-        if ($user->hasRole(User::ESTATE_ADMIN) || $user->hasRole(User::ESTATE_OWNER)) {
-        if ($user->estate?->id == $house->estate_id) {
-        return true;
-        }
-        };
-
-
-        return false;
+        //
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\House  $house
+     * @param  \App\Models\UsersHouse  $usersHouse
      * @return mixed
      */
-    public function delete(User $user, House $house)
+    public function delete(User $user, UsersHouse $usersHouse)
     {
-        if ($user->hasRole(User::ESTATE_ADMIN) || $user->hasRole(User::ESTATE_OWNER)) {
-        if ($user->estate?->id == $house->estate_id) {
-        return true;
-        }
-        };
-
-
-        return false;
+        //
     }
 
     /**
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\House  $house
+     * @param  \App\Models\UsersHouse  $usersHouse
      * @return mixed
      */
-    public function restore(User $user, House $house)
+    public function restore(User $user, UsersHouse $usersHouse)
     {
         //
     }
@@ -137,10 +99,10 @@ class HousePolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\House  $house
+     * @param  \App\Models\UsersHouse  $usersHouse
      * @return mixed
      */
-    public function forceDelete(User $user, House $house)
+    public function forceDelete(User $user, UsersHouse $usersHouse)
     {
         //
     }

@@ -43,7 +43,7 @@ class House extends Model
 
     public function houseType()
     {
-        return $this->belongsTo(House_type::class);
+        return $this->belongsTo(House_type::class, 'houses_types_id');
     }
 
     public function disableHouse()

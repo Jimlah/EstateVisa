@@ -39,6 +39,10 @@ class EstatePolicy
             return true;
         }
 
+        // if ($user->hasRole(User::HOUSE_OWNER)) {
+        //     return true;
+        // }
+
         return false;
     }
 

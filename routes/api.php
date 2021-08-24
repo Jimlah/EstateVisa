@@ -8,6 +8,7 @@ use App\Http\Controllers\HouseController;
 use App\Http\Controllers\HouseTypeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UsersHouseController;
 use App\Http\Controllers\VisitorController;
 
 /*
@@ -36,10 +37,12 @@ Route::middleware('auth:api')->group(function () {
     Route::post('estates/{id}/disable', [EstateController::class, 'disable'])->name('estates.disable');
     Route::post('estates/{id}/enable', [EstateController::class, 'enable'])->name('estates.enable');
 
-    Route::apiResource("houses", HouseController::class);
-    Route::apiResource('visitors', VisitorController::class);
-    Route::apiResource('profiles', ProfileController::class);
     Route::apiResource('users', UserController::class);
+    Route::apiResource('profiles', ProfileController::class);
+    Route::apiResource("houses", HouseController::class);
     Route::apiResource('house-types', HouseTypeController::class);
+    Route::apiResource("users-house", UsersHouseController::class);
+
+    Route::apiResource('visitors', VisitorController::class);
     // our routes to be protected will go in here
 });

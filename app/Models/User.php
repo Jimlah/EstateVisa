@@ -67,7 +67,7 @@ class User extends Authenticatable
         return $this->hasMany(EstateUser::class);
     }
 
-    public function houseOwner()
+    public function usersHouse()
     {
         return $this->hasMany(UsersHouse::class);
     }
@@ -91,6 +91,10 @@ class User extends Authenticatable
                 break;
             case self::ESTATE_ADMIN:
                 $collection = collect($this->estateAdmin());
+                return $collection->contains('user_id', auth()->user()->id);
+                break;
+            case self::HOUSE_OWNER:
+                $collection= collect($this->usersHouse);
                 return $collection->contains('user_id', auth()->user()->id);
                 break;
             default:
