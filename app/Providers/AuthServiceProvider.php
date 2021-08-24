@@ -2,8 +2,15 @@
 
 namespace App\Providers;
 
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use App\Models\House;
+use App\Models\Estate;
+use App\Models\House_type;
+use App\Models\UsersHouse;
+use App\Policies\HousePolicy;
+use App\Policies\EstatePolicy;
+use App\Policies\HouseTypePolicy;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -14,6 +21,10 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        Estate::class => EstatePolicy::class,
+        House_type::class => HouseTypePolicy::class,
+        House::class => HousePolicy::class,
+        UsersHouse::class => HousePolicy::class,
     ];
 
     /**
