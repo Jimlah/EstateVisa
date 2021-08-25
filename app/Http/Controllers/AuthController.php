@@ -43,8 +43,9 @@ class AuthController extends Controller
 
 
         $response = ["message" => 'Email or Password Invalid', 'status' => 'error'];
-        return response($response, 422);
-    }
+
+        return response()->json($response, 200);
+   }
 
     public function logout(Request $request)
     {
