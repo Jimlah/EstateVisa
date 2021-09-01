@@ -21,16 +21,16 @@ use App\Http\Controllers\VisitorController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::group(['middleware' => ['cors', 'json.response']], function () {
+Route::middleware(['json.response', 'cors'])->group(function () {
+    Route::group([], function () {
     // public routes
     Route::post('/login', [AuthController::class, 'login'])->name('login.api');
     Route::post('/register', [AuthController::class, 'register'])->name('register.api');
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password.api');
     Route::post('/reset-password', [AuthController::class, 'passwordReset'])->name('password.reset');
-});
+    });
 
-Route::middleware('auth:api')->group(function () {
+    Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout.api');
 
     Route::apiResource("estates", EstateController::class);
@@ -45,4 +45,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::apiResource('visitors', VisitorController::class);
     // our routes to be protected will go in here
+    });
+
+
 });
