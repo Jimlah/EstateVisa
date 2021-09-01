@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\StoreProfileAction;
 use App\Actions\StoreUserAction;
 use App\Http\Requests\EstateRequest;
+use App\Http\Requests\UserEstateProfileRequest;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\EstateResource;
 use App\Models\User;
@@ -25,7 +27,9 @@ class EstateController extends Controller
      */
     public function index()
     {
-        return response()->json(['data' => EstateResource::collection(Estate::all())], 200);
+        $data = Estate::orderBy('created_at', 'desc')->get();
+
+        return response()->json(['data' => EstateResource::collection($data)], 200);
     }
 
     /**
@@ -34,9 +38,11 @@ class EstateController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(EstateRequest $request, StoreUserAction $storeUserAction)
+    public function store(UserEstateProfileRequest $request, StoreUserAction $storeUserAction, StoreProfileAction $storeProfileAction)
     {
         $user = $storeUserAction->execute($request);
+
+        $profile = $storeProfileAction->execute($request, $user);
 
         $estate = Estate::create([
             'user_id' => $user->id,
