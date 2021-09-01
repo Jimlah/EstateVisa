@@ -6,10 +6,9 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\UserLoginRequest;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -37,7 +36,7 @@ class AuthController extends Controller
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $token = auth()->user()->createToken('Application')->accessToken;
-            $response = ['token' => $token, 'user' => auth()->user(), "message" => "Login Successful", "status" => "success"];
+            $response = ['token' => $token, 'user' => UserResource::make(auth()->user()), "message" => "Login Successful", "status" => "success"];
             return response($response, 200);
         }
 
