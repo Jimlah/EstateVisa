@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\RequiredIfExist;
+use App\Http\Requests\UserRequest;
+use App\Http\Requests\EstateRequest;
+use App\Http\Requests\ProfileRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProfileRequest extends FormRequest
+class UserEstateProfileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,17 +26,9 @@ class ProfileRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'firstname' => "required|string",
-            'lastname' => "required|string",
-            'phone_number' => "required|string",
-        ];
-    }
-
-    public function messages()
-    {
-        return [
-            'role_id.required' => "Role is required"
-        ];
+        $estate = (new EstateRequest())->rules();
+        $user = (new UserRequest())->rules();
+        $profile = (new ProfileRequest())->rules();
+        return array_merge($estate, $user, $profile);
     }
 }

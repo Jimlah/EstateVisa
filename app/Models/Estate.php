@@ -24,6 +24,8 @@ class Estate extends Model
         'logo'
     ];
 
+    protected $dateFormat = 'Y-m-d';
+
     public function user()
     {
         return $this->belongsTo(User::class);
