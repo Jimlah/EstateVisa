@@ -4,6 +4,7 @@ namespace App\Actions;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
+use Illuminate\Auth\Events\Registered;
 
 class StoreUserAction
 {

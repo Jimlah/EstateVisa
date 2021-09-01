@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\User;
 use App\Mail\UserCreated;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -29,6 +30,8 @@ class UserObserver
         } catch (\Throwable $th) {
             Log::error("Unable to send Welcome Email to " . $user->email );
         }
+
+        event(new Registered($user));
 
     }
 

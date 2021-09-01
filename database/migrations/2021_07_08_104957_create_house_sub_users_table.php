@@ -15,6 +15,7 @@ class CreateHouseSubUsersTable extends Migration
     {
         Schema::create('house_sub_users', function (Blueprint $table) {
             $table->id();
+            $table->boolean('status')->default(1);
             $table->timestamps();
         });
     }

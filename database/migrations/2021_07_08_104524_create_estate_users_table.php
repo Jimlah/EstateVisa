@@ -17,6 +17,7 @@ class CreateEstateUsersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('estate_id');
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

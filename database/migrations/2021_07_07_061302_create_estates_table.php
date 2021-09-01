@@ -20,7 +20,7 @@ class CreateEstatesTable extends Migration
             $table->string('code')->nullable();
             $table->string('address')->nullable();
             $table->string("logo")->nullable();
-            $table->boolean("status")->default(true);
+            $table->boolean("status")->default(1);
             $table->timestamps();
         });
     }

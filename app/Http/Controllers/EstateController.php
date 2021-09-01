@@ -6,9 +6,7 @@ use App\Actions\StoreProfileAction;
 use App\Actions\StoreUserAction;
 use App\Http\Requests\EstateRequest;
 use App\Http\Requests\UserEstateProfileRequest;
-use App\Http\Requests\UserRequest;
 use App\Http\Resources\EstateResource;
-use App\Models\User;
 use App\Models\Estate;
 use Illuminate\Http\Request;
 

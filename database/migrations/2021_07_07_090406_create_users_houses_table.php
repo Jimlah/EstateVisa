@@ -17,6 +17,7 @@ class CreateUsersHousesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('house_id');
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }
