@@ -84,7 +84,7 @@ class User extends Authenticatable
                 return $this->id == 1;
                 break;
             case self::ADMIN:
-                return $this->role_id == 2;
+                return $this->id == 2;
                 break;
             case self::ESTATE_OWNER:
                 return $this->estate?->user_id != null;
@@ -101,5 +101,16 @@ class User extends Authenticatable
                 return false;
                 break;
         }
+    }
+
+    public function roles()
+    {
+        return [
+            self::SUPER_ADMIN => $this->hasRole(self::SUPER_ADMIN),
+            self::ADMIN => $this->hasRole(self::ADMIN),
+            self::ESTATE_OWNER => $this->hasRole(self::ESTATE_OWNER),
+            self::ESTATE_ADMIN => $this->hasRole(self::ESTATE_ADMIN),
+            self::HOUSE_OWNER => $this->hasRole(self::HOUSE_OWNER),
+        ];
     }
 }
