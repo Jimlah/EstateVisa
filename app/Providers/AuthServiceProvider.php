@@ -8,6 +8,7 @@ use App\Models\House_type;
 use App\Models\UsersHouse;
 use App\Policies\HousePolicy;
 use App\Policies\EstatePolicy;
+use Laravel\Passport\Passport;
 use App\Policies\HouseTypePolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -35,7 +36,7 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
+         Passport::routes();
         //
     }
 }
