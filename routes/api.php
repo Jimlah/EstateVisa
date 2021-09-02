@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 Route::middleware(['json.response', 'cors'])->group(function () {
+
     Route::group([], function () {
     // public routes
     Route::post('/login', [AuthController::class, 'login'])->name('login.api');
@@ -32,7 +33,12 @@ Route::middleware(['json.response', 'cors'])->group(function () {
     Route::post('/reset-password', [AuthController::class, 'passwordReset'])->name('password.reset');
     });
 
+    Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verify'])
+    ->middleware(['signed'])
+    ->name('verification.verify');
 
+
+    Route::get('/logout', [AuthController::class, 'logout'])->name('logout.api');
 
     Route::middleware(['auth:api', 'verified'])->group(function () {
 
@@ -43,10 +49,7 @@ Route::middleware(['json.response', 'cors'])->group(function () {
                     'status' => "success"
                 ]);
     })->middleware('auth')->name('verification.notice');
-    Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verify'])
-        ->middleware(['signed'])
-        ->name('verification.verify');
-    Route::get('/logout', [AuthController::class, 'logout'])->name('logout.api');
+
     Route::post('/email/verification-notification', [AuthController::class, 'resendEmailVerify'])
         ->middleware(['auth', 'throttle:6,1'])
         ->name('verification.send');

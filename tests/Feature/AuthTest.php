@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Tests\TestCase;
 use Illuminate\Testing\Fluent\AssertableJson;
+use Laravel\Passport\Passport;
 
 class AuthTest extends TestCase
 {
@@ -70,10 +71,16 @@ class AuthTest extends TestCase
      * */
     public function test_api_logout()
     {
+        Artisan::call('passport:install');
+        $this->withExceptionHandling();
         Mail::fake();
         $this->login();
+        $user = User::factory()->create();
+        Passport::actingAs($user);
+        $token = $user->createToken('Application')->accessToken;
 
-        $response = $this->json("GET", '/api/logout', [], ['Accept' => 'application/json', "Authorization" => $this->bearer]);
+        $response = $this->json("GET", '/api/logout', [], ['Accept' => 'application/json', "Authorization" => 'Bearer ' . $token]);
+        dd($response);
         $response->assertStatus(200)
             ->assertJson(fn (AssertableJson $json) =>
             $json->has('message'));
