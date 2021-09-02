@@ -11,6 +11,7 @@ use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\HouseTypeController;
 use App\Http\Controllers\UsersHouseController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,24 +32,24 @@ Route::middleware(['json.response', 'cors'])->group(function () {
     Route::post('/reset-password', [AuthController::class, 'passwordReset'])->name('password.reset');
     });
 
-    Route::get('/email/verify', function (Request $request) {
-    return response()->json(['message' => 'Verification email has been sent!', 'status' => "success"]);
-    })->middleware('auth')->name('verification.notice');
 
-    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-
-    return response()->json(['message' => 'Email verified!', "status" => "success"]);
-    })->middleware(['signed'])->name('verification.verify');
-
-    Route::post('/email/verification-notification', function (Request $request) {
-    $request->user()->sendEmailVerificationNotification();
-
-    return back()->with('message', 'Verification link sent!');
-    })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
     Route::middleware(['auth:api', 'verified'])->group(function () {
+
+    Route::get('/email/verify', function (Request $request) {
+        return response()
+                ->json([
+                    'message' => 'Verification email has been sent!',
+                    'status' => "success"
+                ]);
+    })->middleware('auth')->name('verification.notice');
+    Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verify'])
+        ->middleware(['signed'])
+        ->name('verification.verify');
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout.api');
+    Route::post('/email/verification-notification', [AuthController::class, 'resendEmailVerify'])
+        ->middleware(['auth', 'throttle:6,1'])
+        ->name('verification.send');
 
     Route::apiResource("estates", EstateController::class);
     Route::post('estates/{id}/disable', [EstateController::class, 'disable'])->name('estates.disable');

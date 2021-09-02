@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Resources\UserResource;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
@@ -31,6 +32,12 @@ class AuthController extends Controller
     //     return response($response, 200);
     // }
 
+    /**
+     * login
+     *
+     * @param UserLoginRequest $request
+     * @return
+     */
     public function login(UserLoginRequest $request)
     {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
@@ -68,4 +75,19 @@ class AuthController extends Controller
     {
         return $request->query('token');
     }
+
+    public function verify(EmailVerificationRequest $request )
+    {
+        $request->fulfill();
+
+        return response()->json(['message' => 'Email successfully verified.', 'status' => "success"], 200);
+    }
+
+    public function resendEmailVerify(Request $request)
+    {
+        $request->user()->sendEmailVerificationNotification();
+
+        return response()->json(['message' => 'Verification email successfully sent.', 'status' => "success"], 200);
+    }
+
 }
