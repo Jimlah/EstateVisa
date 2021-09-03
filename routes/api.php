@@ -40,29 +40,30 @@ Route::middleware(['json.response', 'cors'])->group(function () {
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout.api');
 
-    Route::middleware(['auth:api', 'verified'])->group(function () {
-
-    Route::get('/email/verify', function (Request $request) {
-        return response()
-                ->json([
-                    'message' => 'Verification email has been sent!',
-                    'status' => "success"
-                ]);
-    })->middleware('auth')->name('verification.notice');
-
     Route::post('/email/verification-notification', [AuthController::class, 'resendEmailVerify'])
-        ->middleware(['auth', 'throttle:6,1'])
+        ->middleware(['auth:api', 'throttle:6,1'])
         ->name('verification.send');
 
-    Route::apiResource("estates", EstateController::class);
-    Route::post('estates/{id}/disable', [EstateController::class, 'disable'])->name('estates.disable');
-    Route::post('estates/{id}/enable', [EstateController::class, 'enable'])->name('estates.enable');
+    Route::middleware(['auth:api', 'verified'])->group(function () {
 
-    Route::apiResource('users', UserController::class);
-    Route::apiResource('profiles', ProfileController::class);
-    Route::apiResource("houses", HouseController::class);
-    Route::apiResource('house-types', HouseTypeController::class);
-    Route::apiResource("users-house", UsersHouseController::class);
+        Route::get('/email/verify', function () {
+            return response()
+                    ->json([
+                        'message' => 'Verification email has been sent!',
+                        'status' => "success"
+                    ]);
+        })->middleware('auth')->name('verification.notice');
+
+
+        Route::apiResource("estates", EstateController::class);
+        Route::post('estates/{id}/disable', [EstateController::class, 'disable'])->name('estates.disable');
+        Route::post('estates/{id}/enable', [EstateController::class, 'enable'])->name('estates.enable');
+
+        Route::apiResource('users', UserController::class);
+        Route::apiResource('profiles', ProfileController::class);
+        Route::apiResource("houses", HouseController::class);
+        Route::apiResource('house-types', HouseTypeController::class);
+        Route::apiResource("users-house", UsersHouseController::class);
 
     Route::apiResource('visitors', VisitorController::class);
     // our routes to be protected will go in here

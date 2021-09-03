@@ -5,14 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\UserLoginRequest;
-use App\Http\Resources\UserResource;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 class AuthController extends Controller
 {
+
+
+
     // public function register(Request $request)
     // {
     //     $validator = Validator::make($request->all(), [
@@ -76,9 +80,23 @@ class AuthController extends Controller
         return $request->query('token');
     }
 
-    public function verify(EmailVerificationRequest $request )
+    public function verify(Request $request )
     {
-        $request->fulfill();
+        $user = User::findOrFail($request->route('id'));
+
+        if ($user->hasVerifiedEmail()) {
+            return redirect(env("FRONT_URL") . ":" . env("FRONT_PORT") . "/auth/email/verified")->with(['message' =>
+            'Email is already verified',
+            'status' => "warning"], 200);
+        }
+
+        if ($user->markEmailAsVerified()) {
+            event(new Verified($user));
+            return redirect(env("FRONT_URL") . ":" . env("FRONT_PORT") . "/auth/email/verified")
+                ->with(['message' => 'Email is
+            successfully verified', 'status' => "success"], 200);
+        }
+
 
         return response()->json(['message' => 'Email successfully verified.', 'status' => "success"], 200);
     }
