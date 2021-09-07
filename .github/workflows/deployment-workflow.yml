@@ -32,7 +32,7 @@ jobs:
       - name: ls -a via ssh
         uses: garygrossgarten/github-action-ssh@release
         with:
-          host: ssh.cluster023.hosting.ovh.net
+          host: 192.119.9.178
           username: theurban
           password: ^Wx]z%BDHGIi
           command: |
