@@ -1,33 +1,20 @@
-name: Deploy site on push
+name: Publish Website to Cpanel
 on:
   push:
     branches:
       - main
 
 jobs:
-  web-deploy:
+  deploy:
+    name: Deploy to Cpanel
     runs-on: ubuntu-latest
     steps:
-      - name: Get the latest code
-        uses: actions/checkout@v2
-      - name: Copy .env file
-        run: cp .env.production .env
-      - name: Install dependencies
-        run: composer install
-      - name: Generate key
-        run: php artisan key:generate
-      - name: config clear cache
-        run: php artisan config:clear
-      - name: Create Database
-        run: |
-          mkdir -p database
-          touch database/database.sqlite
-      - name: Execute tests (Unit and Feature tests) via PHPUnit
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-        run: vendor/bin/phpunit
-      - name: Generate Passport keys
-        run: php artisan passport:install
-      - name: Run test
-        run: php artisan test
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Deploy Actions
+        uses: SamKirkland/FTP-Deploy-Action@3.1.1
+        with:
+          ftp-server: ${{ secrets.FTP_SERVER }}
+          ftp-user: ${{ secrets.FTP_USER }}
+          ftp-password: ${{ secrets.FTP_PASSWORD }}
