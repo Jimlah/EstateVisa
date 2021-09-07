@@ -19,7 +19,7 @@ jobs:
       - name: config clear
         run: php artisan config:clear
       - name: Migrate database
-        run: php artisan migrate:fresh
+        run: php artisan migrate
       - name: Generate Passport keys
         run: php artisan passport:install
       - name: Directory permissions
