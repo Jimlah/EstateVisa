@@ -18,6 +18,15 @@ jobs:
         run: php artisan key:generate
       - name: config clear cache
         run: php artisan config:clear
+      - name: Create Database
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
+      - name: Execute tests (Unit and Feature tests) via PHPUnit
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+          run: vendor/bin/phpunit
       - name: Generate Passport keys
         run: php artisan passport:install
       - name: Run test
