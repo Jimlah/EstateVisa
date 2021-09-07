@@ -36,4 +36,4 @@ jobs:
           username: demishoc
           password: ADEMOLA789
           port: 22
-          script: whoami
+          script: ls -al
