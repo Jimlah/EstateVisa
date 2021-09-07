@@ -16,6 +16,8 @@ jobs:
         run: composer install
       - name: Generate key
         run: php artisan key:generate
+      - name: config clear
+        run: php artisan config:clear
       - name: Migrate database
         run: php artisan migrate:fresh
       - name: Generate Passport keys
