@@ -18,8 +18,6 @@ jobs:
         run: php artisan key:generate
       - name: config clear cache
         run: php artisan config:clear
-      - name: Migrate database
-        run: php artisan migrate
       - name: Generate Passport keys
         run: php artisan passport:install
       - name: Run test
