@@ -1,0 +1,30 @@
+name: Deploy site on push
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  web-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the latest code
+        uses: actions/checkout@v2
+      - name: Copy .env file
+        run: cp .env.production .env
+      - name: Install dependencies
+        run: composer install
+      - name: Generate key
+        run: php artisan key:generate
+      - name: Migrate database
+        run: php artisan migrate
+      - name: Generate Passport keys
+        run: php artisan passport:install
+      - name: Directory permissions
+        run: chmod -R 777 storage
+      - name: Sync files
+        uses: SamKirkland/FTP-Deploy-Action@4.0.0
+        with:
+          server: ${{ secrets.LARAVEL_SITE_SERVER }}
+          username: ${{ secrets.LARAVEL_SITE_USER }}
+          password: ${{ secrets.LARAVEL_SITE_PASSWORD }}
