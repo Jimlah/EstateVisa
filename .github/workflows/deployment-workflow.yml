@@ -17,7 +17,7 @@ jobs:
       - name: Generate key
         run: php artisan key:generate
       - name: Migrate database
-        run: php artisan migrate
+        run: php artisan migrate:fresh
       - name: Generate Passport keys
         run: php artisan passport:install
       - name: Directory permissions
