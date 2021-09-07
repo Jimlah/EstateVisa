@@ -29,11 +29,11 @@ jobs:
       #     server: ${{ secrets.FTP_SERVER }}
       #     username: ${{ secrets.FTP_USER }}
       #     password: ${{ secrets.FTP_PASSWORD }}
-      - name: ls -a via ssh
-        uses: garygrossgarten/github-action-ssh@release
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
         with:
-          host: 192.119.9.178
-          username: theurban
-          password: ^Wx]z%BDHGIi
-          command: |
-            ls -a
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: whoami
