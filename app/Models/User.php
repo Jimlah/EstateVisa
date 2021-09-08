@@ -30,6 +30,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
     ];
 
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -53,7 +54,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function profile()
     {
-        return $this->hasOne(Profile::class);
+        return $this->hasOne(Profile::class)->withDefault([
+            'firstname' => '',
+            'lastname' => '',
+            'phone_number' => '',
+            'gender' => ''
+        ]);
     }
 
     public function estate()
