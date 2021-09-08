@@ -39,3 +39,7 @@ jobs:
           script: |
             cd public_html/helpdesk.fmc.dufma.ng/estatevisa
             ls -al
+            composer install
+            php artisan key:generate
+            php artisan migrate
+            php artisan passport:install
