@@ -16,8 +16,18 @@ class StoreProfileAction
             'user_id' => $user->id,
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
-            'phone_number' => $request->phone,
+            'phone_number' => $request->phone_number,
         ]);
+
+        return $profile;
+    }
+
+    public function update(Request $request, Profile $profile)
+    {
+        $profile->firstname = $request->firstname;
+        $profile->lastname = $request->lastname;
+        $profile->phone_number = $request->phone_number;
+        $profile->save();
 
         return $profile;
     }

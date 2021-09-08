@@ -18,4 +18,11 @@ class StoreUserAction
 
         return $user;
     }
+
+    public function update (Request $request, User $user)
+    {
+        $user->email = $request->email;
+        $user->save();
+        return $user;
+    }
 }

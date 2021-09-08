@@ -8,6 +8,7 @@ use App\Http\Requests\EstateRequest;
 use App\Http\Requests\UserEstateProfileRequest;
 use App\Http\Resources\EstateResource;
 use App\Models\Estate;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class EstateController extends Controller
@@ -75,12 +76,22 @@ class EstateController extends Controller
      * @param  \App\Models\Estate  $estate
      * @return \Illuminate\Http\Response
      */
-    public function update(EstateRequest $request, Estate $estate)
+    public function update(
+        UserEstateProfileRequest $request,
+        Estate $estate,
+        StoreUserAction $storeUserAction,
+        StoreProfileAction $storeProfileAction
+        )
     {
+
         $estate->name = $request->estate_name;
         $estate->code = $request->estate_code;
         $estate->address = $request->estate_address;
         $estate->logo = $request->estate_logo;
+
+
+        $storeUserAction->update($request, $estate->user);
+        $storeProfileAction->update($request, $estate->user->profile);
 
         $estate->save();
 
