@@ -37,5 +37,5 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd /public_html/helpdesk.fmc.dufma.ng/estatevisa
+            cd public_html/helpdesk.fmc.dufma.ng/estatevisa
             ls -al
