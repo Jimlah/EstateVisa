@@ -38,8 +38,8 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd public_html/helpdesk.fmc.dufma.ng/estatevisa
-            ls -al
-            composer update
-            php artisan key:generate
-            php artisan migrate
-            php artisan passport:install
+            php -v
+            # composer update
+            # php artisan key:generate
+            # php artisan migrate
+            # php artisan passport:install
