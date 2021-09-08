@@ -40,5 +40,5 @@ jobs:
             cd public_html/helpdesk.fmc.dufma.ng/estatevisa
             # composer update
             ea-php80 artisan key:generate
-            ea-php80 artisan passport:install
             ea-php80 artisan migrate
+            ea-php80 artisan passport:install
