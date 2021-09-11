@@ -20,7 +20,7 @@ class EstateResource extends JsonResource
             'name' => $this->name,
             'code' => $this->code,
             'logo' => $this->logo,
-            'created_at' => $this->created_at,
+            'created_at' => $this->created_at->toDateTimeString(),
         ];
     }
 }
