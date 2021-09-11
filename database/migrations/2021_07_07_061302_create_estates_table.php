@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,7 +21,7 @@ class CreateEstatesTable extends Migration
             $table->string('code')->nullable();
             $table->string('address')->nullable();
             $table->string("logo")->nullable();
-            $table->boolean("status")->default(1);
+            $table->string("status")->default(User::ACTIVE);
             $table->timestamps();
         });
     }

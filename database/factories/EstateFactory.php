@@ -32,7 +32,7 @@ class EstateFactory extends Factory
             'code' => $faker->unique()->word(),
             'address' => $faker->address,
             'logo' => $faker->imageUrl,
-            'status' => $faker->randomElement([false, true]),
+            'status' => $faker->randomElement([User::ACTIVE, User::SUSPENDED, USER::DEACTIVATED]),
         ];
     }
 }

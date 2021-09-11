@@ -4,12 +4,14 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Trait\FilterByUserTrait;
+use App\Trait\UseDisable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class UsersHouse extends Model
 {
     use HasFactory, FilterByUserTrait;
+    use UseDisable;
 
     /**
      * The attributes that are mass assignable.
@@ -30,4 +32,21 @@ class UsersHouse extends Model
     {
         return $this->belongsTo(House::class);
     }
+
+    public function suspendHouse()
+    {
+        $this->suspended();
+    }
+
+    public function activateHouse()
+    {
+        $this->active();
+    }
+
+    public function deactivateHouse()
+    {
+        $this->deactivated();
+    }
+
+
 }
