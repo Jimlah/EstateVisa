@@ -11,6 +11,12 @@ class Estate extends Model
 {
     use HasFactory, UseDisable;
 
+    const ACTIVE = 0;
+    const SUSPENDED = 1;
+    const DEACTIVATED = 2;
+
+
+
     /**
      * The attributes that are mass assignable.
      *
@@ -48,10 +54,16 @@ class Estate extends Model
         return $this->hasMany(EstateUser::class);
     }
 
+
+    public function houseOwner()
+    {
+        return $this->hasManyThrough(UsersHouse::class, House::class);
+    }
+
     public function disableEstate()
     {
         $this->disable();
-        foreach ($this->houses as $house) {
+        foreach ($this->houseOwner as $house) {
             $house->disableHouse();
         }
     }
@@ -59,8 +71,35 @@ class Estate extends Model
     public function enableEstate()
     {
         $this->enable();
-        foreach ($this->houses as $house) {
+        foreach ($this->houseOwner as $house) {
             $house->enableHouse();
         }
     }
+
+
+    public function suspendEstate()
+    {
+        $this->suspend();
+        foreach ($this->houseOwner as $house) {
+            $house->suspendHouse();
+        }
+    }
+
+    public function activateEstate()
+    {
+        $this->activate();
+        foreach ($this->houseOwner as $house) {
+            $house->activateHouse();
+        }
+    }
+
+    public function deactivateEstate()
+    {
+        $this->deactivated();
+        foreach ($this->houseOwner as $house) {
+            $house->deactivateHouse();
+        }
+    }
+
+
 }

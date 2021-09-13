@@ -18,8 +18,8 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'email' => $this->email,
-            'created_at' => $this->created_at?->format('Y-m-d'),
-            'updated_at' => $this->updated_at?->format('Y-m-d'),
+            'created_at' => $this->created_at->format('Y-m-d'),
+            'updated_at' => $this->updated_at->format('Y-m-d'),
             'email_verified_at' => $this->email_verified_at?->format('y-m-d'),
             'profile' => ProfileResource::make($this->profile),
             'roles' => $this->roles()

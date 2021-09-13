@@ -20,6 +20,13 @@ class User extends Authenticatable implements MustVerifyEmail
     const HOUSE_OWNER = 'house_owner';
     const HOUSE_SUB_OWNER = 'house_sub_owner';
 
+
+    const ACTIVE = 'active';
+    const INACTIVE = 'inactive';
+    const SUSPENDED = 'suspended';
+    const DEACTIVATED = 'deactivated';
+
+
     /**
      * The attributes that are mass assignable.
      *

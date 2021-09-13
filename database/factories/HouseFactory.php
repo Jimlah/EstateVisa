@@ -25,10 +25,7 @@ class HouseFactory extends Factory
     public function definition()
     {
         $faker = FakerFactory::create();
-        $estate_id = Estate::factory()->create()->id;
         return [
-            'estate_id' => $estate_id,
-            'houses_types_id' => House_type::factory(5)->create(['estate_id' => $estate_id])->random(1)->first()->id,
             'code' => $faker->word(),
             'description' => $faker->sentence(10),
         ];

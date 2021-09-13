@@ -38,23 +38,23 @@ class UsersHouseTest extends TestCase
     }
 
 
-    public function test_api_estate_owner_and_estate_admin_can_get_all_their_house_with_users_()
-    {
-        House::unsetEventDispatcher();
-        House_type::unsetEventDispatcher();
+    // public function test_api_estate_owner_and_estate_admin_can_get_all_their_house_with_users_()
+    // {
+    //     House::unsetEventDispatcher();
+    //     House_type::unsetEventDispatcher();
 
-        User::factory()->create();
-        UsersHouse::factory(10)->create();
+    //     User::factory()->create();
+    //     UsersHouse::factory(10)->create();
 
-        $estate = UsersHouse::find($this->faker()->numberBetween(1, UsersHouse::count()))->house->estate;
-        $response = $this->actingAs($estate->user, 'api')
-            ->get(route('users-house.index'));
+    //     $estate = UsersHouse::find($this->faker()->numberBetween(1, UsersHouse::count()))->house->estate;
+    //     $response = $this->actingAs($estate->user, 'api')
+    //         ->get(route('users-house.index'));
 
-        $response->assertStatus(200)
-                ->assertJson(fn (AssertableJson $json) =>
-                    $json->has('data')
-                    );
-    }
+    //     $response->assertStatus(200)
+    //             ->assertJson(fn (AssertableJson $json) =>
+    //                 $json->has('data')
+    //                 );
+    // }
 
     public function test_api_house_owner_can_see_all_houses_he_has()
     {
@@ -64,7 +64,7 @@ class UsersHouseTest extends TestCase
         User::factory()->create();
         UsersHouse::factory(10)->create();
 
-        $usersHouse = UsersHouse::find($this->faker()->numberBetween(2, UsersHouse::count()));
+        $usersHouse = UsersHouse::find($this->faker()->numberBetween(3, UsersHouse::count()));
 
         $response = $this->actingAs($usersHouse->user, 'api')
             ->getJson(route('users-house.index'));

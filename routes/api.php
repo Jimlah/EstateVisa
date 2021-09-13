@@ -56,8 +56,9 @@ Route::middleware(['json.response', 'cors'])->group(function () {
 
 
         Route::apiResource("estates", EstateController::class);
-        Route::post('estates/{id}/disable', [EstateController::class, 'disable'])->name('estates.disable');
-        Route::post('estates/{id}/enable', [EstateController::class, 'enable'])->name('estates.enable');
+        Route::patch('estates/{id}/activate', [EstateController::class, 'activate'])->name('estates.activate');
+        Route::patch('estates/{id}/deactivate', [EstateController::class, 'deactivate'])->name('estates.deactivate');
+        Route::patch('estates/{id}/suspend', [EstateController::class, 'suspend'])->name('estates.suspend');
 
         Route::apiResource('users', UserController::class);
         Route::apiResource('profiles', ProfileController::class);

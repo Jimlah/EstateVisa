@@ -25,9 +25,6 @@ class ProfileFactory extends Factory
     {
         $faker = FakerFactory::create();
         return [
-            'user_id' => function(){
-                return User::factory()->create()->id;
-            },
             'firstname' => $faker->firstName,
             'lastname' => $faker->lastname,
             'gender' => $faker->randomElement(["male", "female"]),
