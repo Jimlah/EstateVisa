@@ -2,16 +2,17 @@
 
 namespace Tests\Feature;
 
-use App\Mail\UserCreated;
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Password;
 use Tests\TestCase;
-use Illuminate\Testing\Fluent\AssertableJson;
+use App\Models\User;
+use App\Models\Estate;
+use App\Mail\UserCreated;
 use Laravel\Passport\Passport;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Testing\Fluent\AssertableJson;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AuthTest extends TestCase
 {
@@ -84,6 +85,27 @@ class AuthTest extends TestCase
             ->assertJson(fn (AssertableJson $json) =>
             $json->has('message'));
     }
+
+       public function test_api_estate_owner_is_logged_out_if_deactivated()
+       {
+           Estate::unsetEventDispatcher();
+            User::factory(2)->create();
+
+            $estateOwner = User::factory()->create();
+            $estate = Estate::factory()->create([
+                'user_id' => $estateOwner->id,
+                'status' => User::DEACTIVATED
+            ]);
+
+            $attributes = [
+                'email' => $estateOwner->email,
+                'password' => 'password',
+            ];
+
+            $response = $this->postJson(route('login.api'), $attributes);
+            $response->assertStatus(422);
+
+       }
 
     protected function login()
     {

@@ -27,7 +27,10 @@ Route::middleware(['json.response', 'cors'])->group(function () {
 
     Route::group([], function () {
     // public routes
-    Route::post('/login', [AuthController::class, 'login'])->name('login.api');
+    Route::post('/login', [AuthController::class, 'login'])
+        ->middleware('isDeactivated')
+        ->name('login.api');
+        
     Route::post('/register', [AuthController::class, 'register'])->name('register.api');
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password.api');
     Route::post('/reset-password', [AuthController::class, 'passwordReset'])->name('password.reset');
@@ -44,7 +47,7 @@ Route::middleware(['json.response', 'cors'])->group(function () {
         ->middleware(['auth:api', 'throttle:6,1'])
         ->name('verification.send');
 
-    Route::middleware(['auth:api', 'verified'])->group(function () {
+    Route::middleware(['auth:api', 'verified', 'isDeactivated'])->group(function () {
 
         Route::get('/email/verify', function () {
             return response()
