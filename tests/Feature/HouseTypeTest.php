@@ -43,9 +43,19 @@ class HouseTypeTest extends TestCase
     {
 
         User::factory()->create();
-        House_type::factory()->create();
 
-        $user = User::find($this->faker->numberBetween(2, User::count()));
+        for ($i = 0; $i < 10; $i++) {
+            $estateOwner = User::factory()->create();
+            $estate = Estate::factory()->create([
+                'user_id' => $estateOwner->id,
+            ]);
+            House_type::factory()->create([
+                'estate_id' => $estate->id
+            ]);
+        }
+
+
+        $user = User::find($this->faker->numberBetween(3, User::count()));
 
         $this->actingAs($user, 'api');
         $response = $this->json(
@@ -113,7 +123,7 @@ class HouseTypeTest extends TestCase
 
         User::factory()->create();
         House_type::factory(10)->create();
-        $house_type =  House_type::find($this->faker->numberBetween(2, House_type::count()));
+        $house_type =  House_type::find($this->faker->numberBetween(3, House_type::count()));
         $estate = Estate::find($house_type->estate_id);
 
         $attributes = [

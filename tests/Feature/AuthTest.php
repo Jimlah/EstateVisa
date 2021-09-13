@@ -80,7 +80,6 @@ class AuthTest extends TestCase
         $token = $user->createToken('Application')->accessToken;
 
         $response = $this->json("GET", '/api/logout', [], ['Accept' => 'application/json', "Authorization" => 'Bearer ' . $token]);
-        dd($response);
         $response->assertStatus(200)
             ->assertJson(fn (AssertableJson $json) =>
             $json->has('message'));

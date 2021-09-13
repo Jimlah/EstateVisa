@@ -113,11 +113,11 @@ class EstateController extends Controller
      * @return \Illuminate\Http\Response
      * @throws \Exception
      * */
-    public function disable(Request $request)
+    public function activate(Request $request)
     {
         $estate = Estate::findOrFail($request->id);
 
-        $estate->disableEstate();
+        $estate->activateEstate();
 
         return response()->json([
                     'status' => 'success',
@@ -125,15 +125,27 @@ class EstateController extends Controller
                 ]);
     }
 
-    public function enable(Request $request)
+    public function suspend(Request $request)
     {
-    $estate = Estate::findOrFail($request->id);
+        $estate = Estate::findOrFail($request->id);
 
-    $estate->enableEstate();
+        $estate->suspendEstate();
 
-    return response()->json([
-    'status' => 'success',
-    'message' => 'You have successfully enable the Estate'
-    ]);
+        return response()->json([
+        'status' => 'success',
+        'message' => 'You have successfully enable the Estate'
+        ]);
+    }
+
+    public function deactivate(Request $request)
+    {
+        $estate = Estate::findOrFail($request->id);
+
+        $estate->deactivateEstate();
+
+        return response()->json([
+        'status' => 'success',
+        'message' => 'You have successfully deactivated the Estate'
+        ]);
     }
 }

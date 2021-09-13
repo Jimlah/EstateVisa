@@ -93,7 +93,7 @@ class Estate extends Model
 
     public function deactivateEstate()
     {
-        $this->deactivate();
+        $this->deactivated();
         foreach ($this->houseOwner as $house) {
             $house->deactivateHouse();
         }
