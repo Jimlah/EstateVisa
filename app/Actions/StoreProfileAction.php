@@ -21,4 +21,15 @@ class StoreProfileAction
 
         return $profile;
     }
+
+    public function update(Request $request, Profile $profile)
+    {
+        $profile->update([
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'phone_number' => $request->phone,
+        ]);
+
+        return $profile;
+    }
 }
