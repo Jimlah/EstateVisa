@@ -83,6 +83,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(HouseSubUser::class, 'house_owner_id');
     }
 
+    public function admin()
+    {
+        return $this->hasMany(Admin::class);
+    }
+
     public function hasRole($role)
     {
         switch ($role) {
@@ -90,7 +95,8 @@ class User extends Authenticatable implements MustVerifyEmail
                 return $this->id == 1;
                 break;
             case self::ADMIN:
-                return $this->id == 2;
+                $collection = Admin::all();
+                return $collection->contains('user_id', $this->id);
                 break;
             case self::ESTATE_OWNER:
                 return $this->estate?->user_id != null;
@@ -100,7 +106,7 @@ class User extends Authenticatable implements MustVerifyEmail
                 return $collection->contains('user_id', auth()->user()->id);
                 break;
             case self::HOUSE_OWNER:
-                $collection= collect($this->usersHouse);
+                $collection = collect($this->usersHouse);
                 return $collection->contains('user_id', auth()->user()->id);
                 break;
             default:
