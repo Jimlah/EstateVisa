@@ -18,7 +18,11 @@ class CreateUsersHousesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('house_id');
-            $table->string('status')->default(User::ACTIVE);
+            $table->enum('status', [
+                User::ACTIVE,
+                User::DEACTIVATED,
+                USER::SUSPENDED,
+            ])->default(User::ACTIVE);
             $table->timestamps();
         });
     }
