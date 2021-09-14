@@ -65,7 +65,6 @@ class EstateController extends Controller
         return response()->json([
             'data' => new EstateResource($estate)
         ], 200);
-
     }
 
     /**
@@ -120,9 +119,9 @@ class EstateController extends Controller
         $estate->activateEstate();
 
         return response()->json([
-                    'status' => 'success',
-                    'message' => 'You have successfully disable the Estate'
-                ]);
+            'status' => 'success',
+            'message' => 'You have successfully disable the Estate'
+        ]);
     }
 
     public function suspend(Request $request)
@@ -132,8 +131,8 @@ class EstateController extends Controller
         $estate->suspendEstate();
 
         return response()->json([
-        'status' => 'success',
-        'message' => 'You have successfully enable the Estate'
+            'status' => 'success',
+            'message' => 'You have successfully enable the Estate'
         ]);
     }
 
@@ -144,8 +143,8 @@ class EstateController extends Controller
         $estate->deactivateEstate();
 
         return response()->json([
-        'status' => 'success',
-        'message' => 'You have successfully deactivated the Estate'
+            'status' => 'success',
+            'message' => 'You have successfully deactivated the Estate'
         ]);
     }
 }
