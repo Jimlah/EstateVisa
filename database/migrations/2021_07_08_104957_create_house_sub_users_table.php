@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Models\User;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class CreateHouseSubUsersTable extends Migration
 {
@@ -15,7 +16,13 @@ class CreateHouseSubUsersTable extends Migration
     {
         Schema::create('house_sub_users', function (Blueprint $table) {
             $table->id();
-            $table->boolean('status')->default(1);
+            $table->unsignedInteger('house_id');
+            $table->unsignedInteger('user_id');
+            $table->enum('status', [
+                User::ACTIVE,
+                User::DEACTIVATED,
+                USER::SUSPENDED,
+            ])->default(User::ACTIVE);
             $table->timestamps();
         });
     }
