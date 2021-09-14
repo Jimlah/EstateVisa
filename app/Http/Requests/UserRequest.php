@@ -23,8 +23,11 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
+
         return [
-            'email' => 'required|email|unique:users',
+            'email' => 'required|email',
+            'password' => 'sometimes|required|min:6',
+            'password_confirmation' => 'sometimes|same:password|required_with:password',
         ];
     }
 }
