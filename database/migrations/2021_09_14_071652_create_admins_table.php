@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Models\User;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class CreateAdminsTable extends Migration
 {
@@ -16,6 +17,11 @@ class CreateAdminsTable extends Migration
         Schema::create('admins', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->enum('status', [
+                User::ACTIVE,
+                User::DEACTIVATED,
+                USER::SUSPENDED,
+            ])->default(User::ACTIVE);
             $table->timestamps();
         });
     }
