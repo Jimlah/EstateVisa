@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\HouseTypeController;
 use App\Http\Controllers\UsersHouseController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Passport\Bridge\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +32,7 @@ Route::middleware(['json.response', 'cors'])->group(function () {
     Route::post('/login', [AuthController::class, 'login'])
         ->middleware('isDeactivated')
         ->name('login.api');
-        
+
     Route::post('/register', [AuthController::class, 'register'])->name('register.api');
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password.api');
     Route::post('/reset-password', [AuthController::class, 'passwordReset'])->name('password.reset');
@@ -64,6 +66,7 @@ Route::middleware(['json.response', 'cors'])->group(function () {
         Route::patch('estates/{id}/suspend', [EstateController::class, 'suspend'])->name('estates.suspend');
 
         Route::apiResource('users', UserController::class);
+        Route::apiResource('admins', AdminController::class);
         Route::apiResource('profiles', ProfileController::class);
         Route::apiResource("houses", HouseController::class);
         Route::apiResource('house-types', HouseTypeController::class);
