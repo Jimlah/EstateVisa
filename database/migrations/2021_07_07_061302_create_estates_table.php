@@ -21,7 +21,11 @@ class CreateEstatesTable extends Migration
             $table->string('code')->nullable();
             $table->string('address')->nullable();
             $table->string("logo")->nullable();
-            $table->string("status")->default(User::ACTIVE);
+            $table->enum('status', [
+                User::ACTIVE,
+                User::DEACTIVATED,
+                USER::SUSPENDED,
+            ])->default(User::ACTIVE);
             $table->timestamps();
         });
     }
