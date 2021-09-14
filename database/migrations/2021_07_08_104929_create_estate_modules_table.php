@@ -15,6 +15,8 @@ class CreateEstateModulesTable extends Migration
     {
         Schema::create('estate_modules', function (Blueprint $table) {
             $table->id();
+            $table->primary('estate_id');
+            $table->string('module_id');
             $table->timestamps();
         });
     }
