@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Actions;
 
 use App\Models\User;
@@ -12,6 +13,17 @@ class StoreUserAction
     {
         resolve(UserRequest::class);
         $user = User::firstOrCreate([
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+        ]);
+
+        return $user;
+    }
+
+
+    public function update(Request $request, User $user)
+    {
+        $user->update([
             'email' => $request->email,
             'password' => bcrypt($request->password),
         ]);
