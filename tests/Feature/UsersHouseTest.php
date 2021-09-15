@@ -38,24 +38,4 @@ class UsersHouseTest extends TestCase
             );
     }
 
-
-    public function test_api_house_owner_can_see_all_houses_he_has()
-    {
-        House::unsetEventDispatcher();
-        House_type::unsetEventDispatcher();
-
-        User::factory()->create();
-        UsersHouse::factory(10)->create();
-
-        $usersHouse = UsersHouse::find($this->faker()->numberBetween(3, UsersHouse::count()));
-
-        $response = $this->actingAs($usersHouse->user, 'api')
-            ->getJson(route('users-house.index'));
-
-        $response->assertStatus(200)
-            ->assertJson(
-                fn (AssertableJson $json) =>
-                $json->has('data')
-            );
-    }
 }
