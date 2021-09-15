@@ -94,9 +94,8 @@ class AdminController extends Controller
         ]);
     }
 
-    public function deactivate($id)
+    public function deactivate(Admin $admin)
     {
-        $admin = Admin::findorfail($id);
         $admin->deactivated();
 
         return response()->json([
@@ -105,9 +104,8 @@ class AdminController extends Controller
         ]);
     }
 
-    public function activate($id)
+    public function activate(Admin $admin)
     {
-        $admin = Admin::findorfail($id);
         $admin->activate();
 
         return response()->json([
@@ -116,9 +114,8 @@ class AdminController extends Controller
         ]);
     }
 
-    public function suspend($id)
+    public function suspend(Admin $admin)
     {
-        $admin = Admin::findorfail($id);
         $admin->suspended();
 
         return response()->json([
