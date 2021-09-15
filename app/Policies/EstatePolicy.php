@@ -11,6 +11,13 @@ class EstatePolicy
 {
     use HandlesAuthorization;
 
+    public function before($user, $ability)
+    {
+        if ($user->hasRole(User::SUPER_ADMIN) || $user->hasRole(User::ADMIN)) {
+            return true;
+        };
+    }
+
     /**
      * Determine whether the user can view any models.
      *
@@ -19,7 +26,11 @@ class EstatePolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasRole(User::SUPER_ADMIN) || $user->hasRole(User::ADMIN);
+        if ($user->hasRole(User::ESTATE_OWNER) || $user->hasRole(User::ESTATE_ADMIN)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
