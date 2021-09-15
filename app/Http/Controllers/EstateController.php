@@ -112,10 +112,8 @@ class EstateController extends Controller
      * @return \Illuminate\Http\Response
      * @throws \Exception
      * */
-    public function activate(Request $request)
+    public function activate(Estate $estate)
     {
-        $estate = Estate::findOrFail($request->id);
-
         $estate->activateEstate();
 
         return response()->json([
@@ -124,10 +122,8 @@ class EstateController extends Controller
         ]);
     }
 
-    public function suspend(Request $request)
+    public function suspend(Estate $estate)
     {
-        $estate = Estate::findOrFail($request->id);
-
         $estate->suspendEstate();
 
         return response()->json([
@@ -136,10 +132,8 @@ class EstateController extends Controller
         ]);
     }
 
-    public function deactivate(Request $request)
+    public function deactivate(Estate $estate)
     {
-        $estate = Estate::findOrFail($request->id);
-
         $estate->deactivateEstate();
 
         return response()->json([
