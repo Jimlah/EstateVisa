@@ -24,11 +24,8 @@ class UsersHouseController extends Controller
      */
     public function index()
     {
-        $users = UsersHouseResource::collection(UsersHouse::has('house')->get());
 
-        if (auth()->user()->hasRole(User::HOUSE_OWNER)) {
-            $users =UsersHouseResource::collection(UsersHouse::where('user_id', auth()->user()->id)->get());
-        }
+        $users = UsersHouseResource::collection(UsersHouse::all());
 
         return response()->json(['data' => $users]);
     }
