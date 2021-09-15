@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class UsersHouse extends Model
 {
-    use HasFactory, FilterByUserTrait;
+    use HasFactory;
     use UseDisable;
 
     /**
@@ -22,6 +22,11 @@ class UsersHouse extends Model
         'user_id',
         'house_id',
     ];
+
+    public function scopeEstate($query)
+    {
+        return $query->where('house', 1);
+    }
 
     public function user()
     {
