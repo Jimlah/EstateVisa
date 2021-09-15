@@ -12,8 +12,8 @@ class UsersHousePolicy
 
     public function before(User $user, $ability)
     {
-        if ($user->hasRole(User::SUPER_ADMIN) || $user->hasRole(User::ADMIN)) {
-           return true;
+        if ($user->hasRole(User::ESTATE_OWNER) || $user->hasRole(User::ESTATE_ADMIN)) {
+            return true;
         }
     }
 
@@ -25,14 +25,6 @@ class UsersHousePolicy
      */
     public function viewAny(User $user)
     {
-        if ($user->hasRole(User::SUPER_ADMIN) || $user->hasRole(User::ADMIN)) {
-            return true;
-        }
-
-        if ($user->hasRole(User::HOUSE_OWNER)) {
-            return true;
-        }
-
         return false;
     }
 
@@ -45,7 +37,7 @@ class UsersHousePolicy
      */
     public function view(User $user, UsersHouse $usersHouse)
     {
-        //
+        return false;
     }
 
     /**
@@ -56,7 +48,7 @@ class UsersHousePolicy
      */
     public function create(User $user)
     {
-        //
+        return false;
     }
 
     /**
@@ -68,7 +60,7 @@ class UsersHousePolicy
      */
     public function update(User $user, UsersHouse $usersHouse)
     {
-        //
+        return false;
     }
 
     /**
@@ -80,7 +72,7 @@ class UsersHousePolicy
      */
     public function delete(User $user, UsersHouse $usersHouse)
     {
-        //
+        return false;
     }
 
     /**
