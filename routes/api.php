@@ -26,6 +26,17 @@ use Laravel\Passport\Bridge\User;
 |
 */
 
+Route::macro(
+    'resourceAndStatus',
+    function ($name, $controller, $model) {
+        Route::patch($name . '/{' . $model . ':id}/activate', [$controller, 'activate'])->name($name . '.activate');
+        Route::patch($name . '/{' . $model . ':id}/deactivate', [$controller, 'deactivate'])->name($name . '.deactivate');
+        Route::patch($name . '/{' . $model . ':id}/suspend', [$controller, 'suspend'])->name($name . '.suspend');
+        Route::apiResource($name, $controller);
+    }
+);
+
+
 Route::middleware(['json.response', 'cors'])->group(function () {
 
     Route::group([], function () {
@@ -60,22 +71,14 @@ Route::middleware(['json.response', 'cors'])->group(function () {
                 ]);
         })->middleware('auth')->name('verification.notice');
 
-
-        Route::apiResource("estates", EstateController::class);
-        Route::patch('estates/{id}/activate', [EstateController::class, 'activate'])->name('estates.activate');
-        Route::patch('estates/{id}/deactivate', [EstateController::class, 'deactivate'])->name('estates.deactivate');
-        Route::patch('estates/{id}/suspend', [EstateController::class, 'suspend'])->name('estates.suspend');
-
-        Route::apiResource('admins', AdminController::class);
-        Route::patch('admins/{id}/activate', [AdminController::class, 'activate'])->name('admins.activate');
-        Route::patch('admins/{id}/deactivate', [AdminController::class, 'deactivate'])->name('admins.deactivate');
-        Route::patch('admins/{id}/suspend', [AdminController::class, 'suspend'])->name('admins.suspend');
+        Route::resourceAndStatus("estates", EstateController::class, 'estate');
+        Route::resourceAndStatus("admins", AdminController::class, "admin");
+        Route::resourceAndStatus("users-house", UsersHouseController::class, "usershouse");
 
         Route::apiResource('users', UserController::class);
         Route::apiResource('profiles', ProfileController::class);
         Route::apiResource("houses", HouseController::class);
         Route::apiResource('house-types', HouseTypeController::class);
-        Route::apiResource("users-house", UsersHouseController::class);
 
         Route::apiResource('visitors', VisitorController::class);
         // our routes to be protected will go in here
