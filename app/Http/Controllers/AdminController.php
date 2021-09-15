@@ -93,4 +93,37 @@ class AdminController extends Controller
             'message' => 'Admin deleted successfully'
         ]);
     }
+
+    public function deactivate($id)
+    {
+        $admin = Admin::findorfail($id);
+        $admin->deactivated();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Admin deactivated successfully'
+        ]);
+    }
+
+    public function activate($id)
+    {
+        $admin = Admin::findorfail($id);
+        $admin->activate();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Admin activated successfully'
+        ]);
+    }
+
+    public function suspend($id)
+    {
+        $admin = Admin::findorfail($id);
+        $admin->suspended();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Admin suspended successfully'
+        ]);
+    }
 }

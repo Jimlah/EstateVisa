@@ -7,8 +7,10 @@ use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Testing\Fluent\AssertableJson;
+use phpDocumentor\Reflection\Types\This;
 use Tests\TestCase;
 
 class AdminTest extends TestCase
@@ -141,6 +143,11 @@ class AdminTest extends TestCase
         $response = $this->putJson(route('admins.update', $admin->id), $attribute);
         $response->assertStatus(200)
             ->assertJson(fn (AssertableJson $json) => $json->has('status')->has('message'));
+
+        $this->assertDatabaseHas('users', [
+            'id' => $admin->user->id,
+            'email' => $attribute['email'],
+        ]);
     }
 
     public function test_api_super_admin_can_delete_admin()
@@ -159,5 +166,69 @@ class AdminTest extends TestCase
         $response = $this->deleteJson(route('admins.destroy', $admin->id));
         $response->assertStatus(200)
             ->assertJson(fn (AssertableJson $json) => $json->has('status')->has('message'));
+    }
+
+    public function test_api_super_admin_can_deactivate_admin()
+    {
+        User::factory()->create();
+        $user = User::find(1);
+
+        User::factory(10)
+            ->create()
+            ->each(function ($user) {
+                $user->admin()->save(Admin::factory()->make());
+                $user->profile()->save(Profile::factory()->make());
+            });
+
+        $this->actingAs($user, 'api');
+        $admin = Admin::find($this->faker()->numberBetween(1, Admin::count()));
+
+        $response = $this->patchJson(route('admins.deactivate', $admin->id));
+        $response->assertStatus(200)
+            ->assertJson(fn (AssertableJson $json) => $json->has('status')->has('message'));
+
+        $this->assertDatabaseHas('admins', ['id' => $admin->id, 'status' => User::DEACTIVATED]);
+    }
+
+    public function test_api_super_admin_can_activate_admin()
+    {
+        User::factory()->create();
+        $user = User::find(1);
+
+        User::factory(10)
+            ->create()
+            ->each(function ($user) {
+                $user->admin()->save(Admin::factory()->make());
+                $user->profile()->save(Profile::factory()->make());
+            });
+
+        $admin = Admin::find($this->faker()->numberBetween(1, Admin::count()));
+        $this->actingAs($user, 'api');
+        $response = $this->patchJson(route('admins.activate', $admin->id));
+        $response->assertStatus(200)
+            ->assertJson(fn (AssertableJson $json) => $json->has('status')->has('message'));
+
+        $this->assertDatabaseHas('admins', ['id' => $admin->id, 'status' => User::ACTIVE]);
+    }
+
+    public function test_api_admin_can_suspend_admin()
+    {
+        User::factory()->create();
+        $user = User::find(1);
+
+        User::factory(10)
+            ->create()
+            ->each(function ($user) {
+                $user->admin()->save(Admin::factory()->make());
+                $user->profile()->save(Profile::factory()->make());
+            });
+
+        $admin = Admin::find($this->faker()->numberBetween(1, Admin::count()));
+        $this->actingAs($admin->user, 'api');
+        $response = $this->patchJson(route('admins.suspend', $admin->id));
+        $response->assertStatus(200)
+            ->assertJson(fn (AssertableJson $json) => $json->has('status')->has('message'));
+
+        $this->assertDatabaseHas('admins', ['id' => $admin->id, 'status' => User::SUSPENDED]);
     }
 }

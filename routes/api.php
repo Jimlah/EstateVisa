@@ -25,22 +25,23 @@ use Laravel\Passport\Bridge\User;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 Route::middleware(['json.response', 'cors'])->group(function () {
 
     Route::group([], function () {
-    // public routes
-    Route::post('/login', [AuthController::class, 'login'])
-        ->middleware('isDeactivated')
-        ->name('login.api');
+        // public routes
+        Route::post('/login', [AuthController::class, 'login'])
+            ->middleware('isDeactivated')
+            ->name('login.api');
 
-    Route::post('/register', [AuthController::class, 'register'])->name('register.api');
-    Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password.api');
-    Route::post('/reset-password', [AuthController::class, 'passwordReset'])->name('password.reset');
+        Route::post('/register', [AuthController::class, 'register'])->name('register.api');
+        Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password.api');
+        Route::post('/reset-password', [AuthController::class, 'passwordReset'])->name('password.reset');
     });
 
     Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verify'])
-    ->middleware(['signed'])
-    ->name('verification.verify');
+        ->middleware(['signed'])
+        ->name('verification.verify');
 
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout.api');
@@ -53,10 +54,10 @@ Route::middleware(['json.response', 'cors'])->group(function () {
 
         Route::get('/email/verify', function () {
             return response()
-                    ->json([
-                        'message' => 'Verification email has been sent!',
-                        'status' => "success"
-                    ]);
+                ->json([
+                    'message' => 'Verification email has been sent!',
+                    'status' => "success"
+                ]);
         })->middleware('auth')->name('verification.notice');
 
 
@@ -65,16 +66,18 @@ Route::middleware(['json.response', 'cors'])->group(function () {
         Route::patch('estates/{id}/deactivate', [EstateController::class, 'deactivate'])->name('estates.deactivate');
         Route::patch('estates/{id}/suspend', [EstateController::class, 'suspend'])->name('estates.suspend');
 
-        Route::apiResource('users', UserController::class);
         Route::apiResource('admins', AdminController::class);
+        Route::patch('admins/{id}/activate', [AdminController::class, 'activate'])->name('admins.activate');
+        Route::patch('admins/{id}/deactivate', [AdminController::class, 'deactivate'])->name('admins.deactivate');
+        Route::patch('admins/{id}/suspend', [AdminController::class, 'suspend'])->name('admins.suspend');
+
+        Route::apiResource('users', UserController::class);
         Route::apiResource('profiles', ProfileController::class);
         Route::apiResource("houses", HouseController::class);
         Route::apiResource('house-types', HouseTypeController::class);
         Route::apiResource("users-house", UsersHouseController::class);
 
-    Route::apiResource('visitors', VisitorController::class);
-    // our routes to be protected will go in here
+        Route::apiResource('visitors', VisitorController::class);
+        // our routes to be protected will go in here
     });
-
-
 });
