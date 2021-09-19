@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Exports\EstateExport;
 use App\Mail\UserCreated;
 use Faker\Factory;
 use Tests\TestCase;
@@ -13,6 +14,7 @@ use App\Models\Profile;
 use App\Models\UsersHouse;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Testing\Fluent\AssertableJson;
+use Maatwebsite\Excel\Facades\Excel;
 
 use function PHPUnit\Framework\assertEquals;
 
@@ -42,10 +44,9 @@ class EstateTest extends TestCase
 
         $response = $this->json('GET', '/api/estates');
         $response->assertStatus(403)
-            ->assertJson(fn(AssertableJson $json) => $json
+            ->assertJson(fn (AssertableJson $json) => $json
                 ->has('message')
                 ->has('status'));
-
     }
 
 
@@ -78,7 +79,7 @@ class EstateTest extends TestCase
 
 
         $response->assertStatus(201)
-        ->assertJson(fn (AssertableJson $json) => $json->has('status')->has('message'));
+            ->assertJson(fn (AssertableJson $json) => $json->has('status')->has('message'));
 
         $this->assertDatabaseHas('estates', [
             'name' => $attributes["name"],
@@ -108,7 +109,7 @@ class EstateTest extends TestCase
             $profile->user_id
         );
 
-         Mail::assertSent(UserCreated::class);
+        Mail::assertSent(UserCreated::class);
     }
 
     public function test_api_can_not_create_a_new_estate_without_email()
@@ -283,7 +284,7 @@ class EstateTest extends TestCase
         $this->assertDatabaseMissing('estates', [
             'name' => $estate->name,
             'code' => $estate->code,
-            ]);
+        ]);
     }
 
     public function test_api_estate_owner_can_not_update_other_estate()
@@ -294,10 +295,10 @@ class EstateTest extends TestCase
         $estate = Estate::find($this->faker->numberBetween(1, 10));
         $this->actingAs($user, 'api');
 
-         $attributes =  [
-                'estate_name' => $this->faker->word,
-                'estate_code' => $this->faker->word,
-         ];
+        $attributes =  [
+            'estate_name' => $this->faker->word,
+            'estate_code' => $this->faker->word,
+        ];
 
         $response = $this->json(
             'PUT',
@@ -333,22 +334,21 @@ class EstateTest extends TestCase
         $this->actingAs($user, 'api');
         $response = $this->json('DELETE', '/api/estates/' . $estate->id);
         $response->assertStatus(403);
+    }
 
-   }
+    function test_api_super_admin_can_deactivate_an_estate()
+    {
+        House::unsetEventDispatcher();
+        $this->withoutEvents();
+        User::factory()->create();
+        $user = User::find(1);
 
-   function test_api_super_admin_can_deactivate_an_estate()
-   {
-       House::unsetEventDispatcher();
-       $this->withoutEvents();
-       User::factory()->create();
-       $user = User::find(1);
-
-       $EstateOwner = User::factory()->create();
-       $estate = Estate::factory()->create(['user_id' => $EstateOwner->id]);
-       $estateHouseType = House_type::factory(5)->create(['estate_id' => $estate->id]);
-       $estateHouse = House::factory(10)->create([
-           'estate_id' => $estate->id,
-           'houses_types_id' => House_type::where('estate_id', $estate->id)->get()->random()->id,
+        $EstateOwner = User::factory()->create();
+        $estate = Estate::factory()->create(['user_id' => $EstateOwner->id]);
+        $estateHouseType = House_type::factory(5)->create(['estate_id' => $estate->id]);
+        $estateHouse = House::factory(10)->create([
+            'estate_id' => $estate->id,
+            'houses_types_id' => House_type::where('estate_id', $estate->id)->get()->random()->id,
         ]);
 
         foreach ($estateHouse as $house) {
@@ -359,53 +359,90 @@ class EstateTest extends TestCase
             ]);
         }
 
-       $this->actingAs($user, 'api');
-       $response = $this->patchJson(route('estates.deactivate', $estate->id));
-       $response->assertStatus(200)
-                 ->assertJson(fn (AssertableJson $json) =>
-                    $json
-                        ->has('status')
-                        ->has('message'));
+        $this->actingAs($user, 'api');
+        $response = $this->patchJson(route('estates.deactivate', $estate->id));
+        $response->assertStatus(200)
+            ->assertJson(fn (AssertableJson $json) =>
+            $json
+                ->has('status')
+                ->has('message'));
 
-       $this->assertDatabaseHas('estates', [
-           'id' => $estate->id,
-           'status' => "deactivated",
-       ]);
+        $this->assertDatabaseHas('estates', [
+            'id' => $estate->id,
+            'status' => "deactivated",
+        ]);
 
-    //    $this->assertDatabaseHas('houses', [
-    //        'estate_id' => $estate->id,
-    //        'status' => "deactivated",
-    //    ]);
-   }
+        //    $this->assertDatabaseHas('houses', [
+        //        'estate_id' => $estate->id,
+        //        'status' => "deactivated",
+        //    ]);
+    }
 
 
 
-//    function test_api_super_admin_can_enable_an_estate()
+    //    function test_api_super_admin_can_enable_an_estate()
 
-//   {
-//        House::unsetEventDispatcher();
-//        $this->withoutEvents();
-//        User::factory()->create();
-//        $user = User::find(1);
-//        House::factory(20)->create();
-//        $estate = Estate::find($this->faker->numberBetween(1, 1));
+    //   {
+    //        House::unsetEventDispatcher();
+    //        $this->withoutEvents();
+    //        User::factory()->create();
+    //        $user = User::find(1);
+    //        House::factory(20)->create();
+    //        $estate = Estate::find($this->faker->numberBetween(1, 1));
 
-//        $this->actingAs($user, 'api');
-//        $response = $this->json('POST', route('estates.enable', $estate->id));
-//        $response->assertStatus(200)
-//                  ->assertJson(fn (AssertableJson $json) =>
-//                     $json
-//                         ->has('status')
-//                         ->has('message'));
+    //        $this->actingAs($user, 'api');
+    //        $response = $this->json('POST', route('estates.enable', $estate->id));
+    //        $response->assertStatus(200)
+    //                  ->assertJson(fn (AssertableJson $json) =>
+    //                     $json
+    //                         ->has('status')
+    //                         ->has('message'));
 
-//        $this->assertDatabaseHas('estates', [
-//            'id' => $estate->id,
-//            'status' => true,
-//        ]);
+    //        $this->assertDatabaseHas('estates', [
+    //            'id' => $estate->id,
+    //            'status' => true,
+    //        ]);
 
-//        $this->assertDatabaseHas('houses', [
-//            'estate_id' => $estate->id,
-//            'status' => true,
-//        ]);
-//    }
+    //        $this->assertDatabaseHas('houses', [
+    //            'estate_id' => $estate->id,
+    //            'status' => true,
+    //        ]);
+    //    }
+
+
+
+    public function test_api_user_can_import()
+    {
+        Excel::fake();
+        User::factory()->create();
+        $user = User::find(1);
+        $this->actingAs($user, 'api');
+        $response = $this->getJson(route('estates.import'));
+        $this->assertTrue(true);
+    }
+
+    public function test_api_user_can_export()
+    {
+        $this->withoutEvents();
+        $this->withExceptionHandling();
+
+        Excel::fake();
+
+        User::factory()->create();
+        $user = User::find(1);
+
+        User::factory(10)
+            ->create()
+            ->each(function ($user) {
+                $user->profile()->save(Profile::factory()->make());
+                $user->estate()->save(Estate::factory()->make());
+            });
+
+
+        $this->actingAs($user, 'api');
+        $response = $this->getJson(route('estates.export'));
+        Excel::assertDownloaded('estates.xlsx', function (EstateExport $excel) {
+            return $excel->collection()->count() > 0;
+        });
+    }
 }

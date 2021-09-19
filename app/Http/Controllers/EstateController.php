@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Actions\StoreProfileAction;
 use App\Actions\StoreUserAction;
+use App\Exports\EstateExport;
 use App\Http\Requests\EstateRequest;
 use App\Http\Requests\UserEstateProfileRequest;
 use App\Http\Resources\EstateResource;
 use App\Models\Estate;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EstateController extends Controller
 {
@@ -140,5 +142,18 @@ class EstateController extends Controller
             'status' => 'success',
             'message' => 'You have successfully deactivated the Estate'
         ]);
+    }
+
+    public function import()
+    {
+        return response()->json([
+            'status' => 'success',
+            'message' => 'You have successfully import the Estate'
+        ]);
+    }
+
+    public function export()
+    {
+        return Excel::download(new EstateExport, 'estates.xlsx');
     }
 }
