@@ -21,11 +21,9 @@ class User extends Authenticatable implements MustVerifyEmail
     const HOUSE_SUB_OWNER = 'house_sub_owner';
 
 
-    const ACTIVE = 'active';
-    const INACTIVE = 'inactive';
-    const SUSPENDED = 'suspended';
-    const DEACTIVATED = 'deactivated';
-
+    const ACTIVE = '1';
+    const DEACTIVATED = '2';
+    const SUSPENDED = '3';
 
     /**
      * The attributes that are mass assignable.
@@ -68,25 +66,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(Estate::class);
     }
 
-    public function estateAdmin()
-    {
-        return $this->hasMany(EstateUser::class);
-    }
-
-    public function usersHouse()
-    {
-        return $this->hasMany(UsersHouse::class);
-    }
-
-    public function houseSubOwner()
-    {
-        return $this->hasMany(HouseSubUser::class, 'house_owner_id');
-    }
-
-    public function admin()
-    {
-        return $this->hasMany(Admin::class);
-    }
 
     public function hasRole($role)
     {
@@ -94,24 +73,8 @@ class User extends Authenticatable implements MustVerifyEmail
             case self::SUPER_ADMIN:
                 return $this->id == 1;
                 break;
-            case self::ADMIN:
-                $collection = Admin::all();
-                return $collection->contains('user_id', $this->id);
-                break;
-            case self::ESTATE_OWNER:
-                return $this->estate?->user_id != null;
-                break;
-            case self::ESTATE_ADMIN:
-                $collection = collect($this->estateAdmin());
-                return $collection->contains('user_id', auth()->user()->id);
-                break;
-            case self::HOUSE_OWNER:
-                $collection = collect($this->usersHouse);
-                return $collection->contains('user_id', auth()->user()->id);
-                break;
             default:
                 return false;
-                break;
         }
     }
 
