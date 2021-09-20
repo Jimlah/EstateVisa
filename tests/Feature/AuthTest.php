@@ -86,27 +86,6 @@ class AuthTest extends TestCase
             $json->has('message'));
     }
 
-       public function test_api_estate_owner_is_logged_out_if_deactivated()
-       {
-           Estate::unsetEventDispatcher();
-            User::factory(2)->create();
-
-            $estateOwner = User::factory()->create();
-            $estate = Estate::factory()->create([
-                'user_id' => $estateOwner->id,
-                'status' => User::DEACTIVATED
-            ]);
-
-            $attributes = [
-                'email' => $estateOwner->email,
-                'password' => 'password',
-            ];
-
-            $response = $this->postJson(route('login.api'), $attributes);
-            $response->assertStatus(422);
-
-       }
-
     protected function login()
     {
         User::factory()->create();
