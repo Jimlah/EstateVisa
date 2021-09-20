@@ -11,4 +11,29 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+
+    public function response_success(string $message)
+    {
+        return response()->json(['status' => 'success', 'message' => $message]);
+    }
+
+    public function response_error(string $message)
+    {
+        return response()->json(['status' => 'error', 'message' => $message]);
+    }
+
+    public function response_info(string $message)
+    {
+        return response()->json(['status' => 'info', 'message' => $message]);
+    }
+
+    public function response_warning(string $message)
+    {
+        return response()->json(['status' => 'warning', 'message' => $message]);
+    }
+
+    public function response_data(array $data)
+    {
+        return response()->json($data);
+    }
 }
