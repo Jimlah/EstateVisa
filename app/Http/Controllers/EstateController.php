@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\StoreProfileAction;
-use App\Actions\StoreUserAction;
-use App\Exports\EstateExport;
-use App\Http\Requests\EstateRequest;
-use App\Http\Requests\UserEstateProfileRequest;
-use App\Http\Resources\EstateResource;
 use App\Models\Estate;
 use Illuminate\Http\Request;
+use App\Exports\EstateExport;
+use App\Imports\EstateImport;
+use App\Actions\StoreUserAction;
+use App\Actions\StoreProfileAction;
+use App\Http\Requests\EstateRequest;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Resources\EstateResource;
+use App\Http\Requests\UserEstateProfileRequest;
+use Illuminate\Support\Facades\Log;
 
 class EstateController extends Controller
 {
@@ -144,8 +146,15 @@ class EstateController extends Controller
         ]);
     }
 
-    public function import()
+    public function import(Request $request)
     {
+        $file = $request->file('file')->store('temp');
+        $excel = Excel::import(new EstateImport(), $file);
+
+        dd(Estate::all());
+
+        //
+
         return response()->json([
             'status' => 'success',
             'message' => 'You have successfully import the Estate'

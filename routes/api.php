@@ -73,7 +73,7 @@ Route::middleware(['json.response', 'cors'])->group(function () {
 
         Route::get('/estates/export', [EstateController::class, 'export'])->name('estates.export');
         Route::resourceAndStatus("estates", EstateController::class, 'estate');
-        Route::get('/estates/import', [EstateController::class, 'import'])->name('estates.import');
+        Route::post('/estates/import', [EstateController::class, 'import'])->name('estates.import');
         Route::resourceAndStatus("admins", AdminController::class, "admin");
         Route::resourceAndStatus("users-house", UsersHouseController::class, "usershouse");
 

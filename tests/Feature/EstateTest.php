@@ -12,10 +12,11 @@ use App\Models\House;
 use App\Models\House_type;
 use App\Models\Profile;
 use App\Models\UsersHouse;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Maatwebsite\Excel\Facades\Excel;
-
 use function PHPUnit\Framework\assertEquals;
 
 class EstateTest extends TestCase
@@ -413,11 +414,27 @@ class EstateTest extends TestCase
 
     public function test_api_user_can_import()
     {
+        $this->withoutEvents();
+        $this->withExceptionHandling();
         Excel::fake();
         User::factory()->create();
         $user = User::find(1);
+
+        // Storage::fake();
+
         $this->actingAs($user, 'api');
-        $response = $this->getJson(route('estates.import'));
+
+
+
+        $attributes = [
+            'file' => new UploadedFile(storage_path('framework/laravel-excel/estates.xlsx'), 'estates.xlsx'),
+        ];
+
+        $response = $this->postJson(route('estates.import'), $attributes);
+
+        // dd(Estate::all()->toArray());
+        // Excel::assertImported('estates.xlsx');
+
         $this->assertTrue(true);
     }
 
