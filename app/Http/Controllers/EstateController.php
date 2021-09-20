@@ -12,7 +12,6 @@ use App\Http\Requests\EstateRequest;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Resources\EstateResource;
 use App\Http\Requests\UserEstateProfileRequest;
-use Illuminate\Support\Facades\Log;
 
 class EstateController extends Controller
 {
