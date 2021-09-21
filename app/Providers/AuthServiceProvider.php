@@ -11,7 +11,6 @@ use App\Policies\AdminPolicy;
 use App\Policies\HousePolicy;
 use App\Policies\EstatePolicy;
 use Laravel\Passport\Passport;
-use App\Policies\HouseTypePolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -24,11 +23,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
-        Estate::class => EstatePolicy::class,
-        House_type::class => HouseTypePolicy::class,
-        House::class => HousePolicy::class,
-        UsersHouse::class => HousePolicy::class,
-        Admin::class => AdminPolicy::class,
     ];
 
     /**

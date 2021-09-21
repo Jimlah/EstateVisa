@@ -7,8 +7,12 @@ use App\Models\Admin;
 use Illuminate\Http\Request;
 use App\Actions\StoreUserAction;
 use App\Actions\StoreProfileAction;
+use App\Exports\AdminExport;
 use App\Http\Requests\AdminRequest;
+use App\Http\Requests\FileRequest;
 use App\Http\Resources\AdminResource;
+use Illuminate\Http\Client\ResponseSequence;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
 {
@@ -101,5 +105,16 @@ class AdminController extends Controller
         $admin->suspend();
 
         return $this->response_success('Admin has been suspended');
+    }
+
+    public function import(FileRequest $request)
+    {
+
+        return $this->response_success('Admin Imported');
+    }
+
+    public function export()
+    {
+        return (new AdminExport)->download("admins.xlsx");
     }
 }

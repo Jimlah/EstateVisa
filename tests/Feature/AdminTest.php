@@ -7,7 +7,9 @@ use App\Models\User;
 use App\Models\Admin;
 use App\Models\Profile;
 use App\Mail\UserCreated;
+use App\Exports\AdminExport;
 use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
 use Lanin\Laravel\ApiDebugger\Debugger;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -282,5 +284,33 @@ class AdminTest extends TestCase
             'id' => $admin->id,
             'status' => User::SUSPENDED
         ]);
+    }
+
+    public function test_api_super_admin_can_export_admins()
+    {
+        User::factory()->create();
+        $user = User::first();
+
+        Excel::fake();
+
+        User::factory()
+            ->count(10)
+            ->create()
+            ->each(function ($u) {
+                $u->admin()->save(Admin::factory()->make());
+                $u->profile()->save(Profile::factory()->make());
+            });
+
+        $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
+
+        $response = $this->actingAs($user, 'api')
+            ->getJson(route('admins.export'));
+
+        $response->dump();
+
+        $response->assertStatus(200);
+        Excel::assertDownloaded('admins.xlsx', function (AdminExport $export) use ($admin) {
+            return $export->collection->first()->id === $admin->id;
+        });
     }
 }
