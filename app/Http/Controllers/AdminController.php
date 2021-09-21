@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\AdminResource;
+use App\Models\User;
 use App\Models\Admin;
 use Illuminate\Http\Request;
+use App\Actions\StoreUserAction;
+use App\Actions\StoreProfileAction;
+use App\Http\Requests\AdminRequest;
+use App\Http\Resources\AdminResource;
 
 class AdminController extends Controller
 {
@@ -21,24 +25,19 @@ class AdminController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(AdminRequest $request, StoreUserAction $storeUserAction, StoreProfileAction $storeProfileAction)
     {
-        //
+        $user = $storeUserAction->execute($request);
+        $profile = $storeProfileAction->execute($request, $user);
+
+        $user->admin()->save(new Admin());
+
+        return $this->response_success("Admin successfully created");
     }
 
     /**

@@ -16,7 +16,8 @@ class StoreProfileAction
             'user_id' => $user->id,
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
-            'phone_number' => $request->phone,
+            'phone_number' => $request->phone_number,
+            'gender' => $request->gender
         ]);
 
         return $profile;
@@ -27,7 +28,8 @@ class StoreProfileAction
         $profile->update([
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
-            'phone_number' => $request->phone,
+            'phone_number' => $request->phone_number,
+            'gender' => $request->gender
         ]);
 
         return $profile;

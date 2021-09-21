@@ -43,6 +43,44 @@ class AdminTest extends TestCase
     }
 
 
+    public function test_super_admin_can_create_admins()
+    {
+        User::factory()->create();
+        $user = User::first();
+
+        $data = array_merge(
+            User::factory()->make()->toArray(),
+            Profile::factory()->make()->toArray()
+        );
+
+        $response = $this->actingAs($user, 'api')
+            ->postJson(route('admins.store'), $data);
+
+        $response->assertStatus(200)
+            ->assertJson(
+                function (AssertableJson $json) {
+                    $json->has('message')->has('status');
+                }
+            );
+
+
+        $this->assertDatabaseHas('profiles', [
+            'firstname' => $data['firstname'],
+            'lastname' => $data['lastname'],
+            'gender' => $data['gender'],
+            'phone_number' => $data['phone_number']
+        ]);
+
+        $this->assertDatabaseHas('users', [
+            'email' => $data['email']
+        ]);
+
+        $this->assertDatabaseHas('admins', [
+            'user_id' => User::where('email', $data['email'])->first()->id,
+            'status' => User::ACTIVE
+        ]);
+    }
+
 
     public function test_api_super_admin_can_get_a_single_admin()
     {
