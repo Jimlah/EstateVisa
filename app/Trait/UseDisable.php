@@ -30,7 +30,7 @@ trait UseDisable
         $this->save();
     }
 
-    public function deactivated()
+    public function deactivate()
     {
         $this->status = User::DEACTIVATED;
         $this->save();

@@ -214,4 +214,37 @@ class AdminTest extends TestCase
             'status' => User::ACTIVE
         ]);
     }
+
+
+    public function test_api_super_admin_can_deactivate_an_admin()
+    {
+        User::factory()->create();
+        $user = User::first();
+
+        User::factory()
+            ->count(10)
+            ->create()
+            ->each(function ($u) {
+                $u->admin()->save(Admin::factory()->make(['status' => User::ACTIVE]));
+                $u->profile()->save(Profile::factory()->make());
+            });
+
+        $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
+
+        $response = $this->actingAs($user, 'api')
+            ->patchJson(route('admins.deactivate', $admin->id));
+
+        $response->dump();
+        $response->assertStatus(200)
+            ->assertJson(
+                function (AssertableJson $json) {
+                    $json->has('message')->has('status');
+                }
+            );
+
+        $this->assertDatabaseHas('admins', [
+            'id' => $admin->id,
+            'status' => User::DEACTIVATED
+        ]);
+    }
 }

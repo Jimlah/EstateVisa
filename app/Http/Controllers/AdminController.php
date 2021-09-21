@@ -88,4 +88,16 @@ class AdminController extends Controller
 
         return $this->response_success('Admin has beed activated');
     }
+
+    public function deactivate(Admin $admin)
+    {
+        $admin->deactivate();
+
+        return $this->response_success('Admin has been deactivated');
+    }
+
+    public function suspend(Admin $admin)
+    {
+
+    }
 }
