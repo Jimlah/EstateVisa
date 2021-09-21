@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Mail\UserCreated;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Admin;
@@ -9,6 +10,7 @@ use App\Models\Profile;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 
 class AdminTest extends TestCase
 {
@@ -43,8 +45,9 @@ class AdminTest extends TestCase
     }
 
 
-    public function test_super_admin_can_create_admins()
+    public function test_super_admin_can_create_admin()
     {
+        Mail::fake();
         User::factory()->create();
         $user = User::first();
 
@@ -63,6 +66,9 @@ class AdminTest extends TestCase
                 }
             );
 
+        Mail::assertQueued(UserCreated::class, function ($mail) use ($user) {
+            return $mail->hasTo($user->email);
+        });
 
         $this->assertDatabaseHas('profiles', [
             'firstname' => $data['firstname'],
@@ -252,12 +258,12 @@ class AdminTest extends TestCase
         $user = User::first();
 
         User::factory()
-        ->count(10)
-        ->create()
-        ->each(function ($u) {
-            $u->admin()->save(Admin::factory()->make(['status' => User::ACTIVE]));
-            $u->profile()->save(Profile::factory()->make());
-        });
+            ->count(10)
+            ->create()
+            ->each(function ($u) {
+                $u->admin()->save(Admin::factory()->make(['status' => User::ACTIVE]));
+                $u->profile()->save(Profile::factory()->make());
+            });
 
         $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
 
@@ -265,11 +271,11 @@ class AdminTest extends TestCase
             ->patchJson(route('admins.suspend', $admin->id));
 
         $response->assertStatus(200)
-        ->assertJson(
-            function (AssertableJson $json) {
-                $json->has('message')->has('status');
-            }
-        );
+            ->assertJson(
+                function (AssertableJson $json) {
+                    $json->has('message')->has('status');
+                }
+            );
 
         $this->assertDatabaseHas('admins', [
             'id' => $admin->id,
