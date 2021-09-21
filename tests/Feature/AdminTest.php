@@ -164,11 +164,11 @@ class AdminTest extends TestCase
             ->deleteJson(route('admins.destroy', $admin->id));
 
         $response->assertStatus(200)
-        ->assertJson(
-            function (AssertableJson $json) {
-                $json->has('message')->has('status');
-            }
-        );
+            ->assertJson(
+                function (AssertableJson $json) {
+                    $json->has('message')->has('status');
+                }
+            );
 
         $this->assertDatabaseMissing('admins', [
             'id' => $admin->id
@@ -180,6 +180,38 @@ class AdminTest extends TestCase
 
         $this->assertDatabaseMissing('users', [
             'id' => $admin->user_id
+        ]);
+    }
+
+    public function test_api_super_admin_can_enable_an_admin()
+    {
+        User::factory()->create();
+        $user = User::first();
+
+        User::factory()
+            ->count(10)
+            ->create()
+            ->each(function ($u) {
+                $u->admin()->save(Admin::factory()->make(['status' => User::SUSPENDED]));
+                $u->profile()->save(Profile::factory()->make());
+            });
+
+        $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
+
+        $response = $this->actingAs($user, 'api')
+            ->patchJson(route('admins.activate', $admin->id));
+
+        $response->dump();
+        $response->assertStatus(200)
+            ->assertJson(
+                function (AssertableJson $json) {
+                    $json->has('message')->has('status');
+                }
+            );
+
+        $this->assertDatabaseHas('admins', [
+            'id' => $admin->id,
+            'status' => User::ACTIVE
         ]);
     }
 }

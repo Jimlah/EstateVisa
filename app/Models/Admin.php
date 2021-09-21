@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Trait\UseDisable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Admin extends Model
 {
     use HasFactory;
+    use UseDisable;
 
     public function user()
     {

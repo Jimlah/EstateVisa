@@ -81,4 +81,11 @@ class AdminController extends Controller
 
         return $this->response_success("Admin successfully deleted");
     }
+
+    public function activate(Admin $admin)
+    {
+        $admin->activate();
+
+        return $this->response_success('Admin has beed activated');
+    }
 }
