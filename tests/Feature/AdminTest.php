@@ -105,4 +105,81 @@ class AdminTest extends TestCase
                 }
             );
     }
+
+    public function test_api_super_admin_can_update_admin()
+    {
+        User::factory()->create();
+        $user = User::first();
+
+        User::factory()
+            ->count(10)
+            ->create()
+            ->each(function ($u) {
+                $u->admin()->save(Admin::factory()->make());
+                $u->profile()->save(Profile::factory()->make());
+            });
+
+        $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
+
+        $data = array_merge(
+            User::factory()->make()->toArray(),
+            Profile::factory()->make()->toArray()
+        );
+
+        $response = $this->actingAs($user, 'api')
+            ->putJson(route('admins.update', $admin->id), $data);
+
+        $response->assertStatus(200)
+            ->assertJson(
+                function (AssertableJson $json) {
+                    $json->has('message')->has('status');
+                }
+            );
+
+        $this->assertDatabaseHas('profiles', [
+            'user_id' => $admin->user_id,
+            'firstname' => $data['firstname'],
+            'lastname' => $data['lastname'],
+            'gender' => $data['gender'],
+            'phone_number' => $data['phone_number']
+        ]);
+    }
+
+    public function test_api_super_admin_can_delete_an_admin()
+    {
+        User::factory()->create();
+        $user = User::first();
+
+        User::factory()
+            ->count(10)
+            ->create()
+            ->each(function ($u) {
+                $u->admin()->save(Admin::factory()->make());
+                $u->profile()->save(Profile::factory()->make());
+            });
+
+        $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
+
+        $response = $this->actingAs($user, 'api')
+            ->deleteJson(route('admins.destroy', $admin->id));
+
+        $response->assertStatus(200)
+        ->assertJson(
+            function (AssertableJson $json) {
+                $json->has('message')->has('status');
+            }
+        );
+
+        $this->assertDatabaseMissing('admins', [
+            'id' => $admin->id
+        ]);
+
+        $this->assertDatabaseMissing('profiles', [
+            'user_id' => $admin->user_id
+        ]);
+
+        $this->assertDatabaseMissing('users', [
+            'id' => $admin->user_id
+        ]);
+    }
 }

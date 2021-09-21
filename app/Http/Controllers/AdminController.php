@@ -51,16 +51,6 @@ class AdminController extends Controller
         return $this->response_data(AdminResource::make($admin));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Admin  $admin
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Admin $admin)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -69,9 +59,12 @@ class AdminController extends Controller
      * @param  \App\Models\Admin  $admin
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Admin $admin)
+    public function update(AdminRequest $request, Admin $admin, StoreUserAction $storeUserAction, StoreProfileAction $storeProfileAction)
     {
-        //
+        $storeUserAction->update($request, $admin->user);
+        $storeProfileAction->update($request, $admin->user->profile);
+
+        return $this->response_success("Admin successfully updated");
     }
 
     /**
@@ -82,6 +75,10 @@ class AdminController extends Controller
      */
     public function destroy(Admin $admin)
     {
-        //
+        $admin->user->profile->delete();
+        $admin->user->delete();
+        $admin->delete();
+
+        return $this->response_success("Admin successfully deleted");
     }
 }
