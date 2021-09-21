@@ -50,7 +50,7 @@ class AuthTest extends TestCase
 
         $response = $this->json("POST", '/api/login', $body, ['Accept' => 'application/json']);
         $response->assertStatus(200);
-        $response->assertJson(fn (AssertableJson $json) => $json->has('message')->has('status'));
+        $response->assertJson(fn (AssertableJson $json) => $json->has('message')->has('status')->etc());
     }
 
 
@@ -61,7 +61,7 @@ class AuthTest extends TestCase
         ];
 
         $response = $this->json('POST', '/api/forgot-password', $body, ['Accept' => 'application/json']);
-        $response->assertJson(fn (AssertableJson $json) => $json->has('message')->has('status'));
+        $response->assertJson(fn (AssertableJson $json) => $json->has('message')->has('status')->etc());
     }
 
 
@@ -83,7 +83,7 @@ class AuthTest extends TestCase
         $response = $this->json("GET", '/api/logout', [], ['Accept' => 'application/json', "Authorization" => 'Bearer ' . $token]);
         $response->assertStatus(200)
             ->assertJson(fn (AssertableJson $json) =>
-            $json->has('message'));
+            $json->has('message')->etc());
     }
 
     protected function login()

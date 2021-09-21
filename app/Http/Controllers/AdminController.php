@@ -19,7 +19,7 @@ class AdminController extends Controller
      */
     public function index()
     {
-        $admins = Admin::all();
+        $admins = Admin::with(['user', 'user.profile'])->get();
 
         return $this->response_data(AdminResource::collection($admins));
     }

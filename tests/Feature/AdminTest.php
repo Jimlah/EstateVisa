@@ -2,15 +2,16 @@
 
 namespace Tests\Feature;
 
-use App\Mail\UserCreated;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Admin;
 use App\Models\Profile;
+use App\Mail\UserCreated;
+use Illuminate\Support\Facades\Mail;
+use Lanin\Laravel\ApiDebugger\Debugger;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Mail;
 
 class AdminTest extends TestCase
 {
@@ -39,7 +40,7 @@ class AdminTest extends TestCase
         $response->assertStatus(200)
             ->assertJson(
                 function (AssertableJson $json) {
-                    $json->has('data');
+                    $json->has('data')->etc();
                 }
             );
     }
@@ -62,7 +63,7 @@ class AdminTest extends TestCase
         $response->assertStatus(200)
             ->assertJson(
                 function (AssertableJson $json) {
-                    $json->has('message')->has('status');
+                    $json->has('message')->has('status')->etc();
                 }
             );
 
@@ -107,7 +108,7 @@ class AdminTest extends TestCase
         $response->assertStatus(200)
             ->assertJson(
                 function (AssertableJson $json) {
-                    $json->has('data');
+                    $json->has('data')->etc();
                 }
             );
     }
@@ -138,7 +139,7 @@ class AdminTest extends TestCase
         $response->assertStatus(200)
             ->assertJson(
                 function (AssertableJson $json) {
-                    $json->has('message')->has('status');
+                    $json->has('message')->has('status')->etc();
                 }
             );
 
@@ -172,7 +173,7 @@ class AdminTest extends TestCase
         $response->assertStatus(200)
             ->assertJson(
                 function (AssertableJson $json) {
-                    $json->has('message')->has('status');
+                    $json->has('message')->has('status')->etc();
                 }
             );
 
@@ -210,7 +211,7 @@ class AdminTest extends TestCase
         $response->assertStatus(200)
             ->assertJson(
                 function (AssertableJson $json) {
-                    $json->has('message')->has('status');
+                    $json->has('message')->has('status')->etc();
                 }
             );
 
@@ -242,7 +243,7 @@ class AdminTest extends TestCase
         $response->assertStatus(200)
             ->assertJson(
                 function (AssertableJson $json) {
-                    $json->has('message')->has('status');
+                    $json->has('message')->has('status')->etc();
                 }
             );
 
@@ -273,7 +274,7 @@ class AdminTest extends TestCase
         $response->assertStatus(200)
             ->assertJson(
                 function (AssertableJson $json) {
-                    $json->has('message')->has('status');
+                    $json->has('message')->has('status')->etc();
                 }
             );
 
