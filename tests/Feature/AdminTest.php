@@ -201,7 +201,6 @@ class AdminTest extends TestCase
         $response = $this->actingAs($user, 'api')
             ->patchJson(route('admins.activate', $admin->id));
 
-        $response->dump();
         $response->assertStatus(200)
             ->assertJson(
                 function (AssertableJson $json) {
@@ -234,7 +233,6 @@ class AdminTest extends TestCase
         $response = $this->actingAs($user, 'api')
             ->patchJson(route('admins.deactivate', $admin->id));
 
-        $response->dump();
         $response->assertStatus(200)
             ->assertJson(
                 function (AssertableJson $json) {
@@ -245,6 +243,37 @@ class AdminTest extends TestCase
         $this->assertDatabaseHas('admins', [
             'id' => $admin->id,
             'status' => User::DEACTIVATED
+        ]);
+    }
+
+    public function test_api_super_admin_can_suspend_an_admin()
+    {
+        User::factory()->create();
+        $user = User::first();
+
+        User::factory()
+        ->count(10)
+        ->create()
+        ->each(function ($u) {
+            $u->admin()->save(Admin::factory()->make(['status' => User::ACTIVE]));
+            $u->profile()->save(Profile::factory()->make());
+        });
+
+        $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
+
+        $response = $this->actingAs($user, 'api')
+            ->patchJson(route('admins.suspend', $admin->id));
+
+        $response->assertStatus(200)
+        ->assertJson(
+            function (AssertableJson $json) {
+                $json->has('message')->has('status');
+            }
+        );
+
+        $this->assertDatabaseHas('admins', [
+            'id' => $admin->id,
+            'status' => User::SUSPENDED
         ]);
     }
 }

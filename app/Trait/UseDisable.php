@@ -18,7 +18,7 @@ trait UseDisable
         $this->save();
     }
 
-    public function suspended()
+    public function suspend()
     {
         $this->status = User::SUSPENDED;
         $this->save();

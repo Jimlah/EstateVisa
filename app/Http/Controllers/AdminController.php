@@ -98,6 +98,8 @@ class AdminController extends Controller
 
     public function suspend(Admin $admin)
     {
+        $admin->suspend();
 
+        return $this->response_success('Admin has been suspended');
     }
 }
