@@ -1,19 +1,9 @@
 <?php
 
 use App\Http\Controllers\AdminController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\HouseController;
 use App\Http\Controllers\EstateController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\VisitorController;
-use App\Http\Controllers\HouseTypeController;
-use App\Http\Controllers\UsersHouseController;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Passport\Bridge\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,11 +17,13 @@ use Laravel\Passport\Bridge\User;
 */
 
 Route::macro(
-    'resourceAndStatus',
+    'resourceWithExtra',
     function ($name, $controller, $model) {
         Route::patch($name . '/{' . $model . ':id}/activate', [$controller, 'activate'])->name($name . '.activate');
         Route::patch($name . '/{' . $model . ':id}/deactivate', [$controller, 'deactivate'])->name($name . '.deactivate');
         Route::patch($name . '/{' . $model . ':id}/suspend', [$controller, 'suspend'])->name($name . '.suspend');
+        Route::get($name . '/export', [$controller, 'export'])->name($name . '.export');
+        Route::post($name . '/import', [$controller, 'import'])->name($name . '.import');
         Route::apiResource($name, $controller);
     }
 );
@@ -71,18 +63,9 @@ Route::middleware(['json.response', 'cors'])->group(function () {
                 ]);
         })->middleware('auth')->name('verification.notice');
 
-        Route::get('/estates/export', [EstateController::class, 'export'])->name('estates.export');
-        Route::resourceAndStatus("estates", EstateController::class, 'estate');
-        Route::post('/estates/import', [EstateController::class, 'import'])->name('estates.import');
-        Route::resourceAndStatus("admins", AdminController::class, "admin");
-        Route::resourceAndStatus("users-house", UsersHouseController::class, "usershouse");
+        Route::resourceWithExtra("estates", EstateController::class, 'estate');
+        Route::resourceWithExtra("admins", AdminController::class, 'admin');
 
-        Route::apiResource('users', UserController::class);
-        Route::apiResource('profiles', ProfileController::class);
-        Route::apiResource("houses", HouseController::class);
-        Route::apiResource('house-types', HouseTypeController::class);
-
-        Route::apiResource('visitors', VisitorController::class);
         // our routes to be protected will go in here
     });
 });
