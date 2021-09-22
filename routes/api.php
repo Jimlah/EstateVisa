@@ -69,3 +69,12 @@ Route::middleware(['json.response', 'cors'])->group(function () {
         // our routes to be protected will go in here
     });
 });
+
+Route::fallback(
+    function () {
+        return response()->json([
+            'message' => 'Page Not Found.',
+            'status' => 'error'
+        ], 404);
+    }
+);

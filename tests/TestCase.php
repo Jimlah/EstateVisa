@@ -38,12 +38,12 @@ abstract class TestCase extends BaseTestCase
 
     protected function create_admin()
     {
-        User::factory()->create()->each(function ($u) {
+        User::factory()->count(10)->create()->each(function ($u) {
             $u->admin()->save(Admin::factory()->make());
             $u->profile()->save(Profile::factory()->make());
         });
 
-        return Admin::find($this->faker()->numberBetween(2, Admin::count()));
+        return Admin::find($this->faker()->numberBetween(2, Admin::count()))->user;
     }
 
     private function setSuperAdmin()

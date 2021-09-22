@@ -12,7 +12,9 @@ class AdminPolicy
 
     public function before($user, $ability)
     {
-
+        if ($user->hasRole(User::SUPER_ADMIN)) {
+            return true;
+        }
     }
 
     /**
@@ -69,6 +71,31 @@ class AdminPolicy
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function delete(User $user, admin $admin)
+    {
+        return false;
+    }
+
+    public function activate(User $user, admin $admin)
+    {
+        return false;
+    }
+
+    public function deactivate(User $user, admin $admin)
+    {
+        return false;
+    }
+
+    public function suspend(User $user, admin $admin)
+    {
+        return false;
+    }
+
+    public function import(User $user, admin $admin)
+    {
+        return false;
+    }
+
+    public function export(User $user, admin $admin)
     {
         return false;
     }

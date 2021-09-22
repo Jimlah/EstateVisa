@@ -2,12 +2,13 @@
 
 namespace App\Exceptions;
 
+use Exception;
 use Throwable;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -17,7 +18,7 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        //
+        // AuthorizationException::class,
     ];
 
     /**
@@ -39,7 +40,7 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->renderable(function (NotFoundHttpException $e) {
-            return response()->json(['status'=> 'error','message' => "Object not found"], 404);
+            return response()->json(['status' => 'error', 'message' => "Object not found"], 404);
         });
 
         $this->renderable(function (BindingResolutionException $e) {
@@ -47,7 +48,22 @@ class Handler extends ExceptionHandler
         });
 
         $this->renderable(function (AccessDeniedHttpException $e) {
-            return response()->json(['status'=>'warning','message' => $e->getMessage()], 403);
+            return response()->json(['status' => 'warning', 'message' => $e->getMessage()], 403);
+        });
+
+        $this->renderable(function (AuthorizationException $e) {
+            return response()->json(['status' => 'warning', 'message' => $e->getMessage()], 401);
         });
     }
+
+    // public function render($request, Throwable $exception)
+    // {
+    //     if ($exception instanceof AuthorizationException) {
+    //         return response()->json([
+    //             'error' => $exception->getMessage()
+    //         ], 404);
+    //     }
+
+    //     return parent::render($request, $exception);
+    // }
 }

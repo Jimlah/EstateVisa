@@ -14,11 +14,19 @@ use App\Http\Requests\AdminRequest;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Resources\AdminResource;
 use App\Imports\AdminImport;
+use Exception;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Excel as ExcelExcel;
+use PhpParser\Node\Stmt\TryCatch;
 
 class AdminController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->authorizeResource(Admin::class, 'admin');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -91,6 +99,7 @@ class AdminController extends Controller
 
     public function activate(Admin $admin)
     {
+        $this->authorize('activate', $admin);
         $admin->activate();
 
         return $this->response_success('Admin has beed activated');
@@ -98,6 +107,7 @@ class AdminController extends Controller
 
     public function deactivate(Admin $admin)
     {
+        $this->authorize('deactivate', $admin);
         $admin->deactivate();
 
         return $this->response_success('Admin has been deactivated');
@@ -105,6 +115,7 @@ class AdminController extends Controller
 
     public function suspend(Admin $admin)
     {
+        $this->authorize('suspend', $admin);
         $admin->suspend();
 
         return $this->response_success('Admin has been suspended');
@@ -112,12 +123,14 @@ class AdminController extends Controller
 
     public function import(Request $request)
     {
+        $this->authorize('import', Admin::class);
         $excel = (new AdminImport)->queue('admins.xlsx');
         return $this->response_success('Admin Imported');
     }
 
     public function export()
     {
+        $this->authorize('export', Admin::class);
         $fileName = 'laravel-excel/admins.xlsx';
         $excel = Excel::store(new AdminExport(), $fileName, 'local');
 

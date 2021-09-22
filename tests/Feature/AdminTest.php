@@ -47,7 +47,7 @@ class AdminTest extends TestCase
     }
 
 
-    public function test_super_admin_can_create_admin()
+    public function test_api_super_admin_can_create_admin()
     {
         Mail::fake();
 
@@ -314,5 +314,85 @@ class AdminTest extends TestCase
         Excel::assertQueued('admins.xlsx', function (AdminImport $import) {
             return true;
         });
+    }
+
+    public function test_api_other_user_can_not_get_admins()
+    {
+        $this->withExceptionHandling();
+
+        $response = $this->actingAs($this->create_admin(), 'api')
+            ->getJson(route('admins.index'));
+
+        $response->assertStatus(403);
+    }
+
+    public function test_api_other_user_can_not_create_admin()
+    {
+        $this->withExceptionHandling();
+
+        $response = $this->actingAs($this->create_admin(), 'api')
+            ->postJson(route('admins.store'));
+
+        $response->assertStatus(403);
+    }
+
+    public function test_api_other_user_can_not_delete()
+    {
+        $this->withExceptionHandling();
+
+        $response = $this->actingAs($this->create_admin(), 'api')
+            ->deleteJson(route('admins.destroy', $this->faker->numberBetween(1, Admin::count())));
+
+        $response->assertStatus(403);
+    }
+
+    public function test_api_other_user_can_not_update()
+    {
+        $this->withExceptionHandling();
+
+        $response = $this->actingAs($this->create_admin(), 'api')
+            ->patchJson(route('admins.update', $this->faker->numberBetween(1, Admin::count())));
+
+        $response->assertStatus(403);
+    }
+
+    public function test_api_other_user_can_not_show_a_single_admin()
+    {
+        $this->withExceptionHandling();
+
+        $response = $this->actingAs($this->create_admin(), 'api')
+            ->getJson(route('admins.show', $this->faker->numberBetween(1, Admin::count())));
+
+        $response->assertStatus(403);
+    }
+
+    public function test_api_other_user_can_not_activate_an_admin()
+    {
+        $this->withExceptionHandling();
+
+        $response = $this->actingAs($this->create_admin(), 'api')
+            ->patchJson(route('admins.activate', $this->faker->numberBetween(1, Admin::count())));
+
+        $response->assertStatus(403);
+    }
+
+    public function test_api_other_user_can_not_deactivate_an_admin()
+    {
+        $this->withExceptionHandling();
+
+        $response = $this->actingAs($this->create_admin(), 'api')
+            ->patchJson(route('admins.deactivate', $this->faker->numberBetween(1, Admin::count())));
+
+        $response->assertStatus(403);
+    }
+
+    public function test_api_other_user_can_not_suspend_an_admin()
+    {
+        $this->withExceptionHandling();
+
+        $response = $this->actingAs($this->create_admin(), 'api')
+            ->patchJson(route('admins.suspend', $this->faker->numberBetween(1, Admin::count())));
+
+        $response->assertStatus(403);
     }
 }
