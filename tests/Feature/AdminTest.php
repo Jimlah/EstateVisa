@@ -27,10 +27,6 @@ class AdminTest extends TestCase
      */
     public function test_api_super_admin_can_get_all_admins()
     {
-        User::factory()->create();
-
-        $user = User::first();
-
         User::factory()
             ->count(10)
             ->create()
@@ -39,7 +35,7 @@ class AdminTest extends TestCase
                 $u->profile()->save(Profile::factory()->make());
             });
 
-        $response = $this->actingAs($user, 'api')
+        $response = $this->actingAs(static::$superAdmin, 'api')
             ->getJson(route('admins.index'));
 
         $response->assertStatus(200)
@@ -54,15 +50,13 @@ class AdminTest extends TestCase
     public function test_super_admin_can_create_admin()
     {
         Mail::fake();
-        User::factory()->create();
-        $user = User::first();
 
         $data = array_merge(
             User::factory()->make()->toArray(),
             Profile::factory()->make()->toArray()
         );
 
-        $response = $this->actingAs($user, 'api')
+        $response = $this->actingAs(static::$superAdmin, 'api')
             ->postJson(route('admins.store'), $data);
 
         $response->assertStatus(200)
@@ -72,8 +66,8 @@ class AdminTest extends TestCase
                 }
             );
 
-        Mail::assertQueued(UserCreated::class, function ($mail) use ($user) {
-            return $mail->hasTo($user->email);
+        Mail::assertQueued(UserCreated::class, function ($mail) use ($data) {
+            return $mail->hasTo($data['email']);
         });
 
         $this->assertDatabaseHas('profiles', [
@@ -96,8 +90,6 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_get_a_single_admin()
     {
-        User::factory()->create();
-        $user = User::first();
 
         User::factory()
             ->count(10)
@@ -107,7 +99,7 @@ class AdminTest extends TestCase
                 $u->profile()->save(Profile::factory()->make());
             });
 
-        $response = $this->actingAs($user, 'api')
+        $response = $this->actingAs(static::$superAdmin, 'api')
             ->getJson(route('admins.show', 1));
 
         $response->assertStatus(200)
@@ -120,8 +112,6 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_update_admin()
     {
-        User::factory()->create();
-        $user = User::first();
 
         User::factory()
             ->count(10)
@@ -138,7 +128,7 @@ class AdminTest extends TestCase
             Profile::factory()->make()->toArray()
         );
 
-        $response = $this->actingAs($user, 'api')
+        $response = $this->actingAs(static::$superAdmin, 'api')
             ->putJson(route('admins.update', $admin->id), $data);
 
         $response->assertStatus(200)
@@ -159,8 +149,6 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_delete_an_admin()
     {
-        User::factory()->create();
-        $user = User::first();
 
         User::factory()
             ->count(10)
@@ -172,7 +160,7 @@ class AdminTest extends TestCase
 
         $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
 
-        $response = $this->actingAs($user, 'api')
+        $response = $this->actingAs(static::$superAdmin, 'api')
             ->deleteJson(route('admins.destroy', $admin->id));
 
         $response->assertStatus(200)
@@ -197,8 +185,6 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_enable_an_admin()
     {
-        User::factory()->create();
-        $user = User::first();
 
         User::factory()
             ->count(10)
@@ -210,7 +196,7 @@ class AdminTest extends TestCase
 
         $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
 
-        $response = $this->actingAs($user, 'api')
+        $response = $this->actingAs(static::$superAdmin, 'api')
             ->patchJson(route('admins.activate', $admin->id));
 
         $response->assertStatus(200)
@@ -229,8 +215,6 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_deactivate_an_admin()
     {
-        User::factory()->create();
-        $user = User::first();
 
         User::factory()
             ->count(10)
@@ -242,7 +226,7 @@ class AdminTest extends TestCase
 
         $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
 
-        $response = $this->actingAs($user, 'api')
+        $response = $this->actingAs(static::$superAdmin, 'api')
             ->patchJson(route('admins.deactivate', $admin->id));
 
         $response->assertStatus(200)
@@ -260,8 +244,6 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_suspend_an_admin()
     {
-        User::factory()->create();
-        $user = User::first();
 
         User::factory()
             ->count(10)
@@ -273,7 +255,7 @@ class AdminTest extends TestCase
 
         $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
 
-        $response = $this->actingAs($user, 'api')
+        $response = $this->actingAs(static::$superAdmin, 'api')
             ->patchJson(route('admins.suspend', $admin->id));
 
         $response->assertStatus(200)
@@ -291,8 +273,6 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_export_admins()
     {
-        User::factory()->create();
-        $user = User::first();
 
         Excel::fake();
 
@@ -306,7 +286,7 @@ class AdminTest extends TestCase
 
         $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
 
-        $response = $this->actingAs($user, 'api')
+        $response = $this->actingAs(static::$superAdmin, 'api')
             ->getJson(route('admins.export'));
 
         $response->assertStatus(200);
@@ -318,15 +298,13 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_import_admins()
     {
-        User::factory()->create();
-        $user = User::first();
 
         Excel::fake();
 
         $uploadedFile = new UploadedFile(Storage::path('test\admins.xlsx'), 'admins.xlsx', null, null, true);
 
 
-        $response = $this->actingAs($user, 'api')
+        $response = $this->actingAs(static::$superAdmin, 'api')
             ->postJson(route('admins.import'), [
                 'file' => $uploadedFile
             ]);

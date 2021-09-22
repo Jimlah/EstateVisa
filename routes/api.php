@@ -53,7 +53,7 @@ Route::middleware(['json.response', 'cors'])->group(function () {
         ->middleware(['auth:api', 'throttle:6,1'])
         ->name('verification.send');
 
-    Route::middleware(['auth:api', 'verified', 'isDeactivated'])->group(function () {
+    Route::middleware(['auth:api', 'verified'])->group(function () {
 
         Route::get('/email/verify', function () {
             return response()

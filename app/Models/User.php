@@ -76,8 +76,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         switch ($role) {
             case self::SUPER_ADMIN:
-                return $this->id == 1;
+                return $this->admin?->id == 1;
                 break;
+            case self::ADMIN:
+                return $this->admin?->id > 1;
             default:
                 return false;
         }
