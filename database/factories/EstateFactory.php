@@ -27,12 +27,10 @@ class EstateFactory extends Factory
         $faker = FakerFactory::create();
 
         return [
-            'user_id' => User::factory()->create()->id,
             'name' => $faker->name,
             'code' => $faker->unique()->word(),
             'address' => $faker->address,
             'logo' => $faker->imageUrl,
-            'status' => User::ACTIVE
         ];
     }
 }

@@ -9,11 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Estate extends Model
 {
-    use HasFactory, UseDisable;
-
-    const ACTIVE = 0;
-    const SUSPENDED = 1;
-    const DEACTIVATED = 2;
+    use HasFactory;
 
 
 
@@ -31,8 +27,4 @@ class Estate extends Model
 
     protected $dateFormat = 'Y-m-d';
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 }
