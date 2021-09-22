@@ -12,13 +12,15 @@ use App\Http\Requests\EstateRequest;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Resources\EstateResource;
 use App\Http\Requests\UserEstateProfileRequest;
+use App\Http\Resources\EstateAdminResource;
+use App\Models\EstateAdmin;
 
 class EstateController extends Controller
 {
 
     public function __construct()
     {
-        $this->authorizeResource(Estate::class);
+        // $this->authorizeResource(Estate::class);
     }
 
     /**
@@ -28,9 +30,8 @@ class EstateController extends Controller
      */
     public function index()
     {
-        $data = Estate::orderBy('created_at', 'desc')->get();
-
-        return response()->json(['data' => EstateResource::collection($data)], 200);
+        $data = EstateAdmin::with(['estate', 'user'])->get();
+        return $this->response_data(EstateAdminResource::collection($data));
     }
 
     /**
@@ -51,10 +52,7 @@ class EstateController extends Controller
             'code' => $request->input('estate_code'),
         ]);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'You have successfully created a new Estate'
-        ], 201);
+        return $this->response_success("New Estate Created");
     }
 
     /**
@@ -65,9 +63,7 @@ class EstateController extends Controller
      */
     public function show(Estate $estate)
     {
-        return response()->json([
-            'data' => new EstateResource($estate)
-        ], 200);
+        return $this->response_data(new EstateResource($estate));
     }
 
     /**

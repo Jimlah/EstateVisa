@@ -11,7 +11,7 @@ trait FilterByEstateTrait
         static::addGlobalScope(
             'FilterByEstate',
             function (Builder $builder) {
-                if (auth()->user()?->hasRole(User::ESTATE_OWNER) || auth()->user()?->hasRole(User::ESTATE_ADMIN)) {
+                if (auth()->user()?->hasRole(User::ESTATE_SUPER_ADMIN) || auth()->user()?->hasRole(User::ESTATE_ADMIN)) {
                     $builder->where(
                             'estate_id',
                             '=',

@@ -15,7 +15,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     const SUPER_ADMIN = 'super_admin';
     const ADMIN = 'admin';
-    const ESTATE_OWNER = 'estate_owner';
+    const ESTATE_SUPER_ADMIN = 'estate_super_admin';
     const ESTATE_ADMIN = 'estate_admin';
     const HOUSE_OWNER = 'house_owner';
     const HOUSE_SUB_OWNER = 'house_sub_owner';
@@ -66,9 +66,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(Admin::class);
     }
 
-    public function estate()
+    public function estate_admin()
     {
-        return $this->hasOne(Estate::class);
+        return $this->hasOne(EstateAdmin::class);
     }
 
 
@@ -90,7 +90,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             self::SUPER_ADMIN => $this->hasRole(self::SUPER_ADMIN),
             self::ADMIN => $this->hasRole(self::ADMIN),
-            self::ESTATE_OWNER => $this->hasRole(self::ESTATE_OWNER),
+            self::ESTATE_SUPER_ADMIN => $this->hasRole(self::ESTATE_SUPER_ADMIN),
             self::ESTATE_ADMIN => $this->hasRole(self::ESTATE_ADMIN),
             self::HOUSE_OWNER => $this->hasRole(self::HOUSE_OWNER),
         ];
