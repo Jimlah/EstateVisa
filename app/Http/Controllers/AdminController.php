@@ -4,15 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Admin;
+use App\Exports\AdminExport;
 use Illuminate\Http\Request;
 use App\Actions\StoreUserAction;
-use App\Actions\StoreProfileAction;
-use App\Exports\AdminExport;
-use App\Http\Requests\AdminRequest;
 use App\Http\Requests\FileRequest;
-use App\Http\Resources\AdminResource;
-use Illuminate\Http\Client\ResponseSequence;
+use App\Actions\StoreProfileAction;
+// use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Requests\AdminRequest;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Resources\AdminResource;
+use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Excel as ExcelExcel;
 
 class AdminController extends Controller
 {
@@ -115,6 +117,13 @@ class AdminController extends Controller
 
     public function export()
     {
-        return (new AdminExport)->download("admins.xlsx");
+        $fileName = 'admins.xlsx';
+        $excel = Excel::store(new AdminExport(), $fileName);
+
+        $url = Storage::url("temp/" . $fileName);
+
+        return $this->response_data([
+            'url' => $url,
+        ]);
     }
 }

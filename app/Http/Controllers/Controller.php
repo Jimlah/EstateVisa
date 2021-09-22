@@ -33,7 +33,7 @@ class Controller extends BaseController
         return response()->json(['status' => 'warning', 'message' => $message]);
     }
 
-    public function response_data(JsonResource $data)
+    public function response_data(JsonResource|array $data)
     {
         return response()->json(['data' => $data]);
     }

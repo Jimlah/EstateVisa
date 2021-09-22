@@ -8,6 +8,8 @@ use App\Models\Admin;
 use App\Models\Profile;
 use App\Mail\UserCreated;
 use App\Exports\AdminExport;
+use App\Imports\AdminImport;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 use Lanin\Laravel\ApiDebugger\Debugger;
@@ -306,11 +308,32 @@ class AdminTest extends TestCase
         $response = $this->actingAs($user, 'api')
             ->getJson(route('admins.export'));
 
+        $response->assertStatus(200);
+        Excel::assertStored('admins.xlsx', function (AdminExport $export) use ($admin) {
+            return true;
+        });
+    }
+
+
+    public function test_api_super_admin_can_import_admins()
+    {
+        User::factory()->create();
+        $user = User::first();
+
+        Excel::fake();
+
+        $file = UploadedFile::fake()->create('admins.xlsx');
+
+        $response = $this->actingAs($user, 'api')
+            ->postJson(route('admins.import'), [
+                'file' => $file
+                ]);
+
         $response->dump();
 
         $response->assertStatus(200);
-        Excel::assertDownloaded('admins.xlsx', function (AdminExport $export) use ($admin) {
-            return $export->collection->first()->id === $admin->id;
-        });
+        // Excel::assertImported('admins.xlsx', function (AdminImport $import) {
+            // return true;
+        // });
     }
 }
