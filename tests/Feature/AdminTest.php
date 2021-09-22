@@ -16,6 +16,7 @@ use Lanin\Laravel\ApiDebugger\Debugger;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 
 class AdminTest extends TestCase
 {
@@ -309,7 +310,7 @@ class AdminTest extends TestCase
             ->getJson(route('admins.export'));
 
         $response->assertStatus(200);
-        Excel::assertStored('admins.xlsx', function (AdminExport $export) use ($admin) {
+        Excel::assertStored('laravel-excel/admins.xlsx', 'local', function (AdminExport $export) use ($admin) {
             return true;
         });
     }
@@ -322,18 +323,18 @@ class AdminTest extends TestCase
 
         Excel::fake();
 
-        $file = UploadedFile::fake()->create('admins.xlsx');
+        $uploadedFile = new UploadedFile(Storage::path('test\admins.xlsx'), 'admins.xlsx', null, null, true);
+
 
         $response = $this->actingAs($user, 'api')
             ->postJson(route('admins.import'), [
-                'file' => $file
-                ]);
-
-        $response->dump();
+                'file' => $uploadedFile
+            ]);
 
         $response->assertStatus(200);
-        // Excel::assertImported('admins.xlsx', function (AdminImport $import) {
-            // return true;
-        // });
+
+        Excel::assertQueued('admins.xlsx', function (AdminImport $import) {
+            return true;
+        });
     }
 }

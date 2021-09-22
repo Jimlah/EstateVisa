@@ -13,6 +13,7 @@ use App\Actions\StoreProfileAction;
 use App\Http\Requests\AdminRequest;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Resources\AdminResource;
+use App\Imports\AdminImport;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Excel as ExcelExcel;
 
@@ -109,18 +110,18 @@ class AdminController extends Controller
         return $this->response_success('Admin has been suspended');
     }
 
-    public function import(FileRequest $request)
+    public function import(Request $request)
     {
-
+        $excel = (new AdminImport)->queue('admins.xlsx');
         return $this->response_success('Admin Imported');
     }
 
     public function export()
     {
-        $fileName = 'admins.xlsx';
-        $excel = Excel::store(new AdminExport(), $fileName);
+        $fileName = 'laravel-excel/admins.xlsx';
+        $excel = Excel::store(new AdminExport(), $fileName, 'local');
 
-        $url = Storage::url("temp/" . $fileName);
+        $url = Storage::url("local/" . $fileName);
 
         return $this->response_data([
             'url' => $url,
