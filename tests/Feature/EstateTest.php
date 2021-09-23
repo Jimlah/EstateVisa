@@ -10,6 +10,7 @@ use App\Models\Profile;
 use App\Models\EstateAdmin;
 use App\Exports\EstateExport;
 use App\Imports\EstateImport;
+use Database\Seeders\EstateAdminSeeder;
 use Illuminate\Http\UploadedFile;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
@@ -23,26 +24,7 @@ class EstateTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        User::factory(10)->create()->each(function ($user) {
-            $user->profile()->save(Profile::factory()->make());
-            Estate::factory(1)->create()->each(function ($estate) use ($user) {
-                $estate->admin()->save(EstateAdmin::factory()->make(['user_id' => $user->id, 'role' => User::ESTATE_SUPER_ADMIN]));
-                $estate
-                    ->admin()
-                    ->saveMany(EstateAdmin::factory(4)
-                        ->make(
-                            [
-                                'user_id' => function () {
-                                    return User::factory()->create()->profile()->save(
-                                        Profile::factory()->make()
-                                    )->id;
-                                },
-                                'role' => User::ESTATE_ADMIN
-                            ]
-                        ));
-            });
-        });
+        $this->seed(EstateAdminSeeder::class);
     }
 
     /**
@@ -52,7 +34,6 @@ class EstateTest extends TestCase
      */
     public function test_api_super_admin_can_get_all_estate()
     {
-
         $response = $this->actingAs(static::$superAdmin, 'api')
             ->getJson(route('estates.index'));
 
@@ -63,7 +44,6 @@ class EstateTest extends TestCase
 
     public function test_api_admin_can_get_all_estate()
     {
-
         $response = $this->actingAs(static::$admin, 'api')
             ->getJson(route('estates.index'));
 

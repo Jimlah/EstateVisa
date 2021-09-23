@@ -159,7 +159,6 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_enable_an_admin()
     {
-
         $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
 
         $response = $this->actingAs(static::$superAdmin, 'api')
@@ -181,15 +180,6 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_deactivate_an_admin()
     {
-
-        User::factory()
-            ->count(10)
-            ->create()
-            ->each(function ($u) {
-                $u->admin()->save(Admin::factory()->make(['status' => User::ACTIVE]));
-                $u->profile()->save(Profile::factory()->make());
-            });
-
         $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
 
         $response = $this->actingAs(static::$superAdmin, 'api')
@@ -210,15 +200,6 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_suspend_an_admin()
     {
-
-        User::factory()
-            ->count(10)
-            ->create()
-            ->each(function ($u) {
-                $u->admin()->save(Admin::factory()->make(['status' => User::ACTIVE]));
-                $u->profile()->save(Profile::factory()->make());
-            });
-
         $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
 
         $response = $this->actingAs(static::$superAdmin, 'api')
