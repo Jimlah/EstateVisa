@@ -12,6 +12,8 @@ class Admin extends Model
     use HasFactory;
     use UseDisable;
 
+    protected $with = ['user'];
+
     public function user()
     {
         return $this->belongsTo(User::class);

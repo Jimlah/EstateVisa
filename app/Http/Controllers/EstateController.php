@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Estate;
+use App\Models\EstateAdmin;
 use Illuminate\Http\Request;
 use App\Exports\EstateExport;
 use App\Imports\EstateImport;
@@ -11,16 +13,16 @@ use App\Actions\StoreProfileAction;
 use App\Http\Requests\EstateRequest;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Resources\EstateResource;
-use App\Http\Requests\UserEstateProfileRequest;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\EstateAdminResource;
-use App\Models\EstateAdmin;
+use App\Http\Requests\UserEstateProfileRequest;
 
 class EstateController extends Controller
 {
 
     public function __construct()
     {
-        // $this->authorizeResource(Estate::class);
+        // $this->authorizeResource(EstateAdmin::class);
     }
 
     /**
@@ -30,7 +32,7 @@ class EstateController extends Controller
      */
     public function index()
     {
-        $data = EstateAdmin::with(['estate', 'user'])->get();
+        $data = EstateAdmin::owner()->orderBy('created_at')->get();
         return $this->response_data(EstateAdminResource::collection($data));
     }
 
@@ -44,12 +46,19 @@ class EstateController extends Controller
     {
         $user = $storeUserAction->execute($request);
 
-        $profile = $storeProfileAction->execute($request, $user);
+        $storeProfileAction->execute($request, $user);
 
         $estate = Estate::create([
+            'name' => $request->name,
+            'code' => $request->code,
+            'logo' => $request->logo,
+            'address' => $request->address,
+        ]);
+
+        EstateAdmin::create([
             'user_id' => $user->id,
-            'name' => $request->input('estate_name'),
-            'code' => $request->input('estate_code'),
+            'estate_id' => $estate->id,
+            'role' => User::ESTATE_SUPER_ADMIN
         ]);
 
         return $this->response_success("New Estate Created");
@@ -75,17 +84,14 @@ class EstateController extends Controller
      */
     public function update(EstateRequest $request, Estate $estate)
     {
-        $estate->name = $request->estate_name;
-        $estate->code = $request->estate_code;
-        $estate->address = $request->estate_address;
-        $estate->logo = $request->estate_logo;
+        $estate->name = $request->name;
+        $estate->code = $request->code;
+        $estate->address = $request->address;
+        $estate->logo = $request->logo;
 
         $estate->save();
 
-        return response()->json([
-            'status' => "success",
-            'message' => 'You have successfully updated Resource'
-        ]);
+        return $this->response_success("Estate Updated");
     }
 
     /**
@@ -96,12 +102,10 @@ class EstateController extends Controller
      */
     public function destroy(Estate $estate)
     {
+        $estate->admin()->delete();
         $estate->delete();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'You have successfully deleted'
-        ]);
+        return $this->response_success("Estate Deleted");
     }
 
     /**
@@ -113,51 +117,47 @@ class EstateController extends Controller
      * */
     public function activate(Estate $estate)
     {
-        $estate->activateEstate();
+        $estate->admin->each(function ($admin) {
+            $admin->activate();
+        });
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'You have successfully disable the Estate'
-        ]);
+        return $this->response_success("Estate Activated");
     }
 
     public function suspend(Estate $estate)
     {
-        $estate->suspendEstate();
+        $estate->admin->each(function ($admin) {
+            $admin->suspend();
+        });
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'You have successfully enable the Estate'
-        ]);
+        return $this->response_success("Estate Suspended");
     }
 
     public function deactivate(Estate $estate)
     {
-        $estate->deactivateEstate();
+        $estate->admin->each(function ($admin) {
+            $admin->deactivate();
+        });
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'You have successfully deactivated the Estate'
-        ]);
+        return $this->response_success("Estate Deactivated");
     }
 
     public function import(Request $request)
     {
-        $file = $request->file('file')->store('temp');
-        $excel = Excel::import(new EstateImport(), $file);
-
-        dd(Estate::all());
-
-        //
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'You have successfully import the Estate'
-        ]);
+        $file = $request->file('file');
+        $excel = (new EstateImport)->queue($file->getPath());
+        return $this->response_success('Estate Imported');
     }
 
     public function export()
     {
-        return Excel::download(new EstateExport, 'estates.xlsx');
+        $filename = 'laravel-excel/estates.xlsx';
+        $excel =  Excel::store(new EstateExport(), $filename);
+
+        $url = Storage::url("local/" . $filename);
+
+        return $this->response_data([
+            'url' => $url,
+        ]);
     }
 }

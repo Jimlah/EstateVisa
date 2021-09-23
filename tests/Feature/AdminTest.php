@@ -9,6 +9,7 @@ use App\Models\Profile;
 use App\Mail\UserCreated;
 use App\Exports\AdminExport;
 use App\Imports\AdminImport;
+use Database\Seeders\AdminSeeder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
@@ -20,6 +21,14 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminTest extends TestCase
 {
+
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(AdminSeeder::class);
+    }
+
     /**
      * A basic feature test example.
      *
@@ -27,14 +36,6 @@ class AdminTest extends TestCase
      */
     public function test_api_super_admin_can_get_all_admins()
     {
-        User::factory()
-            ->count(10)
-            ->create()
-            ->each(function ($u) {
-                $u->admin()->save(Admin::factory()->make());
-                $u->profile()->save(Profile::factory()->make());
-            });
-
         $response = $this->actingAs(static::$superAdmin, 'api')
             ->getJson(route('admins.index'));
 
@@ -90,15 +91,6 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_get_a_single_admin()
     {
-
-        User::factory()
-            ->count(10)
-            ->create()
-            ->each(function ($u) {
-                $u->admin()->save(Admin::factory()->make());
-                $u->profile()->save(Profile::factory()->make());
-            });
-
         $response = $this->actingAs(static::$superAdmin, 'api')
             ->getJson(route('admins.show', 1));
 
@@ -112,15 +104,6 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_update_admin()
     {
-
-        User::factory()
-            ->count(10)
-            ->create()
-            ->each(function ($u) {
-                $u->admin()->save(Admin::factory()->make());
-                $u->profile()->save(Profile::factory()->make());
-            });
-
         $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
 
         $data = array_merge(
@@ -149,15 +132,6 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_delete_an_admin()
     {
-
-        User::factory()
-            ->count(10)
-            ->create()
-            ->each(function ($u) {
-                $u->admin()->save(Admin::factory()->make());
-                $u->profile()->save(Profile::factory()->make());
-            });
-
         $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
 
         $response = $this->actingAs(static::$superAdmin, 'api')
@@ -185,14 +159,6 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_enable_an_admin()
     {
-
-        User::factory()
-            ->count(10)
-            ->create()
-            ->each(function ($u) {
-                $u->admin()->save(Admin::factory()->make(['status' => User::SUSPENDED]));
-                $u->profile()->save(Profile::factory()->make());
-            });
 
         $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
 
@@ -276,14 +242,6 @@ class AdminTest extends TestCase
 
         Excel::fake();
 
-        User::factory()
-            ->count(10)
-            ->create()
-            ->each(function ($u) {
-                $u->admin()->save(Admin::factory()->make());
-                $u->profile()->save(Profile::factory()->make());
-            });
-
         $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
 
         $response = $this->actingAs(static::$superAdmin, 'api')
@@ -303,7 +261,6 @@ class AdminTest extends TestCase
 
         $uploadedFile = new UploadedFile(Storage::path('test\admins.xlsx'), 'admins.xlsx', null, null, true);
 
-
         $response = $this->actingAs(static::$superAdmin, 'api')
             ->postJson(route('admins.import'), [
                 'file' => $uploadedFile
@@ -311,14 +268,13 @@ class AdminTest extends TestCase
 
         $response->assertStatus(200);
 
-        Excel::assertQueued('admins.xlsx', function (AdminImport $import) {
+        Excel::assertQueued($uploadedFile->getPath(), function (AdminImport $import) {
             return true;
         });
     }
 
     public function test_api_other_user_can_not_get_admins()
     {
-        $this->withExceptionHandling();
 
         $response = $this->actingAs($this->create_admin(), 'api')
             ->getJson(route('admins.index'));
@@ -328,7 +284,6 @@ class AdminTest extends TestCase
 
     public function test_api_other_user_can_not_create_admin()
     {
-        $this->withExceptionHandling();
 
         $response = $this->actingAs($this->create_admin(), 'api')
             ->postJson(route('admins.store'));
@@ -338,8 +293,6 @@ class AdminTest extends TestCase
 
     public function test_api_other_user_can_not_delete()
     {
-        $this->withExceptionHandling();
-
         $response = $this->actingAs($this->create_admin(), 'api')
             ->deleteJson(route('admins.destroy', $this->faker->numberBetween(1, Admin::count())));
 
@@ -348,8 +301,6 @@ class AdminTest extends TestCase
 
     public function test_api_other_user_can_not_update()
     {
-        $this->withExceptionHandling();
-
         $response = $this->actingAs($this->create_admin(), 'api')
             ->patchJson(route('admins.update', $this->faker->numberBetween(1, Admin::count())));
 
@@ -358,8 +309,6 @@ class AdminTest extends TestCase
 
     public function test_api_other_user_can_not_show_a_single_admin()
     {
-        $this->withExceptionHandling();
-
         $response = $this->actingAs($this->create_admin(), 'api')
             ->getJson(route('admins.show', $this->faker->numberBetween(1, Admin::count())));
 
@@ -368,8 +317,6 @@ class AdminTest extends TestCase
 
     public function test_api_other_user_can_not_activate_an_admin()
     {
-        $this->withExceptionHandling();
-
         $response = $this->actingAs($this->create_admin(), 'api')
             ->patchJson(route('admins.activate', $this->faker->numberBetween(1, Admin::count())));
 
@@ -378,8 +325,6 @@ class AdminTest extends TestCase
 
     public function test_api_other_user_can_not_deactivate_an_admin()
     {
-        $this->withExceptionHandling();
-
         $response = $this->actingAs($this->create_admin(), 'api')
             ->patchJson(route('admins.deactivate', $this->faker->numberBetween(1, Admin::count())));
 
@@ -388,8 +333,6 @@ class AdminTest extends TestCase
 
     public function test_api_other_user_can_not_suspend_an_admin()
     {
-        $this->withExceptionHandling();
-
         $response = $this->actingAs($this->create_admin(), 'api')
             ->patchJson(route('admins.suspend', $this->faker->numberBetween(1, Admin::count())));
 

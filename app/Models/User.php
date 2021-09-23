@@ -68,7 +68,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function estate_admin()
     {
-        return $this->hasOne(EstateAdmin::class);
+        return $this->hasMany(EstateAdmin::class);
     }
 
 
@@ -80,6 +80,12 @@ class User extends Authenticatable implements MustVerifyEmail
                 break;
             case self::ADMIN:
                 return $this->admin?->id > 1;
+            case self::ESTATE_SUPER_ADMIN:
+                $collection = collect($this->estate_admin);
+                return $collection->where('role', self::ESTATE_SUPER_ADMIN)->contains('user_id', $this->id);
+            case self::ESTATE_ADMIN:
+                $collection = collect($this->estate_admin);
+                return $collection->where('role', self::ESTATE_ADMIN)->contains('user_id', $this->id);
             default:
                 return false;
         }

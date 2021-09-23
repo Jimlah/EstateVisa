@@ -124,7 +124,8 @@ class AdminController extends Controller
     public function import(Request $request)
     {
         $this->authorize('import', Admin::class);
-        $excel = (new AdminImport)->queue('admins.xlsx');
+        $file = $request->file('file');
+        $excel = (new AdminImport)->queue($file->getPath());
         return $this->response_success('Admin Imported');
     }
 
