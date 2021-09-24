@@ -37,7 +37,6 @@ class EstateTest extends TestCase
             ->getJson(route('estates.index'));
 
         $response->assertStatus(200);
-        $response->dump();
         $response->assertJson(fn (AssertableJson $json) => $json->has('data')->etc());
     }
 
@@ -332,5 +331,31 @@ class EstateTest extends TestCase
         Excel::assertQueued($uploadedFile->getPath(), function (EstateImport $import) {
             return true;
         });
+    }
+
+    public function test_api_super_admin_can_view_an_estate()
+    {
+        $estate = Estate::find($this->faker()->numberBetween(1, Estate::all()->count()));
+
+        $response = $this->actingAs(static::$superAdmin, 'api')
+            ->getJson(route('estates.show', $estate->id));
+
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $json) use ($estate) {
+                $json->has('data')->etc();
+            });
+    }
+
+    public function test_api_admin_can_view_an_estate()
+    {
+        $estate = Estate::find($this->faker()->numberBetween(1, Estate::all()->count()));
+
+        $response = $this->actingAs(static::$admin, 'api')
+            ->getJson(route('estates.show', $estate->id));
+
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $json) use ($estate) {
+                $json->has('data')->etc();
+            });
     }
 }

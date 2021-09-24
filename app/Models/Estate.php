@@ -28,10 +28,10 @@ class Estate extends Model
 
     protected $dateFormat = 'Y-m-d';
 
-    // public function admin()
-    // {
-    //     return $this->hasMany(EstateAdmin::class, 'estate_id');
-    // }
+    public function admin()
+    {
+        return $this->hasMany(EstateAdmin::class, 'estate_id');
+    }
 
     public function user()
     {

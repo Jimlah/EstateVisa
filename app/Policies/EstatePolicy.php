@@ -75,6 +75,31 @@ class EstatePolicy
         return false;
     }
 
+    public function activate(User $user, Estate $estate)
+    {
+        return false;
+    }
+
+    public function deactivate(User $user, Estate $estate)
+    {
+        return false;
+    }
+
+    public function suspend(User $user, Estate $estate)
+    {
+        return false;
+    }
+
+    public function import(User $user, Estate $estate)
+    {
+        return false;
+    }
+
+    public function export(User $user, Estate $estate)
+    {
+        return false;
+    }
+
     /**
      * Determine whether the user can restore the model.
      *
