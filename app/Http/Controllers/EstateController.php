@@ -16,6 +16,7 @@ use App\Http\Resources\EstateResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\EstateAdminResource;
 use App\Http\Requests\UserEstateProfileRequest;
+use Maatwebsite\Excel\Concerns\ToArray;
 
 class EstateController extends Controller
 {
@@ -32,8 +33,9 @@ class EstateController extends Controller
      */
     public function index()
     {
-        $data = EstateAdmin::owner()->orderBy('created_at')->get();
-        return $this->response_data(EstateAdminResource::collection($data));
+        // $data = EstateAdmin::owner()->orderBy('created_at')->get();
+        $data = Estate::all();
+        return $this->response_data(EstateResource::collection($data));
     }
 
     /**

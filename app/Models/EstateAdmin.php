@@ -25,12 +25,12 @@ class EstateAdmin extends Model
         'user.profile'
     ];
 
-    // protected static function booted()
-    // {
-    //     static::addGlobalScope('estate_super_admin', function ($builder) {
-    //         $builder->where('role', User::ESTATE_SUPER_ADMIN);
-    //     });
-    // }
+    protected static function booted()
+    {
+        static::addGlobalScope('orderDesc', function ($builder) {
+            $builder->orderBy('created_at', 'desc');
+        });
+    }
 
     public function scopeOwner($query)
     {

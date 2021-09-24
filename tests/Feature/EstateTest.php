@@ -37,7 +37,7 @@ class EstateTest extends TestCase
             ->getJson(route('estates.index'));
 
         $response->assertStatus(200);
-
+        $response->dump();
         $response->assertJson(fn (AssertableJson $json) => $json->has('data')->etc());
     }
 

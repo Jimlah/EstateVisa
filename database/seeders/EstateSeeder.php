@@ -5,10 +5,9 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Estate;
 use App\Models\Profile;
-use App\Models\EstateAdmin;
 use Illuminate\Database\Seeder;
 
-class EstateAdminSeeder extends Seeder
+class EstateSeeder extends Seeder
 {
     /**
      * Run the database seeds.

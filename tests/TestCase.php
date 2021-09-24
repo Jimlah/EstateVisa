@@ -29,21 +29,11 @@ abstract class TestCase extends BaseTestCase
 
     protected function create_super_admin()
     {
-        User::factory()->create()->each(function ($u) {
-            $u->admin()->save(Admin::factory()->make());
-            $u->profile()->save(Profile::factory()->make());
-        });
-
-        return Admin::first()->user;
+       return Admin::first()->user;
     }
 
     protected function create_admin()
     {
-        User::factory(10)->create()->each(function ($u) {
-            $u->admin()->save(Admin::factory()->make());
-            $u->profile()->save(Profile::factory()->make());
-        });
-
         $user = Admin::find($this->faker()->numberBetween(2, Admin::count()))->user;
 
         if ($user->hasRole(User::ADMIN)) {

@@ -79,7 +79,7 @@ class User extends Authenticatable implements MustVerifyEmail
                 return $this->admin?->id == 1;
                 break;
             case self::ADMIN:
-                return $this->admin?->id > 1;
+                return $this->admin?->id > 1 ? true : false;
             case self::ESTATE_SUPER_ADMIN:
                 $collection = collect($this->estate_admin);
                 return $collection->where('role', self::ESTATE_SUPER_ADMIN)->contains('user_id', $this->id);

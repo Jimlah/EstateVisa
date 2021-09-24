@@ -20,6 +20,9 @@ class EstateResource extends JsonResource
             'code' => $this->code,
             'logo' => $this->logo,
             'created_at' => $this->created_at->format('Y-m-d'),
+            'owner' => UserResource::make($this->whenLoaded('user', function () {
+                return $this->user->first();
+            })),
         ];
     }
 }
