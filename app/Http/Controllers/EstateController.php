@@ -22,7 +22,7 @@ class EstateController extends Controller
 
     public function __construct()
     {
-        // $this->authorizeResource(EstateAdmin::class);
+        $this->authorizeResource(Estate::class);
     }
 
     /**

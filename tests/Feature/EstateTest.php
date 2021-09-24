@@ -24,7 +24,6 @@ class EstateTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->seed(EstateAdminSeeder::class);
     }
 
     /**

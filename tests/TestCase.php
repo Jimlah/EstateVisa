@@ -22,6 +22,7 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
         $this->withExceptionHandling();
         Artisan::call('passport:install');
+        $this->seed();
         $this->setSuperAdmin();
         $this->setAdmin();
     }
@@ -38,12 +39,17 @@ abstract class TestCase extends BaseTestCase
 
     protected function create_admin()
     {
-        User::factory()->count(10)->create()->each(function ($u) {
+        User::factory(10)->create()->each(function ($u) {
             $u->admin()->save(Admin::factory()->make());
             $u->profile()->save(Profile::factory()->make());
         });
 
-        return Admin::find($this->faker()->numberBetween(2, Admin::count()))->user;
+        $user = Admin::find($this->faker()->numberBetween(2, Admin::count()))->user;
+
+        if ($user->hasRole(User::ADMIN)) {
+            return $user;
+        }
+        $this->create_admin();
     }
 
     private function setSuperAdmin()

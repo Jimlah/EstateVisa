@@ -31,4 +31,9 @@ class Estate extends Model
     {
         return $this->hasMany(EstateAdmin::class, 'estate_id');
     }
+
+    public function user()
+    {
+        return $this->belongsToMany(User::class, 'estate_admins', 'estate_id', 'user_id')->withPivot('status', 'role', 'created_at');
+    }
 }

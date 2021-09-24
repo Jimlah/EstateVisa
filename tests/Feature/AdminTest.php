@@ -26,7 +26,6 @@ class AdminTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->seed(AdminSeeder::class);
     }
 
     /**
