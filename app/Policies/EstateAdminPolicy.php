@@ -12,7 +12,7 @@ class EstateAdminPolicy
 
     public function before($user, $ability)
     {
-        if ($user->hasRole(User::SUPER_ADMIN) || $user->hasRole(User::ADMIN)) {
+        if ($user->hasRole(User::ESTATE_SUPER_ADMIN)) {
             return true;
         }
     }
@@ -25,7 +25,7 @@ class EstateAdminPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return false;
     }
 
     /**

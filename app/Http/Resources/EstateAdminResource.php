@@ -16,8 +16,10 @@ class EstateAdminResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'estate' => EstateResource::make($this->estate),
-            'user' => UserResource::make($this->user),
+            'user' => UserResource::make($this->whenLoaded('user')),
+            'status' => $this->status,
+            'role' => $this->role,
+            'created_at' => $this->created_at,
         ];
     }
 }

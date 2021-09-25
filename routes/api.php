@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\EstateController;
+use App\Http\Controllers\EstateAdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,6 +66,7 @@ Route::middleware(['json.response', 'cors'])->group(function () {
 
         Route::resourceWithExtra("estates", EstateController::class, 'estate');
         Route::resourceWithExtra("admins", AdminController::class, 'admin');
+        Route::resourceWithExtra("estate-admins", EstateAdminController::class, 'estateAdmin');
 
         // our routes to be protected will go in here
     });

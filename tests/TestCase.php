@@ -4,6 +4,7 @@ namespace Tests;
 
 use App\Models\User;
 use App\Models\Admin;
+use App\Models\Estate;
 use App\Models\Profile;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -16,6 +17,7 @@ abstract class TestCase extends BaseTestCase
 
     protected static $superAdmin = null;
     protected static $admin = null;
+    protected static $estateSuperAdmin = null;
 
     protected function setUp(): void
     {
@@ -25,11 +27,12 @@ abstract class TestCase extends BaseTestCase
         $this->seed();
         $this->setSuperAdmin();
         $this->setAdmin();
+        $this->setEstateSuperAdmin();
     }
 
     protected function create_super_admin()
     {
-       return Admin::first()->user;
+        return Admin::first()->user;
     }
 
     protected function create_admin()
@@ -40,6 +43,11 @@ abstract class TestCase extends BaseTestCase
             return $user;
         }
         $this->create_admin();
+    }
+
+    public function create_estate_super_admin()
+    {
+        return Estate::find($this->faker()->numberBetween(1, Estate::count()))->user->first();
     }
 
     private function setSuperAdmin()
@@ -58,5 +66,14 @@ abstract class TestCase extends BaseTestCase
         }
 
         return self::$admin;
+    }
+
+    private function setEstateSuperAdmin()
+    {
+        if (is_null(self::$estateSuperAdmin)) {
+            self::$estateSuperAdmin = $this->create_estate_super_admin();
+        }
+
+        return self::$estateSuperAdmin;
     }
 }

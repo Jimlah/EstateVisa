@@ -71,6 +71,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(EstateAdmin::class);
     }
 
+    public function estate()
+    {
+        return $this->belongsToMany(Estate::class, 'estate_admins', 'user_id', 'estate_id');
+    }
+
 
     public function hasRole($role)
     {
