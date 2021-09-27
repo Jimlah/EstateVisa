@@ -74,7 +74,6 @@ class EstateAdminTest extends TestCase
     public function test_api_estate_super_admin_can_update_a_single_admin_for_his_estate()
     {
         $this->withoutExceptionHandling();
-        $estateAdmins = static::$estateSuperAdmin->estate[0]->user->toArray();
         $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
 
         $attributes = array_merge(
@@ -83,7 +82,7 @@ class EstateAdminTest extends TestCase
         );
 
         $response = $this->actingAs(static::$estateSuperAdmin, 'api')
-            ->putJson(route('estate-admins.update', $estateAdmin['id']), $attributes);
+            ->putJson(route('estate-admins.update', $estateAdmin->id), $attributes);
 
         $response->assertStatus(200)
             ->assertJson(function (AssertableJson $json) {
@@ -106,10 +105,9 @@ class EstateAdminTest extends TestCase
     public function test_api_estate_super_admin_can_delete_a_single_admin_for_his_estate()
     {
         $this->withoutExceptionHandling();
-        $estateSuperAdmin = static::$estateSuperAdmin;
         $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
 
-        $response = $this->actingAs($estateSuperAdmin, 'api')
+        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
             ->deleteJson(route('estate-admins.destroy', $estateAdmin['id']));
 
         $response->assertStatus(200)
@@ -121,6 +119,69 @@ class EstateAdminTest extends TestCase
 
         $this->assertDatabaseMissing('estate_admins', [
             'id' => $estateAdmin['id']
+        ]);
+    }
+
+    public function test_api_estate_super_admin_can_deactivate()
+    {
+        $this->withoutExceptionHandling();
+        $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
+
+        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+            ->patchJson(route('estate-admins.deactivate', $estateAdmin['id']));
+
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $json) {
+                $json->has('message')
+                    ->has('status')
+                    ->etc();
+            });
+
+        $this->assertDatabaseHas('estate_admins', [
+            'id' => $estateAdmin['id'],
+            'status' => User::DEACTIVATED
+        ]);
+    }
+
+    public function test_api_estate_super_admin_can_activate()
+    {
+        $this->withoutExceptionHandling();
+        $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
+
+        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+            ->patchJson(route('estate-admins.activate', $estateAdmin['id']));
+
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $json) {
+                $json->has('message')
+                    ->has('status')
+                    ->etc();
+            });
+
+        $this->assertDatabaseHas('estate_admins', [
+            'id' => $estateAdmin['id'],
+            'status' => User::ACTIVE
+        ]);
+    }
+
+    public function test_api_estate_super_admin_can_suspend()
+    {
+        $this->withoutExceptionHandling();
+        $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
+
+        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+            ->patchJson(route('estate-admins.suspend', $estateAdmin['id']));
+
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $json) {
+                $json->has('message')
+                    ->has('status')
+                    ->etc();
+            });
+
+        $this->assertDatabaseHas('estate_admins', [
+            'id' => $estateAdmin['id'],
+            'status' => User::SUSPENDED
         ]);
     }
 }

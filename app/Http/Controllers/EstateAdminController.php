@@ -95,5 +95,17 @@ class EstateAdminController extends Controller
         return $this->response_success('Admin has been deactivated');
     }
 
+    public function activate(EstateAdmin $estateAdmin)
+    {
+        $estateAdmin->activate();
 
+        return $this->response_success('Admin has been activated');
+    }
+
+    public function suspend(EstateAdmin $estateAdmin)
+    {
+        $estateAdmin->suspend();
+
+        return $this->response_success('Admin has been suspended');
+    }
 }
