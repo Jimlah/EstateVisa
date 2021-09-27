@@ -37,6 +37,11 @@ class EstateAdmin extends Model
         return $query->where('role', User::ESTATE_SUPER_ADMIN);
     }
 
+    public function scopeEstateOnly($query)
+    {
+        return $query->where('estate_id', auth()->user()->estate_admin[0]->estate_id);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

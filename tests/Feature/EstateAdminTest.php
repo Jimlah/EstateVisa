@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Exports\EstateAdminExport;
 use App\Models\EstateAdmin;
 use Tests\TestCase;
 use App\Models\User;
@@ -9,6 +10,7 @@ use App\Models\Profile;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EstateAdminTest extends TestCase
 {
@@ -58,7 +60,7 @@ class EstateAdminTest extends TestCase
 
     public function test_api_estate_super_admin_can_get_a_single_admin_for_his_estate()
     {
-        $this->withoutExceptionHandling();
+
         $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
 
         $response = $this->actingAs(static::$estateSuperAdmin, 'api')
@@ -73,7 +75,7 @@ class EstateAdminTest extends TestCase
 
     public function test_api_estate_super_admin_can_update_a_single_admin_for_his_estate()
     {
-        $this->withoutExceptionHandling();
+
         $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
 
         $attributes = array_merge(
@@ -104,7 +106,7 @@ class EstateAdminTest extends TestCase
 
     public function test_api_estate_super_admin_can_delete_a_single_admin_for_his_estate()
     {
-        $this->withoutExceptionHandling();
+
         $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
 
         $response = $this->actingAs(static::$estateSuperAdmin, 'api')
@@ -124,7 +126,7 @@ class EstateAdminTest extends TestCase
 
     public function test_api_estate_super_admin_can_deactivate()
     {
-        $this->withoutExceptionHandling();
+
         $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
 
         $response = $this->actingAs(static::$estateSuperAdmin, 'api')
@@ -145,7 +147,7 @@ class EstateAdminTest extends TestCase
 
     public function test_api_estate_super_admin_can_activate()
     {
-        $this->withoutExceptionHandling();
+
         $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
 
         $response = $this->actingAs(static::$estateSuperAdmin, 'api')
@@ -166,7 +168,7 @@ class EstateAdminTest extends TestCase
 
     public function test_api_estate_super_admin_can_suspend()
     {
-        $this->withoutExceptionHandling();
+
         $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
 
         $response = $this->actingAs(static::$estateSuperAdmin, 'api')
@@ -183,5 +185,24 @@ class EstateAdminTest extends TestCase
             'id' => $estateAdmin['id'],
             'status' => User::SUSPENDED
         ]);
+    }
+
+    public function test_api_estate_super_admin_can_export()
+    {
+        Excel::fake();
+        $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
+
+        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+            ->getJson(route('estate-admins.export', $estateAdmin['id']));
+
+        $response->assertStatus(200);
+        Excel::assertStored('laravel-excel/estateAdmins.xlsx', function (EstateAdminExport $export) {
+            return true;
+        });
+    }
+
+    public function test_api_estate_super_admin_can_import()
+    {
+
     }
 }

@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\StoreProfileAction;
-use App\Actions\StoreUserAction;
-use App\Http\Requests\EstateAdminRequest;
-use App\Http\Resources\EstateAdminResource;
 use App\Models\Admin;
 use App\Models\Estate;
 use App\Models\EstateAdmin;
 use Illuminate\Http\Request;
+use App\Actions\StoreUserAction;
+use Tests\Feature\EstateAdminTest;
+use App\Actions\StoreProfileAction;
+use App\Exports\EstateAdminExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\EstateAdminRequest;
+use App\Http\Resources\EstateAdminResource;
 
 class EstateAdminController extends Controller
 {
@@ -82,7 +86,6 @@ class EstateAdminController extends Controller
      */
     public function destroy(EstateAdmin $estateAdmin)
     {
-        echo $estateAdmin->role;
         $estateAdmin->delete();
 
         return $this->response_success('Admin has been deleted');
@@ -107,5 +110,17 @@ class EstateAdminController extends Controller
         $estateAdmin->suspend();
 
         return $this->response_success('Admin has been suspended');
+    }
+
+    public function export()
+    {
+        $filename = 'laravel-excel/estateAdmins.xlsx';
+        $excel = Excel::store(new EstateAdminExport(), $filename);
+
+        $url = Storage::url("local/", $filename);
+
+        return $this->response_data([
+            'url' => $url
+        ]);
     }
 }

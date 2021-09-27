@@ -42,7 +42,7 @@ class AdminExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
             "Email" => $admin->user->email,
             "Phone Number" => $admin->user->profile->phone_number,
             "Gender" => $admin->user->profile->gender,
-            "Created_at" => $admin->created_at->format('d/m/Y H:i:s')
+            // "Created_at" => $admin->created_at->format('d/m/Y H:i:s')
         ];
     }
 }
