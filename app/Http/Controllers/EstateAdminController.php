@@ -26,7 +26,7 @@ class EstateAdminController extends Controller
      */
     public function index()
     {
-        $estateAdmin = EstateAdmin::with('user')->get();
+        $estateAdmin = EstateAdmin::with(['user', 'user.profile'])->get();
 
         return $this->response_data(EstateAdminResource::collection($estateAdmin));
     }
@@ -66,9 +66,12 @@ class EstateAdminController extends Controller
      * @param  \App\Models\EstateAdmin  $estateAdmin
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, EstateAdmin $estateAdmin)
+    public function update(EstateAdminRequest $request, EstateAdmin $estateAdmin, StoreUserAction $storeUserAction, StoreProfileAction $storeProfileAction)
     {
-        //
+        $storeUserAction->update($request, $estateAdmin->user);
+        $storeProfileAction->update($request, $estateAdmin->user->profile);
+
+        return $this->response_success('Admin has been updated');
     }
 
     /**
@@ -79,6 +82,18 @@ class EstateAdminController extends Controller
      */
     public function destroy(EstateAdmin $estateAdmin)
     {
-        //
+        echo $estateAdmin->role;
+        $estateAdmin->delete();
+
+        return $this->response_success('Admin has been deleted');
     }
+
+    public function deactivate(EstateAdmin $estateAdmin)
+    {
+        $estateAdmin->deactivate();
+
+        return $this->response_success('Admin has been deactivated');
+    }
+
+
 }

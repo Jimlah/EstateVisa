@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\EstateAdmin;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Profile;
@@ -11,6 +12,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class EstateAdminTest extends TestCase
 {
+    use RefreshDatabase;
 
     public function setUp(): void
     {
@@ -54,14 +56,13 @@ class EstateAdminTest extends TestCase
     }
 
 
-    public function test_api_estate_super_admin_can_get_a_single_admin_for_is_estate()
+    public function test_api_estate_super_admin_can_get_a_single_admin_for_his_estate()
     {
-        $estateAdmins = static::$estateSuperAdmin->estate[0]->user->toArray();
-        $estateAdmin = $estateAdmins[$this->faker()->randomElement(array_keys($estateAdmins))];
-        // dd($estateAdmin['id']);
+        $this->withoutExceptionHandling();
+        $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
 
         $response = $this->actingAs(static::$estateSuperAdmin, 'api')
-            ->getJson(route('estate-admins.show', $estateAdmin['id']));
+            ->getJson(route('estate-admins.show', $estateAdmin->id));
 
         $response->assertStatus(200)
             ->assertJson(function (AssertableJson $json) {
@@ -70,5 +71,56 @@ class EstateAdminTest extends TestCase
             });
     }
 
+    public function test_api_estate_super_admin_can_update_a_single_admin_for_his_estate()
+    {
+        $this->withoutExceptionHandling();
+        $estateAdmins = static::$estateSuperAdmin->estate[0]->user->toArray();
+        $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
 
+        $attributes = array_merge(
+            User::factory()->make()->toArray(),
+            Profile::factory()->make()->toArray()
+        );
+
+        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+            ->putJson(route('estate-admins.update', $estateAdmin['id']), $attributes);
+
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $json) {
+                $json->has('message')
+                    ->has('status')
+                    ->etc();
+            });
+
+        $this->assertDatabaseHas('users', [
+            'email' => $attributes['email']
+        ]);
+
+        $this->assertDatabaseHas('profiles', [
+            'firstname' => $attributes['firstname'],
+            'lastname' => $attributes['lastname'],
+            'phone_number' => $attributes['phone_number']
+        ]);
+    }
+
+    public function test_api_estate_super_admin_can_delete_a_single_admin_for_his_estate()
+    {
+        $this->withoutExceptionHandling();
+        $estateSuperAdmin = static::$estateSuperAdmin;
+        $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
+
+        $response = $this->actingAs($estateSuperAdmin, 'api')
+            ->deleteJson(route('estate-admins.destroy', $estateAdmin['id']));
+
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $json) {
+                $json->has('message')
+                    ->has('status')
+                    ->etc();
+            });
+
+        $this->assertDatabaseMissing('estate_admins', [
+            'id' => $estateAdmin['id']
+        ]);
+    }
 }

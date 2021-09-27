@@ -28,7 +28,14 @@ class Estate extends Model
 
     protected $dateFormat = 'Y-m-d';
 
+    // Check for bugs
     public function admin()
+    {
+        return $this->belongsToMany(User::class, 'estate_admins', 'estate_id', 'user_id')
+            ->where('estate_admins.role', '=', User::ESTATE_ADMIN)->withPivot('role', 'estate_id', 'user_id');
+    }
+
+    public function estate_admin()
     {
         return $this->hasMany(EstateAdmin::class, 'estate_id');
     }
@@ -36,5 +43,11 @@ class Estate extends Model
     public function user()
     {
         return $this->belongsToMany(User::class, 'estate_admins', 'estate_id', 'user_id')->withPivot('status', 'role', 'created_at');
+    }
+
+    public function estateSuperAdmin()
+    {
+        return $this->hasMany(EstateAdmin::class, 'estate_id')
+            ->where('estate_admins.role', '=', User::ESTATE_SUPER_ADMIN)->first();
     }
 }

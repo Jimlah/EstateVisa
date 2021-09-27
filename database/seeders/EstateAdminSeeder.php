@@ -10,6 +10,7 @@ use Illuminate\Database\Seeder;
 
 class EstateAdminSeeder extends Seeder
 {
+
     /**
      * Run the database seeds.
      *
@@ -17,11 +18,12 @@ class EstateAdminSeeder extends Seeder
      */
     public function run()
     {
+        // Fix a bug here
         User::factory()->count(10)->create()->each(function ($user) {
             $user->profile()->save(Profile::factory()->make());
             $estate = Estate::factory()->create();
             $estate->user()->attach($user->id, ['role' => User::ESTATE_SUPER_ADMIN]);
-            $estate->user()->saveMany(User::factory()->count(4)->make(), ['role' => User::ESTATE_ADMIN])
+            $estate->admin()->saveMany(User::factory()->count(4)->make(), ['role' => User::ESTATE_ADMIN])
                 ->each(function ($user) use ($estate) {
                     $user->profile()->save(Profile::factory()->make());
                 });
