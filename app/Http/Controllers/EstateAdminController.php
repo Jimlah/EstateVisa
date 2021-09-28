@@ -7,9 +7,10 @@ use App\Models\Estate;
 use App\Models\EstateAdmin;
 use Illuminate\Http\Request;
 use App\Actions\StoreUserAction;
+use App\Exports\EstateAdminExport;
+use App\Imports\EstateAdminImport;
 use Tests\Feature\EstateAdminTest;
 use App\Actions\StoreProfileAction;
-use App\Exports\EstateAdminExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\EstateAdminRequest;
@@ -122,5 +123,13 @@ class EstateAdminController extends Controller
         return $this->response_data([
             'url' => $url
         ]);
+    }
+
+    public function import(Request $request)
+    {
+        $file = $request->file('file');
+        $data = (new EstateAdminImport)->queue($file->getPath());
+
+        return $this->response_success('Estate Admin has been imported');
     }
 }

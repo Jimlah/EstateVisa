@@ -30,8 +30,8 @@ class AdminImport implements ToCollection, WithHeadingRow, ShouldQueue, WithChun
                 'email' => $row['email']
             ])->each(function ($user) use ($row) {
                 $user->profile()->create([
-                    'first_name' => $row['first_name'],
-                    'last_name' => $row['last_name'],
+                    'firstname' => $row['first_name'],
+                    'lastname' => $row['last_name'],
                     'phone_number' => $row['phone_number'],
                     'gender' => $row['gender']
                 ]);

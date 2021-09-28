@@ -2,15 +2,18 @@
 
 namespace Tests\Feature;
 
-use App\Exports\EstateAdminExport;
-use App\Models\EstateAdmin;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Profile;
+use App\Models\EstateAdmin;
+use Illuminate\Http\UploadedFile;
+use App\Exports\EstateAdminExport;
+use App\Imports\EstateAdminImport;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Maatwebsite\Excel\Facades\Excel;
 
 class EstateAdminTest extends TestCase
 {
@@ -203,6 +206,16 @@ class EstateAdminTest extends TestCase
 
     public function test_api_estate_super_admin_can_import()
     {
+        Excel::fake();
+        $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
+        $uploadedFile = new UploadedFile(Storage::path('test\estateAdmins.xlsx'), 'estateAdmins.xlsx', null, null, true);
 
+        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+            ->postJson(route('estate-admins.import', $estateAdmin['id']), ['file' => $uploadedFile]);
+
+        $response->assertStatus(200);
+        Excel::assertQueued($uploadedFile->getPath(), function (EstateAdminImport $import) {
+            return true;
+        });
     }
 }

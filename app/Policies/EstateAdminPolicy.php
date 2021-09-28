@@ -37,7 +37,7 @@ class EstateAdminPolicy
      */
     public function view(User $user, EstateAdmin $estateAdmin)
     {
-        //
+        return false;
     }
 
     /**
@@ -48,7 +48,7 @@ class EstateAdminPolicy
      */
     public function create(User $user)
     {
-        //
+        return false;
     }
 
     /**
@@ -60,7 +60,7 @@ class EstateAdminPolicy
      */
     public function update(User $user, EstateAdmin $estateAdmin)
     {
-        //
+        return false;
     }
 
     /**
@@ -72,7 +72,7 @@ class EstateAdminPolicy
      */
     public function delete(User $user, EstateAdmin $estateAdmin)
     {
-        //
+        return false;
     }
 
     /**
@@ -84,7 +84,7 @@ class EstateAdminPolicy
      */
     public function restore(User $user, EstateAdmin $estateAdmin)
     {
-        //
+        return false;
     }
 
     /**
@@ -96,6 +96,6 @@ class EstateAdminPolicy
      */
     public function forceDelete(User $user, EstateAdmin $estateAdmin)
     {
-        //
+        return false;
     }
 }
