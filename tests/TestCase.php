@@ -18,6 +18,7 @@ abstract class TestCase extends BaseTestCase
     protected static $superAdmin = null;
     protected static $admin = null;
     protected static $estateSuperAdmin = null;
+    protected static $estateAdmin = null;
 
     protected function setUp(): void
     {
@@ -28,6 +29,7 @@ abstract class TestCase extends BaseTestCase
         $this->setSuperAdmin();
         $this->setAdmin();
         $this->setEstateSuperAdmin();
+        $this->setEstateAdmin();
     }
 
     protected function create_super_admin()
@@ -48,6 +50,11 @@ abstract class TestCase extends BaseTestCase
     public function create_estate_super_admin()
     {
         return Estate::find($this->faker()->numberBetween(1, Estate::count()))->user->first();
+    }
+
+    public function create_estate_admin()
+    {
+        return Estate::find($this->faker()->numberBetween(1, Estate::count()))->user()->where('role', User::ESTATE_ADMIN)->get()->random();
     }
 
     private function setSuperAdmin()
@@ -75,5 +82,14 @@ abstract class TestCase extends BaseTestCase
         }
 
         return self::$estateSuperAdmin;
+    }
+
+    private function setEstateAdmin()
+    {
+        if (is_null(self::$estateAdmin)) {
+            self::$estateAdmin = $this->create_estate_admin();
+        }
+
+        return self::$estateAdmin;
     }
 }

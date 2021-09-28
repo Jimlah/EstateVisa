@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\EstateController;
 use App\Http\Controllers\EstateAdminController;
+use App\Http\Controllers\HouseTypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,6 +68,7 @@ Route::middleware(['json.response', 'cors'])->group(function () {
         Route::resourceWithExtra("estates", EstateController::class, 'estate');
         Route::resourceWithExtra("admins", AdminController::class, 'admin');
         Route::resourceWithExtra("estate-admins", EstateAdminController::class, 'estateAdmin');
+        Route::resource('house-types', HouseTypeController::class);
 
         // our routes to be protected will go in here
     });
