@@ -27,12 +27,12 @@ trait UseDisable
     public function activate()
     {
         $this->status = User::ACTIVE;
-        $this->save();
+        return $this->save();
     }
 
     public function deactivate()
     {
         $this->status = User::DEACTIVATED;
-        $this->save();
+        return $this->save();
     }
 }

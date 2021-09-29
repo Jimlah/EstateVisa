@@ -104,7 +104,7 @@ class EstateController extends Controller
      */
     public function destroy(Estate $estate)
     {
-        $estate->admin()->delete();
+        $estate->estate_admin()->delete();
         $estate->delete();
 
         return $this->response_success("Estate Deleted");
@@ -119,7 +119,7 @@ class EstateController extends Controller
      * */
     public function activate(Estate $estate)
     {
-        $estate->admin->each(function ($admin) {
+        $estate->estate_admin->each(function ($admin) {
             $admin->activate();
         });
 
@@ -128,7 +128,7 @@ class EstateController extends Controller
 
     public function suspend(Estate $estate)
     {
-        $estate->admin->each(function ($admin) {
+        $estate->estate_admin->each(function ($admin) {
             $admin->suspend();
         });
 
@@ -137,7 +137,7 @@ class EstateController extends Controller
 
     public function deactivate(Estate $estate)
     {
-        $estate->admin->each(function ($admin) {
+        $estate->estate_admin->each(function ($admin) {
             $admin->deactivate();
         });
 
