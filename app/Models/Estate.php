@@ -55,4 +55,9 @@ class Estate extends Model
     {
         return $this->hasMany(HouseType::class, 'estate_id');
     }
+
+    public function houses()
+    {
+        return $this->belongsToMany(House::class, 'estate_houses', 'estate_id', 'house_id');
+    }
 }

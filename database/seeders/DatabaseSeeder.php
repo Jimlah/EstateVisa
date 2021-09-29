@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use App\Models\Estate;
 use App\Models\Profile;
-use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,6 +24,8 @@ class DatabaseSeeder extends Seeder
         // Profile::factory()->create();
 
         // Profile::factory(10)->create();
+
+        Artisan::call('passport:install');
 
         $this->call([
             AdminSeeder::class,
