@@ -145,7 +145,7 @@ class HouseTest extends TestCase
 
     public function test_api_super_admin_can_delete_a_house()
     {
-        $house = static::$estateSuperAdmin->estate[0]->houses[0];
+        $house = $this->getHouse(static::$estateSuperAdmin);
         $response = $this->actingAs(static::$estateSuperAdmin, 'api')
             ->deleteJson(route('estate-houses.destroy', $house->id));
 
@@ -157,5 +157,17 @@ class HouseTest extends TestCase
         $this->assertDatabaseMissing('houses', [
             'id' => $house->id,
         ]);
+    }
+
+
+    public function getHouse($admin)
+    {
+        $house = $admin->estate[0]->houses;
+
+        if (count($house) > 0) {
+            return $house->random();
+        }
+
+        $this->getHouse($admin);
     }
 }

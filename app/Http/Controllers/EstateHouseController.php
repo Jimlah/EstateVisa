@@ -88,6 +88,7 @@ class EstateHouseController extends Controller
      */
     public function destroy(EstateHouse $estateHouse)
     {
+        dump($estateHouse);
         $estateHouse->delete();
 
         return $this->response_success("House Deleted");
