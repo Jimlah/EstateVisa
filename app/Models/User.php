@@ -15,17 +15,15 @@ class User extends Authenticatable implements MustVerifyEmail
 
     const SUPER_ADMIN = 'super_admin';
     const ADMIN = 'admin';
-    const ESTATE_OWNER = 'estate_owner';
+    const ESTATE_SUPER_ADMIN = 'estate_super_admin';
     const ESTATE_ADMIN = 'estate_admin';
     const HOUSE_OWNER = 'house_owner';
     const HOUSE_SUB_OWNER = 'house_sub_owner';
 
 
-    const ACTIVE = 'active';
-    const INACTIVE = 'inactive';
-    const SUSPENDED = 'suspended';
-    const DEACTIVATED = 'deactivated';
-
+    const ACTIVE = '1';
+    const DEACTIVATED = '2';
+    const SUSPENDED = '3';
 
     /**
      * The attributes that are mass assignable.
@@ -69,49 +67,38 @@ class User extends Authenticatable implements MustVerifyEmail
         ]);
     }
 
+    public function admin()
+    {
+        return $this->hasOne(Admin::class);
+    }
+
+    public function estate_admin()
+    {
+        return $this->hasMany(EstateAdmin::class);
+    }
+
     public function estate()
     {
-        return $this->hasOne(Estate::class);
+        return $this->belongsToMany(Estate::class, 'estate_admins', 'user_id', 'estate_id');
     }
 
-    public function estateAdmin()
-    {
-        return $this->hasMany(EstateUser::class);
-    }
-
-    public function usersHouse()
-    {
-        return $this->hasMany(UsersHouse::class);
-    }
-
-    public function houseSubOwner()
-    {
-        return $this->hasMany(HouseSubUser::class, 'house_owner_id');
-    }
 
     public function hasRole($role)
     {
         switch ($role) {
             case self::SUPER_ADMIN:
-                return $this->id == 1;
+                return $this->admin?->id == 1;
                 break;
             case self::ADMIN:
-                return $this->id == 2;
-                break;
-            case self::ESTATE_OWNER:
-                return $this->estate?->user_id != null;
-                break;
+                return $this->admin?->id > 1 ? true : false;
+            case self::ESTATE_SUPER_ADMIN:
+                $collection = collect($this->estate_admin);
+                return $collection->where('role', self::ESTATE_SUPER_ADMIN)->contains('user_id', $this->id);
             case self::ESTATE_ADMIN:
-                $collection = collect($this->estateAdmin());
-                return $collection->contains('user_id', auth()->user()->id);
-                break;
-            case self::HOUSE_OWNER:
-                $collection= collect($this->usersHouse);
-                return $collection->contains('user_id', auth()->user()->id);
-                break;
+                $collection = collect($this->estate_admin);
+                return $collection->where('role', self::ESTATE_ADMIN)->contains('user_id', $this->id);
             default:
                 return false;
-                break;
         }
     }
 
@@ -120,7 +107,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             self::SUPER_ADMIN => $this->hasRole(self::SUPER_ADMIN),
             self::ADMIN => $this->hasRole(self::ADMIN),
-            self::ESTATE_OWNER => $this->hasRole(self::ESTATE_OWNER),
+            self::ESTATE_SUPER_ADMIN => $this->hasRole(self::ESTATE_SUPER_ADMIN),
             self::ESTATE_ADMIN => $this->hasRole(self::ESTATE_ADMIN),
             self::HOUSE_OWNER => $this->hasRole(self::HOUSE_OWNER),
         ];

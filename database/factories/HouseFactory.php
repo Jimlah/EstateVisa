@@ -2,10 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Estate;
 use App\Models\House;
-use App\Models\House_type;
-use Faker\Factory as FakerFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class HouseFactory extends Factory
@@ -24,10 +21,10 @@ class HouseFactory extends Factory
      */
     public function definition()
     {
-        $faker = FakerFactory::create();
         return [
-            'code' => $faker->word(),
-            'description' => $faker->sentence(10),
+            'name' => $this->faker->name,
+            'address' => $this->faker->address,
+            'description' => $this->faker->text,
         ];
     }
 }

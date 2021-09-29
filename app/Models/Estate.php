@@ -9,13 +9,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Estate extends Model
 {
-    use HasFactory, UseDisable;
-
-    const ACTIVE = 0;
-    const SUSPENDED = 1;
-    const DEACTIVATED = 2;
+    use HasFactory;
 
 
+    protected $with = ['user'];
 
     /**
      * The attributes that are mass assignable.
@@ -23,7 +20,6 @@ class Estate extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id',
         'name',
         'code',
         'address',
@@ -32,74 +28,36 @@ class Estate extends Model
 
     protected $dateFormat = 'Y-m-d';
 
-    public function user()
+    // Check for bugs
+    public function admin()
     {
-        return $this->belongsTo(User::class)->withDefault([
-            'email' => '',
-        ]);
+        return $this->belongsToMany(User::class, 'estate_admins', 'estate_id', 'user_id')
+            ->where('estate_admins.role', '=', User::ESTATE_ADMIN)->withPivot('role', 'estate_id', 'user_id');
     }
 
-    public function houses()
+    public function estate_admin()
     {
-        return $this->hasMany(House::class);
+        return $this->hasMany(EstateAdmin::class, 'estate_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsToMany(User::class, 'estate_admins', 'estate_id', 'user_id')->withPivot('status', 'role', 'created_at');
+    }
+
+    public function estateSuperAdmin()
+    {
+        return $this->hasMany(EstateAdmin::class, 'estate_id')
+            ->where('estate_admins.role', '=', User::ESTATE_SUPER_ADMIN)->first();
     }
 
     public function houseTypes()
     {
-        return $this->hasMany(House_type::class);
+        return $this->hasMany(HouseType::class, 'estate_id');
     }
 
-    public function estateAdmin()
+    public function houses()
     {
-        return $this->hasMany(EstateUser::class);
+        return $this->belongsToMany(House::class, 'estate_houses', 'estate_id', 'house_id');
     }
-
-
-    public function houseOwner()
-    {
-        return $this->hasManyThrough(UsersHouse::class, House::class);
-    }
-
-    public function disableEstate()
-    {
-        $this->disable();
-        foreach ($this->houseOwner as $house) {
-            $house->disableHouse();
-        }
-    }
-
-    public function enableEstate()
-    {
-        $this->enable();
-        foreach ($this->houseOwner as $house) {
-            $house->enableHouse();
-        }
-    }
-
-
-    public function suspendEstate()
-    {
-        $this->suspend();
-        foreach ($this->houseOwner as $house) {
-            $house->suspendHouse();
-        }
-    }
-
-    public function activateEstate()
-    {
-        $this->activate();
-        foreach ($this->houseOwner as $house) {
-            $house->activateHouse();
-        }
-    }
-
-    public function deactivateEstate()
-    {
-        $this->deactivated();
-        foreach ($this->houseOwner as $house) {
-            $house->deactivateHouse();
-        }
-    }
-
-
 }

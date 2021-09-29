@@ -17,6 +17,7 @@ class StoreProfileAction
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'phone_number' => $request->phone_number,
+            'gender' => $request->gender
         ]);
 
         return $profile;
@@ -24,10 +25,12 @@ class StoreProfileAction
 
     public function update(Request $request, Profile $profile)
     {
-        $profile->firstname = $request->firstname;
-        $profile->lastname = $request->lastname;
-        $profile->phone_number = $request->phone_number;
-        $profile->save();
+        $profile->update([
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'phone_number' => $request->phone_number,
+            'gender' => $request->gender
+        ]);
 
         return $profile;
     }

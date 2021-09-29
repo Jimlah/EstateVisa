@@ -3,14 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\UserLoginRequest;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 class AuthController extends Controller
 {

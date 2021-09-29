@@ -2,212 +2,161 @@
 
 namespace Tests\Feature;
 
-use App\Models\Estate;
-use App\Models\House;
-use App\Models\House_type;
-use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
 class HouseTypeTest extends TestCase
 {
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
 
     /**
-     * test_api_super_admin_can_get_all_house_types
+     * A basic feature test example.
      *
      * @return void
      */
     public function test_api_super_admin_can_get_all_house_types()
     {
-
-        User::factory()->create();
-        $user = User::find(1);
-
-        House_type::factory(10)->create();
-        $this->actingAs($user, 'api');
-
-        $response = $this->json(
-            'GET',
-            route('house-types.index'),
-        );
+        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+            ->getJson(route('house-types.index'));
 
         $response->assertStatus(200)
-            ->assertJson(
-                fn (AssertableJson $json) =>
+            ->assertJson(function (AssertableJson $json) {
                 $json->has('data')
-            );
+                    ->etc();
+            });
     }
 
-    public function test_api_estate_owner_can_get_only_their_house_types()
+    public function test_api_admin_can_get_all_house_type()
     {
-
-        User::factory()->create();
-
-        for ($i = 0; $i < 10; $i++) {
-            $estateOwner = User::factory()->create();
-            $estate = Estate::factory()->create([
-                'user_id' => $estateOwner->id,
-            ]);
-            House_type::factory()->create([
-                'estate_id' => $estate->id
-            ]);
-        }
-
-
-        $user = User::find($this->faker->numberBetween(3, User::count()));
-
-        $this->actingAs($user, 'api');
-        $response = $this->json(
-            'GET',
-            route('house-types.index'),
-        );
+        $response = $this->actingAs(static::$estateAdmin, 'api')
+            ->getJson(route('house-types.index'));
 
         $response->assertStatus(200)
-            ->assertJson(
-                fn (AssertableJson $json) =>
+            ->assertJson(function (AssertableJson $json) {
                 $json->has('data')
-            );
+                    ->etc();
+            });
     }
 
-    public function test_api_estate_owner_can_create()
+    public function test_api_super_admin_create_house_type()
     {
-        User::factory(5)->create();
-        $user = User::find(5);
-        $estate = Estate::factory()->create(['user_id' => $user->id]);
-        $this->actingAs($user, 'api');
-        $attributes = [
-            'name' => $this->faker->word,
-            'description' => $this->faker->word,
-            'code' => $this->faker->word,
-        ];
-        $response = $this->postJson(
-            route('house-types.store'),
-            $attributes
-        );
-        $response->assertStatus(201);
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-                $json->hasAll(['status', 'message'])
-        );
-
-        $this->assertDatabaseHas('house_types', $attributes)
-        ;
-    }
-
-    public function test_api_user_can_not_create_if_not_estate_owner_or_estate_admin()
-    {
-        User::factory(5)->create();
-        $user = User::find(5);
-        $estate = Estate::factory()->create();
-
-        $this->actingAs($user, 'api');
-
-        $attributes = [
-            'name' => $this->faker->word,
-            'description' => $this->faker->word,
-            'code' => $this->faker->word,
-        ];
-        $response = $this->postJson(
-            route('house-types.store'),
-            $attributes
-        );
-        $response->assertStatus(403);
-
-        $this->assertDatabaseMissing('house_types', $attributes);
-
-    }
-
-    public function test_api_estate_owner_can_update_only_their_house_types()
-    {
-
-        User::factory()->create();
-        House_type::factory(10)->create();
-        $house_type =  House_type::find($this->faker->numberBetween(3, House_type::count()));
-        $estate = Estate::find($house_type->estate_id);
-
-        $attributes = [
-            'name' => $this->faker->word,
-            'description' => $this->faker->word,
-            'code' => $this->faker->word,
-        ];
-
-        $response = $this->actingAs($estate->user, 'api')
-                        ->putJson(
-                            route('house-types.update', $house_type->id),
-                            $attributes
-                    );
-        $response->assertStatus(200);
-
-        $this->assertDatabaseHas('house_types', $attributes)
-            ->assertDatabaseHas('house_types', [
-                'estate_id' => $estate->id,
-                'id' => $house_type->id,
-                'name' => $attributes['name'],
-                'description' => $attributes['description'],
-                'code' => $attributes['code']
+        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+            ->postJson(route('house-types.store'), [
+                'name' => 'test'
             ]);
-    }
 
-    public function test_api_user_can_not_update_if_not_estate_owner_or_estate_admin()
-    {
-        User::factory(5)->create();
-        Estate::factory(10)->create();
-        House_type::factory(10)->create();
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $json) {
+                $json->has('status')
+                    ->has('message')
+                    ->etc();
+            });
 
-        $house_type =  House_type::find($this->faker->numberBetween(1, House_type::count()));
-        $estate = Estate::find($this->faker->numberBetween(1, 10));
-
-        $attributes = [
-            'name' => $this->faker->word,
-            'description' => $this->faker->word,
-            'code' => $this->faker->word,
-        ];
-
-        $response = $this->actingAs($estate->user, 'api')
-            ->putJson(
-                route('house-types.update', $house_type->id),
-                $attributes,
-                ['Content-Type' => 'application/json']
-            );
-
-        $response->assertStatus(404);
-        $this->assertDatabaseMissing('house_types', $attributes);
-    }
-
-    public function test_api_estate_owner_can_delete_only_their_house_types()
-    {
-        User::factory()->create();
-        House_type::factory()->create();
-
-        $house_type =  House_type::find($this->faker->numberBetween(1, House_type::count()));
-        $estate = Estate::find($house_type->estate_id);
-        $this->actingAs($estate->user, 'api');
-        $response = $this->deleteJson(
-            route('house-types.destroy', $house_type->id)
-        );
-
-        $response->assertStatus(204);
-        $this->assertDatabaseMissing('house_types', [
-            'id' => $house_type->id,
-            'estate_id' => $estate->id
+        $this->assertDatabaseHas('house_types', [
+            'name' => 'test'
         ]);
     }
 
-    public function test_api_user_can_not_delete_if_not_estate_owner_or_estate_admin()
+    public function test_api_admin_create_house_type()
     {
-        User::factory(5)->create();
-        Estate::factory(10)->create();
-        House_type::factory(10)->create();
+        $response = $this->actingAs(static::$estateAdmin, 'api')
+            ->postJson(route('house-types.store'), [
+                'name' => 'test'
+            ]);
 
-        $house_type =  House_type::find($this->faker->numberBetween(1, House_type::count()));
-        $estate = Estate::find($this->faker->numberBetween(1, 10));
-        $this->actingAs($estate->user, 'api');
-        $response = $this->deleteJson(
-            route('house-types.destroy', $house_type->id)
-        );
-        $response->assertStatus(404);
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $json) {
+                $json->has('status')
+                    ->has('message')
+                    ->etc();
+            });
+
+        $this->assertDatabaseHas('house_types', [
+            'name' => 'test'
+        ]);
     }
 
+    public function test_api_super_admin_update_house_type()
+    {
+        $houseType = static::$estateSuperAdmin->estate[0]->houseTypes()->first();
+        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+            ->putJson(route('house-types.update', $houseType->id), [
+                'name' => 'test'
+            ]);
 
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $json) {
+                $json->has('status')
+                    ->has('message')
+                    ->etc();
+            });
+
+        $this->assertDatabaseHas('house_types', [
+            'id' => $houseType->id,
+            'name' => 'test'
+        ]);
+    }
+
+    public function test_api_admin_update_house_type()
+    {
+        $houseType = static::$estateAdmin->estate[0]->houseTypes()->first();
+        $response = $this->actingAs(static::$estateAdmin, 'api')
+            ->putJson(route('house-types.update', $houseType->id), [
+                'name' => 'test'
+            ]);
+
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $json) {
+                $json->has('status')
+                    ->has('message')
+                    ->etc();
+            });
+
+        $this->assertDatabaseHas('house_types', [
+            'id' => $houseType->id,
+            'name' => 'test'
+        ]);
+    }
+
+    public function test_api_super_admin_delete_house_type()
+    {
+        $houseType = static::$estateSuperAdmin->estate[0]->houseTypes()->first();
+        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+            ->deleteJson(route('house-types.destroy', $houseType->id));
+
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $json) {
+                $json->has('status')
+                    ->has('message')
+                    ->etc();
+            });
+
+        $this->assertDatabaseMissing('house_types', [
+            'id' => $houseType->id
+        ]);
+    }
+
+    public function test_api_admin_delete_house_type()
+    {
+        $houseType = static::$estateAdmin->estate[0]->houseTypes()->first();
+        $response = $this->actingAs(static::$estateAdmin, 'api')
+            ->deleteJson(route('house-types.destroy', $houseType->id));
+
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $json) {
+                $json->has('status')
+                    ->has('message')
+                    ->etc();
+            });
+
+        $this->assertDatabaseMissing('house_types', [
+            'id' => $houseType->id
+        ]);
+    }
 }

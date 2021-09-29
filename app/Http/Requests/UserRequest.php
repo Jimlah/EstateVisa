@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Estate;
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserRequest extends FormRequest
@@ -25,12 +23,11 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
-        // try to except the row from the email search
+
         return [
-            'email' => [
-                'required',
-                'email',
-            ],
+            'email' => 'required|email',
+            'password' => 'sometimes|required|min:6',
+            'password_confirmation' => 'sometimes|same:password|required_with:password',
         ];
     }
 }

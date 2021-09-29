@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Trait;
 
 use App\Models\User;
@@ -17,7 +18,7 @@ trait UseDisable
         $this->save();
     }
 
-    public function suspended()
+    public function suspend()
     {
         $this->status = User::SUSPENDED;
         $this->save();
@@ -26,12 +27,12 @@ trait UseDisable
     public function activate()
     {
         $this->status = User::ACTIVE;
-        $this->save();
+        return $this->save();
     }
 
-    public function deactivated()
+    public function deactivate()
     {
         $this->status = User::DEACTIVATED;
-        $this->save();
+        return $this->save();
     }
 }

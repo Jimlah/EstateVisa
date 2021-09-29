@@ -5,21 +5,27 @@ namespace App\Policies;
 use App\Models\Estate;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Auth\Access\Response;
 
 class EstatePolicy
 {
     use HandlesAuthorization;
 
+    public function before($user, $ability)
+    {
+        if ($user->hasRole(User::SUPER_ADMIN) || $user->hasRole(User::ADMIN)) {
+            return true;
+        }
+    }
+
     /**
      * Determine whether the user can view any models.
      *
      * @param  \App\Models\User  $user
-     * @return mixed
+     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function viewAny(User $user)
     {
-        return $user->hasRole(User::SUPER_ADMIN) || $user->hasRole(User::ADMIN);
+        return false;
     }
 
     /**
@@ -27,22 +33,10 @@ class EstatePolicy
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Estate  $estate
-     * @return mixed
+     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function view(User $user, Estate $estate)
     {
-        if ($user->hasRole(User::SUPER_ADMIN) || $user->hasRole(User::ADMIN)) {
-            return true;
-        }
-
-        if ($user->hasRole(User::ESTATE_OWNER)) {
-            return true;
-        }
-
-        // if ($user->hasRole(User::HOUSE_OWNER)) {
-        //     return true;
-        // }
-
         return false;
     }
 
@@ -50,11 +44,11 @@ class EstatePolicy
      * Determine whether the user can create models.
      *
      * @param  \App\Models\User  $user
-     * @return mixed
+     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function create(User $user)
     {
-        return $user->hasRole(User::SUPER_ADMIN);
+        return false;
     }
 
     /**
@@ -62,17 +56,10 @@ class EstatePolicy
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Estate  $estate
-     * @return mixed
+     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function update(User $user, Estate $estate)
     {
-        if ($user->hasRole(User::SUPER_ADMIN) || $user->hasRole(User::ADMIN)) {
-            return true;
-        }
-
-        if ($user->hasRole(User::ESTATE_OWNER)) {
-            return true;
-        }
         return false;
     }
 
@@ -81,14 +68,35 @@ class EstatePolicy
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Estate  $estate
-     * @return mixed
+     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function delete(User $user, Estate $estate)
     {
-        if ($user->hasRole(User::SUPER_ADMIN) || $user->hasRole(User::ADMIN)) {
-            return true;
-        }
+        return false;
+    }
 
+    public function activate(User $user, Estate $estate)
+    {
+        return false;
+    }
+
+    public function deactivate(User $user, Estate $estate)
+    {
+        return false;
+    }
+
+    public function suspend(User $user, Estate $estate)
+    {
+        return false;
+    }
+
+    public function import(User $user, Estate $estate)
+    {
+        return false;
+    }
+
+    public function export(User $user, Estate $estate)
+    {
         return false;
     }
 
@@ -97,11 +105,11 @@ class EstatePolicy
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Estate  $estate
-     * @return mixed
+     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function restore(User $user, Estate $estate)
     {
-        //
+        return false;
     }
 
     /**
@@ -109,10 +117,10 @@ class EstatePolicy
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Estate  $estate
-     * @return mixed
+     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function forceDelete(User $user, Estate $estate)
     {
-        //
+        return false;
     }
 }

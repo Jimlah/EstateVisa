@@ -2,16 +2,17 @@
 
 namespace Tests\Feature;
 
-use App\Mail\UserCreated;
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Password;
 use Tests\TestCase;
-use Illuminate\Testing\Fluent\AssertableJson;
+use App\Models\User;
+use App\Models\Estate;
+use App\Mail\UserCreated;
 use Laravel\Passport\Passport;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Testing\Fluent\AssertableJson;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AuthTest extends TestCase
 {
@@ -49,7 +50,7 @@ class AuthTest extends TestCase
 
         $response = $this->json("POST", '/api/login', $body, ['Accept' => 'application/json']);
         $response->assertStatus(200);
-        $response->assertJson(fn (AssertableJson $json) => $json->has('message')->has('status'));
+        $response->assertJson(fn (AssertableJson $json) => $json->has('message')->has('status')->etc());
     }
 
 
@@ -60,7 +61,7 @@ class AuthTest extends TestCase
         ];
 
         $response = $this->json('POST', '/api/forgot-password', $body, ['Accept' => 'application/json']);
-        $response->assertJson(fn (AssertableJson $json) => $json->has('message')->has('status'));
+        $response->assertJson(fn (AssertableJson $json) => $json->has('message')->has('status')->etc());
     }
 
 
@@ -82,7 +83,7 @@ class AuthTest extends TestCase
         $response = $this->json("GET", '/api/logout', [], ['Accept' => 'application/json', "Authorization" => 'Bearer ' . $token]);
         $response->assertStatus(200)
             ->assertJson(fn (AssertableJson $json) =>
-            $json->has('message'));
+            $json->has('message')->etc());
     }
 
     protected function login()

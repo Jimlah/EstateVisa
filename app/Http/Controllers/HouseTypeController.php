@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\HouseTypeRequest;
-use App\Models\Estate;
-use App\Models\House;
-use App\Models\House_type;
-use App\Models\User;
+use App\Http\Resources\EstateResource;
+use App\Models\HouseType;
 use Illuminate\Http\Request;
 
 class HouseTypeController extends Controller
@@ -14,8 +12,9 @@ class HouseTypeController extends Controller
 
     public function __construct()
     {
-        $this->authorizeResource(House_type::class);
+        $this->authorizeResource(HouseType::class);
     }
+
 
     /**
      * Display a listing of the resource.
@@ -24,9 +23,9 @@ class HouseTypeController extends Controller
      */
     public function index()
     {
-        return response()->json(
-            ['data' => House_type::all()]
-        );
+        $houseTypes = HouseType::estateOnly()->get();
+
+        return $this->response_data(EstateResource::collection($houseTypes));
     }
 
     /**
@@ -37,64 +36,51 @@ class HouseTypeController extends Controller
      */
     public function store(HouseTypeRequest $request)
     {
-        House_type::create([
+        HouseType::create([
             'name' => $request->name,
-            'description' => $request->description,
-            'code' => $request->code,
+            'estate_id' => auth()->user()->estate_admin[0]->estate_id
         ]);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'You have successfully created a new House Type'
-        ], 201);
+        return $this->response_success('House type created successfully');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\House_type  $house_type
+     * @param  \App\Models\HouseType  $houseType
      * @return \Illuminate\Http\Response
      */
-    public function show(House_type $house_type)
+    public function show(HouseType $houseType)
     {
-        return response()->json($house_type);
+        //
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\House_type  $house_type
+     * @param  \App\Models\HouseType  $houseType
      * @return \Illuminate\Http\Response
      */
-    public function update(HouseTypeRequest $request, House_type $house_type)
+    public function update(Request $request, HouseType $houseType)
     {
-        $house_type->name = $request->name;
-        $house_type->code = $request->code;
-        $house_type->description = $request->description;
-
-        $house_type->save();
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'House type updated successfully'
+        $houseType->update([
+            'name' => $request->name
         ]);
+
+        return $this->response_success('House type updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\House_type  $house_type
+     * @param  \App\Models\HouseType  $houseType
      * @return \Illuminate\Http\Response
      */
-    public function destroy(House_type $house_type)
+    public function destroy(HouseType $houseType)
     {
-        $house_type->delete();
+        $houseType->delete();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'House type deleted successfully '
-        ], 204);
-
+        return $this->response_success('House type deleted successfully');
     }
 }

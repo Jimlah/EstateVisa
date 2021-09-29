@@ -24,8 +24,8 @@ class HouseRequest extends FormRequest
     public function rules()
     {
         return [
-            'house_type' => 'required|numeric',
-            'code' => 'required'
+            'name' => 'required|max:255',
+            'address' => 'required|max:255',
         ];
     }
 }

@@ -16,12 +16,13 @@ class EstateResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user' => UserResource::make($this->user),
             'name' => $this->name,
             'code' => $this->code,
             'logo' => $this->logo,
-            'status' => $this->status,
             'created_at' => $this->created_at->format('Y-m-d'),
+            'owner' => UserResource::make($this->whenLoaded('user', function () {
+                return $this->user->first();
+            })),
         ];
     }
 }

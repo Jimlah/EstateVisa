@@ -24,8 +24,16 @@ class EstateRequest extends FormRequest
     public function rules()
     {
         return [
-            'estate_name' => "required|string",
-            'estate_code' => "required|string",
+            'name' => "required|string",
+            'code' => "required|string",
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'name' => 'Estate Name',
+            'code' => 'Estate Code',
         ];
     }
 }

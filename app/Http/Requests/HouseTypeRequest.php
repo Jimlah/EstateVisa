@@ -27,11 +27,4 @@ class HouseTypeRequest extends FormRequest
             'name' => 'required',
         ];
     }
-
-    public function messages()
-    {
-        return [
-            'name.required' => 'Name is required',
-        ];
-    }
 }

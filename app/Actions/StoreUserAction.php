@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Actions;
 
 use App\Models\User;
@@ -19,10 +20,14 @@ class StoreUserAction
         return $user;
     }
 
-    public function update (Request $request, User $user)
+
+    public function update(Request $request, User $user)
     {
-        $user->email = $request->email;
-        $user->save();
+        $user->update([
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+        ]);
+
         return $user;
     }
 }

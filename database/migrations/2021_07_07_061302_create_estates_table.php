@@ -16,12 +16,10 @@ class CreateEstatesTable extends Migration
     {
         Schema::create('estates', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
             $table->string('name')->nullable();
             $table->string('code')->nullable();
             $table->string('address')->nullable();
             $table->string("logo")->nullable();
-            $table->string("status")->default(User::ACTIVE);
             $table->timestamps();
         });
     }

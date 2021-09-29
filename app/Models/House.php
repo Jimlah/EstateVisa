@@ -2,57 +2,28 @@
 
 namespace App\Models;
 
-use App\Trait\FilterByEstateTrait;
-use App\Trait\UseDisable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\HouseType;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class House extends Model
 {
-    use HasFactory, FilterByEstateTrait;
-    use UseDisable;
+    use HasFactory;
 
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
-        'estate_id',
-        'houses_types_id',
-        'code',
+        'name',
+        'address',
+        'house_type_id',
         'description'
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'created_at' => 'datetime:Y-m-d',
-        'updated_at' => 'datetime:Y-m-d'
-    ];
-
-
     public function estate()
     {
-        return $this->belongsTo(Estate::class);
+        return $this->belongsToMany(Estate::class, 'estate_houses', 'house_id', 'estate_id');
     }
 
     public function houseType()
     {
-        return $this->belongsTo(House_type::class, 'houses_types_id');
-    }
-
-    public function disableHouse()
-    {
-        $this->disable();
-    }
-
-    public function enableHouse()
-    {
-        $this->enable();
+        return $this->belongsTo(HouseType::class, 'house_type_id');
     }
 }

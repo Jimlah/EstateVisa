@@ -2,14 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\StoreProfileAction;
-use App\Actions\StoreUserAction;
-use App\Http\Requests\EstateRequest;
-use App\Http\Requests\UserEstateProfileRequest;
-use App\Http\Resources\EstateResource;
-use App\Models\Estate;
 use App\Models\User;
+use App\Models\Estate;
+use App\Models\EstateAdmin;
 use Illuminate\Http\Request;
+use App\Exports\EstateExport;
+use App\Imports\EstateImport;
+use App\Actions\StoreUserAction;
+use App\Actions\StoreProfileAction;
+use App\Http\Requests\EstateRequest;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Resources\EstateResource;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\EstateAdminResource;
+use App\Http\Requests\UserEstateProfileRequest;
+use Maatwebsite\Excel\Concerns\ToArray;
 
 class EstateController extends Controller
 {
@@ -26,9 +33,9 @@ class EstateController extends Controller
      */
     public function index()
     {
-        $data = Estate::orderBy('created_at', 'desc')->get();
-
-        return response()->json(['data' => EstateResource::collection($data)], 200);
+        // $data = EstateAdmin::owner()->orderBy('created_at')->get();
+        $data = Estate::all();
+        return $this->response_data(EstateResource::collection($data));
     }
 
     /**
@@ -41,18 +48,22 @@ class EstateController extends Controller
     {
         $user = $storeUserAction->execute($request);
 
-        $profile = $storeProfileAction->execute($request, $user);
+        $storeProfileAction->execute($request, $user);
 
         $estate = Estate::create([
-            'user_id' => $user->id,
-            'name' => $request->input('estate_name'),
-            'code' => $request->input('estate_code'),
+            'name' => $request->name,
+            'code' => $request->code,
+            'logo' => $request->logo,
+            'address' => $request->address,
         ]);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'You have successfully created a new Estate'
-        ], 201);
+        EstateAdmin::create([
+            'user_id' => $user->id,
+            'estate_id' => $estate->id,
+            'role' => User::ESTATE_SUPER_ADMIN
+        ]);
+
+        return $this->response_success("New Estate Created");
     }
 
     /**
@@ -63,10 +74,7 @@ class EstateController extends Controller
      */
     public function show(Estate $estate)
     {
-        return response()->json([
-            'data' => new EstateResource($estate)
-        ], 200);
-
+        return $this->response_data(new EstateResource($estate));
     }
 
     /**
@@ -83,11 +91,10 @@ class EstateController extends Controller
         StoreProfileAction $storeProfileAction
         )
     {
-
-        $estate->name = $request->estate_name;
-        $estate->code = $request->estate_code;
-        $estate->address = $request->estate_address;
-        $estate->logo = $request->estate_logo;
+        $estate->name = $request->name;
+        $estate->code = $request->code;
+        $estate->address = $request->address;
+        $estate->logo = $request->logo;
 
 
         $storeUserAction->update($request, $estate->user);
@@ -95,10 +102,7 @@ class EstateController extends Controller
 
         $estate->save();
 
-        return response()->json([
-            'status' => "success",
-            'message' => 'You have successfully updated Resource'
-        ]);
+        return $this->response_success("Estate Updated");
     }
 
     /**
@@ -109,12 +113,10 @@ class EstateController extends Controller
      */
     public function destroy(Estate $estate)
     {
+        $estate->estate_admin()->delete();
         $estate->delete();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'You have successfully deleted'
-        ]);
+        return $this->response_success("Estate Deleted");
     }
 
     /**
@@ -124,39 +126,49 @@ class EstateController extends Controller
      * @return \Illuminate\Http\Response
      * @throws \Exception
      * */
-    public function activate(Request $request)
+    public function activate(Estate $estate)
     {
-        $estate = Estate::findOrFail($request->id);
+        $estate->estate_admin->each(function ($admin) {
+            $admin->activate();
+        });
 
-        $estate->activateEstate();
-
-        return response()->json([
-                    'status' => 'success',
-                    'message' => 'You have successfully disable the Estate'
-                ]);
+        return $this->response_success("Estate Activated");
     }
 
-    public function suspend(Request $request)
+    public function suspend(Estate $estate)
     {
-        $estate = Estate::findOrFail($request->id);
+        $estate->estate_admin->each(function ($admin) {
+            $admin->suspend();
+        });
 
-        $estate->suspendEstate();
-
-        return response()->json([
-        'status' => 'success',
-        'message' => 'You have successfully enable the Estate'
-        ]);
+        return $this->response_success("Estate Suspended");
     }
 
-    public function deactivate(Request $request)
+    public function deactivate(Estate $estate)
     {
-        $estate = Estate::findOrFail($request->id);
+        $estate->estate_admin->each(function ($admin) {
+            $admin->deactivate();
+        });
 
-        $estate->deactivateEstate();
+        return $this->response_success("Estate Deactivated");
+    }
 
-        return response()->json([
-        'status' => 'success',
-        'message' => 'You have successfully deactivated the Estate'
+    public function import(Request $request)
+    {
+        $file = $request->file('file');
+        $excel = (new EstateImport)->queue($file->getPath());
+        return $this->response_success('Estate Imported');
+    }
+
+    public function export()
+    {
+        $filename = 'laravel-excel/estates.xlsx';
+        $excel =  Excel::store(new EstateExport(), $filename);
+
+        $url = Storage::url("local/" . $filename);
+
+        return $this->response_data([
+            'url' => $url,
         ]);
     }
 }

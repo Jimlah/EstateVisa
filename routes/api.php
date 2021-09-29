@@ -1,17 +1,13 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HouseController;
 use App\Http\Controllers\EstateController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\HouseTypeController;
-use App\Http\Controllers\UsersHouseController;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\EstateAdminController;
+use App\Http\Controllers\EstateHouseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,19 +19,36 @@ use Illuminate\Support\Facades\Auth;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::macro(
+    'resourceWithExtra',
+    function ($name, $controller, $model) {
+        Route::patch($name . '/{' . $model . ':id}/activate', [$controller, 'activate'])->name($name . '.activate');
+        Route::patch($name . '/{' . $model . ':id}/deactivate', [$controller, 'deactivate'])->name($name . '.deactivate');
+        Route::patch($name . '/{' . $model . ':id}/suspend', [$controller, 'suspend'])->name($name . '.suspend');
+        Route::get($name . '/export', [$controller, 'export'])->name($name . '.export');
+        Route::post($name . '/import', [$controller, 'import'])->name($name . '.import');
+        Route::apiResource($name, $controller);
+    }
+);
+
+
 Route::middleware(['json.response', 'cors'])->group(function () {
 
     Route::group([], function () {
-    // public routes
-    Route::post('/login', [AuthController::class, 'login'])->name('login.api');
-    Route::post('/register', [AuthController::class, 'register'])->name('register.api');
-    Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password.api');
-    Route::post('/reset-password', [AuthController::class, 'passwordReset'])->name('password.reset');
+        // public routes
+        Route::post('/login', [AuthController::class, 'login'])
+            ->middleware('isDeactivated')
+            ->name('login.api');
+
+        Route::post('/register', [AuthController::class, 'register'])->name('register.api');
+        Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password.api');
+        Route::post('/reset-password', [AuthController::class, 'passwordReset'])->name('password.reset');
     });
 
     Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verify'])
-    ->middleware(['signed'])
-    ->name('verification.verify');
+        ->middleware(['signed'])
+        ->name('verification.verify');
 
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout.api');
@@ -48,27 +61,28 @@ Route::middleware(['json.response', 'cors'])->group(function () {
 
         Route::get('/email/verify', function () {
             return response()
-                    ->json([
-                        'message' => 'Verification email has been sent!',
-                        'status' => "success"
-                    ]);
+                ->json([
+                    'message' => 'Verification email has been sent!',
+                    'status' => "success"
+                ]);
         })->middleware('auth')->name('verification.notice');
 
+        Route::resourceWithExtra("estates", EstateController::class, 'estate');
+        Route::resourceWithExtra("admins", AdminController::class, 'admin');
+        Route::resourceWithExtra("estate-admins", EstateAdminController::class, 'estateAdmin');
+        Route::resource('house-types', HouseTypeController::class);
+        // Route::resource('houses', HouseController::class);
+        Route::resource('estate-houses', EstateHouseController::class);
 
-        Route::apiResource("estates", EstateController::class);
-        Route::patch('estates/{id}/activate', [EstateController::class, 'activate'])->name('estates.activate');
-        Route::patch('estates/{id}/deactivate', [EstateController::class, 'deactivate'])->name('estates.deactivate');
-        Route::patch('estates/{id}/suspend', [EstateController::class, 'suspend'])->name('estates.suspend');
-
-        Route::apiResource('users', UserController::class);
-        Route::apiResource('profiles', ProfileController::class);
-        Route::apiResource("houses", HouseController::class);
-        Route::apiResource('house-types', HouseTypeController::class);
-        Route::apiResource("users-house", UsersHouseController::class);
-
-    Route::apiResource('visitors', VisitorController::class);
-    // our routes to be protected will go in here
+        // our routes to be protected will go in here
     });
-
-
 });
+
+Route::fallback(
+    function () {
+        return response()->json([
+            'message' => 'Page Not Found.',
+            'status' => 'error'
+        ], 404);
+    }
+);
