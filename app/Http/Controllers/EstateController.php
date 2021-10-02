@@ -132,6 +132,8 @@ class EstateController extends Controller
             $admin->activate();
         });
 
+        $estate->activate();
+
         return $this->response_success("Estate Activated");
     }
 
@@ -141,6 +143,8 @@ class EstateController extends Controller
             $admin->suspend();
         });
 
+        $estate->suspend();
+
         return $this->response_success("Estate Suspended");
     }
 
@@ -149,6 +153,7 @@ class EstateController extends Controller
         $estate->estate_admin->each(function ($admin) {
             $admin->deactivate();
         });
+        $estate->deactivate();
 
         return $this->response_success("Estate Deactivated");
     }

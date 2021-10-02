@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Estate extends Model
 {
     use HasFactory;
+    use UseDisable;
 
 
     protected $with = ['user'];
