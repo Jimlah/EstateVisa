@@ -89,8 +89,7 @@ class EstateController extends Controller
         Estate $estate,
         StoreUserAction $storeUserAction,
         StoreProfileAction $storeProfileAction
-        )
-    {
+    ) {
         $estate->name = $request->name;
         $estate->code = $request->code;
         $estate->address = $request->address;
