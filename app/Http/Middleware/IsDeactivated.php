@@ -18,18 +18,18 @@ class IsDeactivated
     public function handle(Request $request, Closure $next)
     {
         $response = $next($request);
-        if ($request->user() !== null) {
-            $user = User::find($request->user()->id);
-            if ($user->hasRole(User::ESTATE_SUPER_ADMIN)) {
-                if($user->estate->status === User::DEACTIVATED) {
-                    return response()->json([
-                        'message' => 'Your account has been deactivated. Please contact your administration for more
-                        information.',
-                        'status' => 'error'
-                    ], 422);
-                }
-            }
-        }
+        // if ($request->user() !== null) {
+        //     $user = User::find($request->user()->id);
+        //     if ($user->hasRole(User::ESTATE_SUPER_ADMIN)) {
+        //         if($user->estate->status === User::DEACTIVATED) {
+        //             return response()->json([
+        //                 'message' => 'Your account has been deactivated. Please contact your administration for more
+        //                 information.',
+        //                 'status' => 'error'
+        //             ], 422);
+        //         }
+        //     }
+        // }
         return $response;
     }
 }
