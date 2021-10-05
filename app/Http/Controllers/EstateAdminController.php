@@ -31,7 +31,7 @@ class EstateAdminController extends Controller
      */
     public function index()
     {
-        $estateAdmin = EstateAdmin::with(['user', 'user.profile'])->get();
+        $estateAdmin = EstateAdmin::estateOnly()->with(['user', 'user.profile'])->get();
 
         return $this->response_data(EstateAdminResource::collection($estateAdmin));
     }
