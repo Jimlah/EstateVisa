@@ -52,7 +52,7 @@ class AuthController extends Controller
         $response = ["message" => 'Email or Password Invalid', 'status' => 'error'];
 
         return response()->json($response, 200);
-   }
+    }
 
     public function logout(Request $request)
     {
@@ -77,34 +77,4 @@ class AuthController extends Controller
     {
         return $request->query('token');
     }
-
-    public function verify(Request $request )
-    {
-        $user = User::findOrFail($request->route('id'));
-
-        if ($user->hasVerifiedEmail()) {
-            return redirect(env("FRONT_URL") . ":" . env("FRONT_PORT") . "/auth/email/verified")->with(['message' =>
-            'Email is already verified',
-            'status' => "warning"], 200);
-        }
-
-        if ($user->markEmailAsVerified()) {
-            event(new Verified($user));
-            return redirect(env("FRONT_URL") . ":" . env("FRONT_PORT") . "/auth/email/verified")
-                ->with(['message' => 'Email is
-            successfully verified', 'status' => "success"], 200);
-        }
-
-
-        return response()->json(['message' => 'Email successfully verified.', 'status' => "success"], 200);
-    }
-
-    public function resendEmailVerify(Request $request)
-    {
-        $request->user()->sendEmailVerificationNotification();
-
-        return response()->json(['message' => 'Verification email successfully sent.', 'status' => "success"], 200);
-
-   }
-
 }

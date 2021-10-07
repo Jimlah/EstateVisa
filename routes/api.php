@@ -46,18 +46,11 @@ Route::middleware(['json.response', 'cors'])->group(function () {
         Route::post('/reset-password', [AuthController::class, 'passwordReset'])->name('password.reset');
     });
 
-    Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verify'])
-        ->middleware(['signed'])
-        ->name('verification.verify');
-
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout.api');
 
-    Route::post('/email/verification-notification', [AuthController::class, 'resendEmailVerify'])
-        ->middleware(['auth:api', 'throttle:6,1'])
-        ->name('verification.send');
 
-    Route::middleware(['auth:api', 'verified'])->group(function () {
+    Route::middleware(['auth:api'])->group(function () {
 
         Route::get('/email/verify', function () {
             return response()

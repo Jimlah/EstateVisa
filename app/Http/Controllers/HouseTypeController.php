@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\HouseTypeRequest;
 use App\Http\Resources\EstateResource;
+use App\Http\Resources\HouseTypeResource;
 use App\Models\HouseType;
 use Illuminate\Http\Request;
 
@@ -25,7 +26,7 @@ class HouseTypeController extends Controller
     {
         $houseTypes = HouseType::estateOnly()->get();
 
-        return $this->response_data(EstateResource::collection($houseTypes));
+        return $this->response_data(HouseTypeResource::collection($houseTypes));
     }
 
     /**
@@ -52,7 +53,7 @@ class HouseTypeController extends Controller
      */
     public function show(HouseType $houseType)
     {
-        //
+        return $this->response_data(new HouseTypeResource($houseType));
     }
 
     /**
