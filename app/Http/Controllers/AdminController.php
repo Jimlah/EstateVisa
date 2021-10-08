@@ -11,6 +11,7 @@ use App\Http\Requests\FileRequest;
 use App\Actions\StoreProfileAction;
 // use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\AdminRequest;
+use App\Http\Resources\AdminCollection;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Resources\AdminResource;
 use App\Imports\AdminImport;
@@ -34,9 +35,9 @@ class AdminController extends Controller
      */
     public function index()
     {
-        $admins = Admin::with(['user', 'user.profile'])->get();
+        $admins = Admin::with(['user', 'user.profile'])->paginate(10);
 
-        return $this->response_data(AdminResource::collection($admins));
+        return $this->response_data(new AdminCollection($admins));
     }
 
     /**

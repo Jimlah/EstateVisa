@@ -38,7 +38,6 @@ class EstateTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJson(fn (AssertableJson $json) => $json->has('data')->etc());
-        $response->dump();
     }
 
     public function test_api_admin_can_get_all_estate()
