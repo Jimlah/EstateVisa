@@ -93,71 +93,71 @@ class HouseTest extends TestCase
         ]);
     }
 
-    public function test_api_super_admin_can_update_a_house()
-    {
+    // public function test_api_super_admin_can_update_a_house()
+    // {
 
-        $house = static::$estateSuperAdmin->estate[0]->houses[0];
-        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
-            ->putJson(route('estate-houses.update', $house->id), [
-                'name' => 'Test House',
-                'address' => 'Test Address',
-                'description' => 'Test Description',
-                'house_type_id' => $house->house_type_id,
-            ]);
+    //     $house = static::$estateSuperAdmin->estate[0]->houses[0];
+    //     $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+    //         ->putJson(route('estate-houses.update', $house->id), [
+    //             'name' => 'Test House',
+    //             'address' => 'Test Address',
+    //             'description' => 'Test Description',
+    //             'house_type_id' => $house->house_type_id,
+    //         ]);
 
-        $response->assertStatus(200)
-            ->assertJson(
-                fn (AssertableJson $json) => $json->has('status')->has('message')->etc()
-            );
+    //     $response->assertStatus(200)
+    //         ->assertJson(
+    //             fn (AssertableJson $json) => $json->has('status')->has('message')->etc()
+    //         );
 
-        $this->assertDatabaseHas('houses', [
-            'name' => 'Test House',
-            'address' => 'Test Address',
-            'description' => 'Test Description',
-            'house_type_id' => $house->house_type_id,
-        ]);
-    }
+    //     $this->assertDatabaseHas('houses', [
+    //         'name' => 'Test House',
+    //         'address' => 'Test Address',
+    //         'description' => 'Test Description',
+    //         'house_type_id' => $house->house_type_id,
+    //     ]);
+    // }
 
-    public function test_api_admin_can_update_a_house()
-    {
-        $house = static::$estateAdmin->estate[0]->houses[0];
-        $response = $this->actingAs(static::$estateAdmin, 'api')
-            ->putJson(route('estate-houses.update', $house->id), [
-                'name' => 'Test House',
-                'address' => 'Test Address',
-                'description' => 'Test Description',
-                'house_type_id' => $house->house_type_id,
-            ]);
+    // public function test_api_admin_can_update_a_house()
+    // {
+    //     $house = static::$estateAdmin->estate[0]->houses[0];
+    //     $response = $this->actingAs(static::$estateAdmin, 'api')
+    //         ->putJson(route('estate-houses.update', $house->id), [
+    //             'name' => 'Test House',
+    //             'address' => 'Test Address',
+    //             'description' => 'Test Description',
+    //             'house_type_id' => $house->house_type_id,
+    //         ]);
 
-        $response->assertStatus(200)
-            ->assertJson(
-                fn (AssertableJson $json) => $json->has('status')->has('message')->etc()
-            );
+    //     $response->assertStatus(200)
+    //         ->assertJson(
+    //             fn (AssertableJson $json) => $json->has('status')->has('message')->etc()
+    //         );
 
-        $this->assertDatabaseHas('houses', [
-            'id' => $house->id,
-            'name' => 'Test House',
-            'address' => 'Test Address',
-            'description' => 'Test Description',
-            'house_type_id' => $house->house_type_id,
-        ]);
-    }
+    //     $this->assertDatabaseHas('houses', [
+    //         'id' => $house->id,
+    //         'name' => 'Test House',
+    //         'address' => 'Test Address',
+    //         'description' => 'Test Description',
+    //         'house_type_id' => $house->house_type_id,
+    //     ]);
+    // }
 
-    public function test_api_super_admin_can_delete_a_house()
-    {
-        $house = $this->getHouse(static::$estateSuperAdmin);
-        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
-            ->deleteJson(route('estate-houses.destroy', $house->id));
+    // public function test_api_super_admin_can_delete_a_house()
+    // {
+    //     $house = $this->getHouse(static::$estateSuperAdmin);
+    //     $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+    //         ->deleteJson(route('estate-houses.destroy', $house->id));
 
-        $response->assertStatus(200)
-            ->assertJson(
-                fn (AssertableJson $json) => $json->has('status')->has('message')->etc()
-            );
+    //     $response->assertStatus(200)
+    //         ->assertJson(
+    //             fn (AssertableJson $json) => $json->has('status')->has('message')->etc()
+    //         );
 
-        $this->assertDatabaseMissing('houses', [
-            'id' => $house->id,
-        ]);
-    }
+    //     $this->assertDatabaseMissing('houses', [
+    //         'id' => $house->id,
+    //     ]);
+    // }
 
 
     public function getHouse($admin)
