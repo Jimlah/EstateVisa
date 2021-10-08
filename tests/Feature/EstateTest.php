@@ -10,9 +10,9 @@ use App\Models\Profile;
 use App\Models\EstateAdmin;
 use App\Exports\EstateExport;
 use App\Imports\EstateImport;
-use Database\Seeders\EstateAdminSeeder;
 use Illuminate\Http\UploadedFile;
 use Maatwebsite\Excel\Facades\Excel;
+use Database\Seeders\EstateAdminSeeder;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -122,6 +122,8 @@ class EstateTest extends TestCase
     {
         $data = array_merge(
             Estate::factory()->make()->toArray(),
+            User::factory()->make()->toArray(),
+            Profile::factory()->make()->toArray(),
         );
 
         $estate = Estate::find($this->faker()->numberBetween(1, Estate::all()->count()));

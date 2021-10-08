@@ -49,7 +49,7 @@ class Estate extends Model
     public function estateSuperAdmin()
     {
         return $this->hasMany(EstateAdmin::class, 'estate_id')
-            ->where('estate_admins.role', '=', User::ESTATE_SUPER_ADMIN)->first();
+            ->where('estate_admins.role', '=', User::ESTATE_SUPER_ADMIN);
     }
 
     public function houseTypes()

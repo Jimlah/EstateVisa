@@ -95,9 +95,10 @@ class EstateController extends Controller
         $estate->address = $request->address;
         $estate->logo = $request->logo;
 
+        $user = $estate->estateSuperAdmin->first()->user;
 
-        $storeUserAction->update($request, $estate->user);
-        $storeProfileAction->update($request, $estate->user->profile);
+        $storeUserAction->update($request, $user);
+        $storeProfileAction->update($request, $user->profile);
 
         $estate->save();
 

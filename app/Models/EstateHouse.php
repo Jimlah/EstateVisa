@@ -16,7 +16,7 @@ class EstateHouse extends Model
 
     public function scopeEstateOnly($query)
     {
-        return $query->where('estate_id', '!=', auth()->user()->estate[0]->id);
+        return $query->where('estate_id', auth()->user()->estate[0]->id);
     }
 
     public function estate()
