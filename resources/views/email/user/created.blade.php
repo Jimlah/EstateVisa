@@ -1,13 +1,13 @@
 @component('mail::message')
-# Account Creation
+    # Login Details
 
-Hello User, thank you for signing up on the platform.
+    Hello User,
 
-Below is your Login details
+    Your login details are as follows:
 
-Email: {{$user->email}}<br>
-Password: {{$password}}
+    Email: {{ $user->email }}<br>
+    Password: {{ $password }}
 
-Thanks,<br>
-{{ config('app.name') }}
+    Thanks,<br>
+    {{ config('app.name') }}
 @endcomponent
