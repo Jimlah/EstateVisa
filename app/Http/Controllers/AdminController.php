@@ -103,7 +103,7 @@ class AdminController extends Controller
         $this->authorize('activate', $admin);
         $admin->activate();
 
-        return $this->response_success('Admin has beed activated');
+        return $this->response_success('Admin has been activated');
     }
 
     public function deactivate(Admin $admin)
