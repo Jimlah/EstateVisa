@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Admin;
-use App\Models\Estate;
 use App\Models\EstateAdmin;
 use Illuminate\Http\Request;
 use App\Actions\StoreUserAction;
 use App\Exports\EstateAdminExport;
 use App\Imports\EstateAdminImport;
-use Tests\Feature\EstateAdminTest;
 use App\Actions\StoreProfileAction;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\EstateAdminRequest;
+use App\Http\Resources\EstateAdminCollection;
 use App\Http\Resources\EstateAdminResource;
 
 class EstateAdminController extends Controller
@@ -31,9 +29,9 @@ class EstateAdminController extends Controller
      */
     public function index()
     {
-        $estateAdmin = EstateAdmin::estateOnly()->with(['user', 'user.profile'])->get();
+        $estateAdmin = EstateAdmin::estateOnly()->with(['user', 'user.profile'])->paginate(10);
 
-        return $this->response_data(EstateAdminResource::collection($estateAdmin));
+        return $this->response_data(new EstateAdminCollection($estateAdmin));
     }
 
     /**
