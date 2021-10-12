@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\EstateHouseRequest;
-use App\Http\Resources\EstateHouseResource;
-use App\Models\Estate;
+use App\Http\Resources\EstateHouseCollection;
 use App\Models\EstateHouse;
 use App\Models\House;
-use Illuminate\Http\Request;
 
 class EstateHouseController extends Controller
 {
@@ -18,10 +16,12 @@ class EstateHouseController extends Controller
      */
     public function index()
     {
-        $estateHouses = EstateHouse::estateOnly()->with(['estate', 'house', 'house.houseType'])->get();
+        $estateHouses = EstateHouse::estateOnly()
+            ->with(['estate', 'house', 'house.houseType'])
+            ->paginate(10);
 
 
-        return $this->response_data(EstateHouseResource::collection($estateHouses));
+        return $this->response_data(new EstateHouseCollection($estateHouses));
     }
 
     /**
