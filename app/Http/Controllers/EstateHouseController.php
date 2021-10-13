@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EstateHouseRequest;
 use App\Http\Resources\EstateHouseCollection;
+use App\Http\Resources\EstateHouseResource;
 use App\Models\EstateHouse;
 use App\Models\House;
 
@@ -39,10 +40,8 @@ class EstateHouseController extends Controller
             'house_type_id' => $request->house_type_id
         ]);
 
-        $estateHouse = EstateHouse::create([
-            'estate_id' => auth()->user()->estate[0]->id,
-            'house_id' => $house->id
-        ]);
+        $house->estate()->attach(auth()->user()->estate[0]->id);
+
 
         return $this->response_success("New House Created");
     }
@@ -55,7 +54,7 @@ class EstateHouseController extends Controller
      */
     public function show(EstateHouse $estateHouse)
     {
-        //
+        return $this->response_data(EstateHouseResource::make($estateHouse));
     }
 
     /**
@@ -88,7 +87,6 @@ class EstateHouseController extends Controller
      */
     public function destroy(EstateHouse $estateHouse)
     {
-        dump($estateHouse);
         $estateHouse->delete();
 
         return $this->response_success("House Deleted");
