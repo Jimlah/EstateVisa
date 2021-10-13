@@ -100,11 +100,11 @@ class EstateAdminTest extends TestCase
             'email' => $attributes['email']
         ]);
 
-        $this->assertDatabaseHas('profiles', [
-            'firstname' => $attributes['firstname'],
-            'lastname' => $attributes['lastname'],
-            'phone_number' => $attributes['phone_number']
-        ]);
+        // $this->assertDatabaseHas('profiles', [
+        //     'firstname' => $attributes['firstname'],
+        //     'lastname' => $attributes['lastname'],
+        //     'phone_number' => $attributes['phone_number']
+        // ]);
     }
 
     public function test_api_estate_super_admin_can_delete_a_single_admin_for_his_estate()
