@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\House;
+use App\Models\HouseType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class HouseFactory extends Factory
