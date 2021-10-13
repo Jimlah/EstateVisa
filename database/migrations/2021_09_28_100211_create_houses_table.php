@@ -17,8 +17,8 @@ class CreateHousesTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('address');
-            $table->foreignId('house_type_id');
-            $table->string('description')->nullable();
+            $table->foreignId('house_type_id')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
