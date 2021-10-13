@@ -9,9 +9,11 @@ use App\Models\HouseType;
 use App\Models\EstateAdmin;
 use App\Models\House;
 use Illuminate\Database\Seeder;
+use Illuminate\Foundation\Testing\WithFaker;
 
 class EstateAdminSeeder extends Seeder
 {
+    use WithFaker;
 
     /**
      * Run the database seeds.
@@ -20,23 +22,17 @@ class EstateAdminSeeder extends Seeder
      */
     public function run()
     {
-        // Fix a bug here
-        User::factory()->count(10)->create()->each(function ($user) {
-            $user->profile()->save(Profile::factory()->make());
-            $estate = Estate::factory()->create();
-            $estate->houseTypes()->saveMany(HouseType::factory()->count(4)->make())
-                ->each(function ($houseType) use ($estate) {
-                    $house = House::factory()->create([
-                        'house_type_id' => $houseType->id
-                    ]);
-                    $houseType->estate->houses()->attach($house->id);
-                });
+        Estate::all()->each(function (Estate $estate) {
+            $estate
+                ->estate_admin()
+                ->save(EstateAdmin::factory()->superAdmin()->make())
+                ->user->profile()->save(Profile::factory()->make());
+        });
 
-            $estate->user()->attach($user->id, ['role' => User::ESTATE_SUPER_ADMIN]);
-            $estate->admin()->saveMany(User::factory()->count(4)->make(), ['role' => User::ESTATE_ADMIN])
-                ->each(function ($user) use ($estate) {
-                    $user->profile()->save(Profile::factory()->make());
-                });
+        Estate::all()->each(function (Estate $estate) {
+            $estate
+                ->estate_admin()
+                ->save(EstateAdmin::factory()->make());
         });
     }
 }
