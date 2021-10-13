@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Symfony\Component\Yaml\Exception\DumpException;
 
 class EstateAdminTest extends TestCase
 {
@@ -31,7 +32,6 @@ class EstateAdminTest extends TestCase
      */
     public function test_api_estate_super_admin_can_view_all_admin()
     {
-        $this->withExceptionHandling();
         $response = $this->actingAs(static::$estateSuperAdmin, 'api')
             ->getJson(route('estate-admins.index'));
 

@@ -49,12 +49,13 @@ abstract class TestCase extends BaseTestCase
 
     public function create_estate_super_admin()
     {
-        return Estate::find($this->faker()->numberBetween(1, Estate::count()))->user->first();
+        $estateAdmin = Estate::all()->random()->estateSuperAdmin->first()->user;
+        return $estateAdmin;
     }
 
     public function create_estate_admin()
     {
-        return Estate::find($this->faker()->numberBetween(1, Estate::count()))->user()->where('role', User::ESTATE_ADMIN)->get()->random();
+        return Estate::all()->random()->estate_admin()->latest()->first()->user;
     }
 
     private function setSuperAdmin()
