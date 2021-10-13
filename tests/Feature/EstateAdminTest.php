@@ -207,8 +207,10 @@ class EstateAdminTest extends TestCase
     public function test_api_estate_super_admin_can_import()
     {
         Excel::fake();
+        Storage::fake('excel');
         $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
-        $uploadedFile = new UploadedFile(Storage::path('test\estateAdmins.xlsx'), 'estateAdmins.xlsx', null, null, true);
+        // $uploadedFile = new UploadedFile(Storage::path('test\estateAdmins.xlsx'), 'estateAdmins.xlsx', null, null, true);
+        $uploadedFile = UploadedFile::fake()->create('estateAdmins.xlsx');
 
         $response = $this->actingAs(static::$estateSuperAdmin, 'api')
             ->postJson(route('estate-admins.import', $estateAdmin['id']), ['file' => $uploadedFile]);

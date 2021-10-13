@@ -72,7 +72,7 @@ class EstateAdminController extends Controller
     public function update(EstateAdminRequest $request, EstateAdmin $estateAdmin, StoreUserAction $storeUserAction, StoreProfileAction $storeProfileAction)
     {
         $storeUserAction->update($request, $estateAdmin->user);
-        $storeProfileAction->update($request, $estateAdmin->user->profile);
+        $profile = $storeProfileAction->update($request, $estateAdmin->user->profile);
 
         return $this->response_success('Admin has been updated');
     }

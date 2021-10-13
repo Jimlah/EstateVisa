@@ -238,8 +238,10 @@ class AdminTest extends TestCase
     {
 
         Excel::fake();
+        Storage::fake('excels');
 
-        $uploadedFile = new UploadedFile(Storage::path('test\admins.xlsx'), 'admins.xlsx', null, null, true);
+        // $uploadedFile = new UploadedFile(Storage::path('test/admins.xlsx'), 'admins.xlsx', null, null, true);
+        $uploadedFile = UploadedFile::fake()->create('admins.xlsx');
 
         $response = $this->actingAs(static::$superAdmin, 'api')
             ->postJson(route('admins.import'), [
