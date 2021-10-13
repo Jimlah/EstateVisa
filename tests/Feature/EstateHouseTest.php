@@ -126,7 +126,6 @@ class EstateHouseTest extends TestCase
 
     public function test_api_estate_admin_can_update_a_house()
     {
-        $this->withoutExceptionHandling();
         $house = static::$estateAdmin->estate[0]->houses[0];
         $response = $this->actingAs(static::$estateAdmin, 'api')
             ->putJson(route('estate-houses.update', $house->id), [
@@ -148,5 +147,31 @@ class EstateHouseTest extends TestCase
             'description' => 'Test Description',
             'house_type_id' => $house->house_type_id,
         ]);
+    }
+
+    public function test_api_estate_super_admin_can_delete_a_house()
+    {
+        $house = static::$estateSuperAdmin->estate[0]->houses[0];
+        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+            ->deleteJson(route('estate-houses.destroy', $house->id));
+
+        $response->assertStatus(200)
+            ->assertJson(
+                fn (AssertableJson $json) => $json->has('status')->has('message')->etc()
+            );
+        $this->assertDeleted($house);
+    }
+
+    public function test_api_super_admin_can_delete_a_house()
+    {
+        $house = static::$estateAdmin->estate[0]->houses[0];
+        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+            ->deleteJson(route('estate-houses.destroy', $house->id));
+
+        $response->assertStatus(200)
+            ->assertJson(
+                fn (AssertableJson $json) => $json->has('status')->has('message')->etc()
+            );
+        $this->assertDeleted($house);
     }
 }
