@@ -23,21 +23,5 @@ class AdminSeeder extends Seeder
                 $u->admin()->save(Admin::factory()->make());
                 $u->profile()->save(Profile::factory()->make());
             });
-
-        User::factory()
-            ->count(10)
-            ->create()
-            ->each(function ($u) {
-                $u->admin()->save(Admin::factory()->make(['status' => User::SUSPENDED]));
-                $u->profile()->save(Profile::factory()->make());
-            });
-
-        User::factory()
-            ->count(10)
-            ->create()
-            ->each(function ($u) {
-                $u->admin()->save(Admin::factory()->make(['status' => User::DEACTIVATED]));
-                $u->profile()->save(Profile::factory()->make());
-            });
     }
 }
