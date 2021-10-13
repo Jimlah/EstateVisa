@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
         // Profile::factory(10)->create();
 
         Artisan::call('passport:install');
+        $this->command->info('Passport installed successfully.');
 
         $this->call([
             AdminSeeder::class,
