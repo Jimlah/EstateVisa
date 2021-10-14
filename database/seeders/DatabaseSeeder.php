@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Admin;
 use App\Models\Estate;
+use App\Models\House;
+use App\Models\HouseOwner;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Database\Seeders\EstateHouseSeeder;
@@ -35,6 +37,7 @@ class DatabaseSeeder extends Seeder
             EstateAdminSeeder::class,
             HouseTypeSeeder::class,
             EstateHouseSeeder::class,
+            HouseOwnerSeeder::class,
         ]);
         $this->command->info('Seeded: Admin, Estate, EstateAdmin, HouseType, EstateHouse');
 
@@ -61,5 +64,10 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password')
         ]);
         $this->command->info('Created Estate Admin admin@estate.com');
+
+        HouseOwner::find(1)->user()->update([
+            'email' => 'houseowner@house.com',
+            'password' => bcrypt('password')
+        ]);
     }
 }
