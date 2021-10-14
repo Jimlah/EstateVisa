@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\StoreProfileAction;
+use App\Actions\StoreUserAction;
 use App\Http\Resources\HouseResource;
 use App\Models\House;
 use Illuminate\Http\Request;
@@ -49,10 +51,17 @@ class HouseController extends Controller
      * @param  \App\Models\House  $house
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, House $house)
+    public function update(Request $request, House $house, StoreUserAction $storeUserAction, StoreProfileAction $storeProfileAction)
     {
-        //
+        $user = $storeUserAction->execute($request);
+        $profile = $storeProfileAction->execute($request, $user);
+
+
+        $house->user()->attach($user->id, ['estate_id' => $house->estate_id]);
+
+        return $this->response_success('User attached to House successfully');
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -62,6 +71,8 @@ class HouseController extends Controller
      */
     public function destroy(House $house)
     {
-        //
+        $house->user()->detach();
+
+        return $this->response_success('User detached from House successfully');
     }
 }
