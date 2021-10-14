@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HouseController;
 use App\Http\Controllers\EstateController;
 use App\Http\Controllers\HouseTypeController;
+use App\Http\Controllers\HouseOwnerController;
 use App\Http\Controllers\EstateAdminController;
 use App\Http\Controllers\EstateHouseController;
 
@@ -64,8 +65,10 @@ Route::middleware(['json.response', 'cors'])->group(function () {
         Route::resourceWithExtra("admins", AdminController::class, 'admin');
         Route::resourceWithExtra("estate-admins", EstateAdminController::class, 'estateAdmin');
         Route::apiResource('house-types', HouseTypeController::class);
-        // Route::resource('houses', HouseController::class);
+
         Route::apiResource('estate-houses', EstateHouseController::class);
+        Route::apiResource('house-owner', HouseOwnerController::class)->only(['index', 'show']);
+        Route::apiResource('house', HouseController::class)->only(['update', 'destroy']);
 
         // our routes to be protected will go in here
     });
