@@ -23,6 +23,7 @@ class AdminFactory extends Factory
     public function definition()
     {
         return [
+            'user_id' => User::factory()->create()->id,
             'status' => $this->faker->randomElement(
                 [
                     User::ACTIVE,
