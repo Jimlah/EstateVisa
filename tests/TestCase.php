@@ -5,6 +5,7 @@ namespace Tests;
 use App\Models\User;
 use App\Models\Admin;
 use App\Models\Estate;
+use App\Models\HouseOwner;
 use App\Models\Profile;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -19,6 +20,7 @@ abstract class TestCase extends BaseTestCase
     protected static $admin = null;
     protected static $estateSuperAdmin = null;
     protected static $estateAdmin = null;
+    protected static $houseOwner = null;
 
     protected function setUp(): void
     {
@@ -30,6 +32,7 @@ abstract class TestCase extends BaseTestCase
         $this->setAdmin();
         $this->setEstateSuperAdmin();
         $this->setEstateAdmin();
+        $this->setHouseOwner();
     }
 
     protected function create_super_admin()
@@ -56,6 +59,11 @@ abstract class TestCase extends BaseTestCase
     public function create_estate_admin()
     {
         return Estate::all()->random()->estate_admin()->latest()->first()->user;
+    }
+
+    public function create_house_owner()
+    {
+        return HouseOwner::all()->random()->user;
     }
 
     private function setSuperAdmin()
@@ -92,5 +100,14 @@ abstract class TestCase extends BaseTestCase
         }
 
         return self::$estateAdmin;
+    }
+
+    private function setHouseOwner()
+    {
+        if (is_null(self::$houseOwner)) {
+            self::$houseOwner = $this->create_house_owner();
+        }
+
+        return self::$houseOwner;
     }
 }
