@@ -12,7 +12,9 @@ class Admin extends Model
     use HasFactory;
     use UseDisable;
 
-    protected $with = ['user'];
+    protected $fillable = [
+        'status',
+    ];
 
     public function user()
     {

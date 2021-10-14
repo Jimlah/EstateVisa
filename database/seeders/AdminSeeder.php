@@ -16,11 +16,6 @@ class AdminSeeder extends Seeder
      */
     public function run()
     {
-        User::factory()
-            ->count(10)
-            ->create()
-            ->each(function ($u) {
-                $u->admin()->save(Admin::factory()->make());
-            });
+        Admin::factory(5)->create();
     }
 }
