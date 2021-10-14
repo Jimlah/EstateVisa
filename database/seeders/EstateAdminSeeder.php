@@ -25,15 +25,13 @@ class EstateAdminSeeder extends Seeder
         Estate::all()->each(function (Estate $estate) {
             $estate
                 ->estate_admin()
-                ->save(EstateAdmin::factory()->superAdmin()->make())
-                ->user->profile()->save(Profile::factory()->make());
+                ->save(EstateAdmin::factory()->superAdmin()->make());
         });
 
         Estate::all()->each(function (Estate $estate) {
             $estate
                 ->estate_admin()
-                ->save(EstateAdmin::factory()->make())
-                ->user->profile()->save(Profile::factory()->make());
+                ->save(EstateAdmin::factory()->make());
         });
     }
 }
