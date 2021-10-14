@@ -5,6 +5,7 @@ namespace Tests;
 use App\Models\User;
 use App\Models\Admin;
 use App\Models\Estate;
+use App\Models\House;
 use App\Models\HouseOwner;
 use App\Models\Profile;
 use Illuminate\Support\Facades\Artisan;
@@ -25,7 +26,6 @@ abstract class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->withExceptionHandling();
         Artisan::call('passport:install');
         $this->seed();
         $this->setSuperAdmin();
@@ -52,18 +52,17 @@ abstract class TestCase extends BaseTestCase
 
     public function create_estate_super_admin()
     {
-        $estateAdmin = Estate::all()->random()->estateSuperAdmin->first()->user;
-        return $estateAdmin;
+        return Estate::all()->random()->admins()->first()->user;
     }
 
     public function create_estate_admin()
     {
-        return Estate::all()->random()->estate_admin()->latest()->first()->user;
+        return Estate::all()->random()->admins()->latest()->first()->user;
     }
 
     public function create_house_owner()
     {
-        return HouseOwner::all()->random()->user;
+        return House::all()->random()->user;
     }
 
     private function setSuperAdmin()
