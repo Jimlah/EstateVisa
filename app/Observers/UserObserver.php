@@ -21,7 +21,6 @@ class UserObserver
     public function created(User $user)
     {
         $password_token =Str::random(8);
-        // dd($password_token);
         $user->password = Hash::make($password_token);
         $user->save();
 
