@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\HouseOwner;
 use Illuminate\Http\Request;
+use App\Http\Resources\HouseOwnerCollection;
+use App\Http\Resources\HouseOwnerResource;
 
 class HouseOwnerController extends Controller
 {
@@ -14,7 +16,9 @@ class HouseOwnerController extends Controller
      */
     public function index()
     {
-        //
+        $houseOwner = HouseOwner::with(['house', 'user', 'user.profile'])->paginate(10);
+
+        return $this->response_data(new HouseOwnerCollection($houseOwner));
     }
 
     /**
@@ -36,7 +40,7 @@ class HouseOwnerController extends Controller
      */
     public function show(HouseOwner $houseOwner)
     {
-        //
+        return $this->response_data(HouseOwnerResource::make($houseOwner));
     }
 
     /**
