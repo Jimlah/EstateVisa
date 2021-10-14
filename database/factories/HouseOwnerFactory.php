@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\HouseOwner;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class HouseOwnerFactory extends Factory
@@ -22,7 +23,8 @@ class HouseOwnerFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'user_id' => User::factory()->create()->id,
+            'status' =>  $this->faker->randomElement([User::ACTIVE, USER::SUSPENDED, User::DEACTIVATED])
         ];
     }
 }
