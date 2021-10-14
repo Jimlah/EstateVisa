@@ -21,7 +21,6 @@ class AdminSeeder extends Seeder
             ->create()
             ->each(function ($u) {
                 $u->admin()->save(Admin::factory()->make());
-                $u->profile()->save(Profile::factory()->make());
             });
     }
 }
