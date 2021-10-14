@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\EstateAdminRequest;
 use App\Http\Resources\EstateAdminCollection;
 use App\Http\Resources\EstateAdminResource;
+use App\Models\User;
 
 class EstateAdminController extends Controller
 {
@@ -29,7 +30,7 @@ class EstateAdminController extends Controller
      */
     public function index()
     {
-        $estateAdmin = EstateAdmin::estateOnly()->with(['user', 'user.profile'])->paginate(10);
+        $estateAdmin = EstateAdmin::with(['user', 'user.profile'])->paginate(10);
 
         return $this->response_data(new EstateAdminCollection($estateAdmin));
     }
@@ -44,9 +45,13 @@ class EstateAdminController extends Controller
     {
         $user = $storeUserAction->execute($request);
         $profile = $storeProfileAction->execute($request, $user);
-        $estate = $request->user()->estate[0];;
+        $estate = $request->user()->estate->first();
 
         $user->estate()->attach($estate);
+
+        $user = new User();
+
+
 
         return $this->response_success('Admin has been created for your estate');
     }
@@ -59,6 +64,7 @@ class EstateAdminController extends Controller
      */
     public function show(EstateAdmin $estateAdmin)
     {
+        $estateAdmin = $estateAdmin->load(['user', 'user.profile']);
         return $this->response_data(new EstateAdminResource($estateAdmin));
     }
 

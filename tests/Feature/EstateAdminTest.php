@@ -64,7 +64,7 @@ class EstateAdminTest extends TestCase
     public function test_api_estate_super_admin_can_get_a_single_admin_for_his_estate()
     {
 
-        $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
+        $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->except(1)->first();
 
         $response = $this->actingAs(static::$estateSuperAdmin, 'api')
             ->getJson(route('estate-admins.show', $estateAdmin->id));
@@ -79,7 +79,7 @@ class EstateAdminTest extends TestCase
     public function test_api_estate_super_admin_can_update_a_single_admin_for_his_estate()
     {
 
-        $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
+        $estateAdmin = $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->except(1)->first();
 
         $attributes = array_merge(
             User::factory()->make()->toArray(),
@@ -99,18 +99,12 @@ class EstateAdminTest extends TestCase
         $this->assertDatabaseHas('users', [
             'email' => $attributes['email']
         ]);
-
-        // $this->assertDatabaseHas('profiles', [
-        //     'firstname' => $attributes['firstname'],
-        //     'lastname' => $attributes['lastname'],
-        //     'phone_number' => $attributes['phone_number']
-        // ]);
     }
 
     public function test_api_estate_super_admin_can_delete_a_single_admin_for_his_estate()
     {
 
-        $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
+        $estateAdmin = $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->except(1)->first();
 
         $response = $this->actingAs(static::$estateSuperAdmin, 'api')
             ->deleteJson(route('estate-admins.destroy', $estateAdmin['id']));
@@ -130,7 +124,7 @@ class EstateAdminTest extends TestCase
     public function test_api_estate_super_admin_can_deactivate()
     {
 
-        $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
+        $estateAdmin = $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->except(1)->first();
 
         $response = $this->actingAs(static::$estateSuperAdmin, 'api')
             ->patchJson(route('estate-admins.deactivate', $estateAdmin['id']));
@@ -151,7 +145,7 @@ class EstateAdminTest extends TestCase
     public function test_api_estate_super_admin_can_activate()
     {
 
-        $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
+        $estateAdmin = $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->except(1)->first();
 
         $response = $this->actingAs(static::$estateSuperAdmin, 'api')
             ->patchJson(route('estate-admins.activate', $estateAdmin['id']));
@@ -172,7 +166,7 @@ class EstateAdminTest extends TestCase
     public function test_api_estate_super_admin_can_suspend()
     {
 
-        $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
+        $estateAdmin = $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->except(1)->first();
 
         $response = $this->actingAs(static::$estateSuperAdmin, 'api')
             ->patchJson(route('estate-admins.suspend', $estateAdmin['id']));
@@ -193,7 +187,7 @@ class EstateAdminTest extends TestCase
     public function test_api_estate_super_admin_can_export()
     {
         Excel::fake();
-        $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
+        $estateAdmin = $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->skip(1)->first();
 
         $response = $this->actingAs(static::$estateSuperAdmin, 'api')
             ->getJson(route('estate-admins.export', $estateAdmin['id']));
@@ -208,7 +202,7 @@ class EstateAdminTest extends TestCase
     {
         Excel::fake();
         Storage::fake('excel');
-        $estateAdmin = static::$estateSuperAdmin->estate->random()->estate_admin->random();
+        $estateAdmin = $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->except(1)->first();
         // $uploadedFile = new UploadedFile(Storage::path('test\estateAdmins.xlsx'), 'estateAdmins.xlsx', null, null, true);
         $uploadedFile = UploadedFile::fake()->create('estateAdmins.xlsx');
 
