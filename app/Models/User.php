@@ -17,7 +17,7 @@ class User extends Authenticatable
     const ESTATE_SUPER_ADMIN = 'estate_super_admin';
     const ESTATE_ADMIN = 'estate_admin';
     const HOUSE_OWNER = 'house_owner';
-    const HOUSE_SUB_OWNER = 'house_sub_owner';
+    const HOUSE_MEMBER = 'house_member';
 
 
     const ACTIVE = '1';
@@ -81,6 +81,15 @@ class User extends Authenticatable
         return $this->belongsToMany(Estate::class, 'estate_admins', 'user_id', 'estate_id');
     }
 
+    public function houseOwner()
+    {
+        return $this->hasMany(HouseOwner::class);
+    }
+
+    public function houses()
+    {
+        return $this->belongsToMany(House::class, 'house_owners', 'user_id', 'house_id');
+    }
 
     public function hasRole($role)
     {
@@ -97,7 +106,9 @@ class User extends Authenticatable
                 $collection = collect($this->estate_admin);
                 return $collection->where('role', self::ESTATE_ADMIN)->contains('user_id', $this->id);
             default:
-                return false;
+            case self::HOUSE_OWNER:
+                $collection = collect($this->house_owner);
+                return $collection->contains('user_id', $this->id);
         }
     }
 
