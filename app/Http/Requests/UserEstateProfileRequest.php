@@ -29,6 +29,9 @@ class UserEstateProfileRequest extends FormRequest
         $estate = (new EstateRequest())->rules();
         $user = (new UserRequest())->rules();
         $profile = (new ProfileRequest())->rules();
-        return array_merge($estate, $user, $profile);
+        $custom = [
+            'email' => 'bail|unique:users,email'
+        ];
+        return array_merge($estate, $user, $profile, $custom);
     }
 }
