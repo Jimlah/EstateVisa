@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder
         ]);
         $this->command->info('Created Super Admin superadmin@admin.com');
 
-        Admin::find(1)->user()->update([
+        Admin::find(2)->user()->update([
             'email' => 'admin@admin.com',
             'password' => bcrypt('password')
         ]);
