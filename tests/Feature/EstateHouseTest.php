@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\EstateHouse;
+use App\Models\House;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -94,7 +95,7 @@ class EstateHouseTest extends TestCase
 
     public function test_api_estate_super_admin_can_update_a_house()
     {
-
+        $this->withoutExceptionHandling();
         $house = static::$estateSuperAdmin->estate->first()->houses->random()->first();
 
         $attributes = [
@@ -112,6 +113,7 @@ class EstateHouseTest extends TestCase
             );
 
         $this->assertDatabaseHas('houses', [
+            'id' => $house->id,
             'name' => 'Test House',
             'address' => 'Test Address',
             'description' => 'Test Description',

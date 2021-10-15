@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EstateHouseRequest;
 use App\Http\Resources\EstateHouseCollection;
 use App\Http\Resources\EstateHouseResource;
-use App\Models\Estate;
-use App\Models\EstateHouse;
 use App\Models\House;
 
 class EstateHouseController extends Controller
@@ -49,7 +47,7 @@ class EstateHouseController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\EstateHouse  $estateHouse
+     * @param  \App\Models\House  $estateHouse
      * @return \Illuminate\Http\Response
      */
     public function show(House $house)
@@ -62,19 +60,21 @@ class EstateHouseController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\EstateHouse  $estateHouse
+     * @param  \App\Models\House  $estateHouse
      * @return \Illuminate\Http\Response
      */
-    public function update(EstateHouseRequest $request, House $house)
+    public function update(EstateHouseRequest $request, $id)
     {
-        $house->update($request->only(
-            [
-                'name',
-                'address',
-                'description',
-                'house_type_id'
-            ]
-        ));
+
+        $house = House::findOrFail($id);
+
+        $house->update([
+            'name' => $request->name,
+            'address' => $request->address,
+            'description' => $request->description,
+            'house_type_id' => $request->house_type_id,
+            'estate_id' => $request->estate ?? auth()->user()->estate->first->id
+        ]);
 
         return $this->response_success("House Updated");
     }
@@ -82,11 +82,12 @@ class EstateHouseController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\EstateHouse  $estateHouse
+     * @param  \App\Models\House  $estateHouse
      * @return \Illuminate\Http\Response
      */
-    public function destroy(House $house)
+    public function destroy($id)
     {
+        $house = House::findOrFail($id);
         $house->delete();
 
         return $this->response_success("House Deleted");
