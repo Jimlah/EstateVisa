@@ -26,11 +26,9 @@ class DatabaseSeeder extends Seeder
 
         // Profile::factory(10)->create();
 
-        User::unsetEventDispatcher();
 
         Artisan::call('passport:install');
         $this->command->info('Passport installed successfully.');
-
         $this->call([
             AdminSeeder::class,
             EstateSeeder::class,
