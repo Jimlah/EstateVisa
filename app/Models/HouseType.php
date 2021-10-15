@@ -16,7 +16,7 @@ class HouseType extends Model
 
     public function scopeEstateOnly($query)
     {
-        return $query->where('estate_id', auth()->user()->estate_admin[0]->estate_id);
+        return $query->where('estate_id', auth()->user()->estate->first()->id);
     }
 
     public function estate()

@@ -40,7 +40,7 @@ class HouseTypeController extends Controller
     {
         HouseType::create([
             'name' => $request->name,
-            'estate_id' => auth()->user()->estate_admin[0]->estate_id
+            'estate_id' => auth()->user()->estate->first()->id
         ]);
 
         return $this->response_success('House type created successfully');
