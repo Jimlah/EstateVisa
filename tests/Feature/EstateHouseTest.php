@@ -70,7 +70,7 @@ class EstateHouseTest extends TestCase
 
     public function test_api_estate_admin_can_create_a_new_house()
     {
-        $houseType = static::$estateAdmin->estate[0]->houseTypes->random();
+        $houseType = static::$estateAdmin->estate->first()->houseTypes->random();
         $response = $this->actingAs(static::$estateAdmin, 'api')
             ->postJson(route('estate-houses.store'), [
                 'name' => 'Test House',
@@ -90,26 +90,21 @@ class EstateHouseTest extends TestCase
             'description' => 'Test Description',
             'house_type_id' => $houseType->id,
         ]);
-
-        $estateHouse = EstateHouse::all()->last();
-
-        $this->assertDatabaseHas('estate_houses', [
-            'estate_id' => static::$estateAdmin->estate[0]->id,
-            'house_id' => $estateHouse->house_id,
-        ]);
     }
 
     public function test_api_estate_super_admin_can_update_a_house()
     {
 
-        $house = static::$estateSuperAdmin->estate[0]->houses[0];
+        $house = static::$estateSuperAdmin->estate->first()->houses->random()->first();
+
+        $attributes = [
+            'name' => 'Test House',
+            'address' => 'Test Address',
+            'description' => 'Test Description',
+        ];
+
         $response = $this->actingAs(static::$estateSuperAdmin, 'api')
-            ->putJson(route('estate-houses.update', $house->id), [
-                'name' => 'Test House',
-                'address' => 'Test Address',
-                'description' => 'Test Description',
-                'house_type_id' => $house->house_type_id,
-            ]);
+            ->putJson(route('estate-houses.update', $house->id), $attributes);
 
         $response->assertStatus(200)
             ->assertJson(
@@ -120,19 +115,17 @@ class EstateHouseTest extends TestCase
             'name' => 'Test House',
             'address' => 'Test Address',
             'description' => 'Test Description',
-            'house_type_id' => $house->house_type_id,
         ]);
     }
 
     public function test_api_estate_admin_can_update_a_house()
     {
-        $house = static::$estateAdmin->estate[0]->houses[0];
+        $house = static::$estateAdmin->estate->first()->houses->random()->first();
         $response = $this->actingAs(static::$estateAdmin, 'api')
             ->putJson(route('estate-houses.update', $house->id), [
                 'name' => 'Test House',
                 'address' => 'Test Address',
                 'description' => 'Test Description',
-                'house_type_id' => $house->house_type_id,
             ]);
 
         $response->assertStatus(200)
@@ -145,13 +138,12 @@ class EstateHouseTest extends TestCase
             'name' => 'Test House',
             'address' => 'Test Address',
             'description' => 'Test Description',
-            'house_type_id' => $house->house_type_id,
         ]);
     }
 
     public function test_api_estate_super_admin_can_delete_a_house()
     {
-        $house = static::$estateSuperAdmin->estate[0]->houses[0];
+        $house = static::$estateSuperAdmin->estate->first()->houses->random()->first();
         $response = $this->actingAs(static::$estateSuperAdmin, 'api')
             ->deleteJson(route('estate-houses.destroy', $house->id));
 
@@ -164,7 +156,7 @@ class EstateHouseTest extends TestCase
 
     public function test_api_super_admin_can_delete_a_house()
     {
-        $house = static::$estateAdmin->estate[0]->houses[0];
+        $house = static::$estateSuperAdmin->estate->first()->houses->random()->first();
         $response = $this->actingAs(static::$estateSuperAdmin, 'api')
             ->deleteJson(route('estate-houses.destroy', $house->id));
 

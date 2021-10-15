@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\HouseOwner;
+use App\Models\House;
 use Illuminate\Http\Request;
+use App\Http\Resources\HouseCollection;
 use App\Http\Resources\HouseOwnerCollection;
-use App\Http\Resources\HouseOwnerResource;
+use App\Http\Resources\HouseResource;
 
 class HouseOwnerController extends Controller
 {
@@ -16,9 +17,9 @@ class HouseOwnerController extends Controller
      */
     public function index()
     {
-        $houseOwner = HouseOwner::with(['house', 'user', 'user.profile'])->paginate(10);
+        $house = House::with(['user', 'user.profile'])->paginate(10);
 
-        return $this->response_data(new HouseOwnerCollection($houseOwner));
+        return $this->response_data(new HouseOwnerCollection($house));
     }
 
     /**
@@ -35,22 +36,22 @@ class HouseOwnerController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\HouseOwner  $houseOwner
+     * @param  \App\Models\House  $house
      * @return \Illuminate\Http\Response
      */
-    public function show(HouseOwner $houseOwner)
+    public function show(House $house)
     {
-        return $this->response_data(HouseOwnerResource::make($houseOwner));
+        return $this->response_data(HouseResource::make($house));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\HouseOwner  $houseOwner
+     * @param  \App\Models\House  $house
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, HouseOwner $houseOwner)
+    public function update(Request $request, House $house)
     {
         //
     }
@@ -58,10 +59,10 @@ class HouseOwnerController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\HouseOwner  $houseOwner
+     * @param  \App\Models\House  $house
      * @return \Illuminate\Http\Response
      */
-    public function destroy(HouseOwner $houseOwner)
+    public function destroy(House $house)
     {
         //
     }

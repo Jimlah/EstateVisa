@@ -16,8 +16,8 @@ class CreateEstateAdminsTable extends Migration
     {
         Schema::create('estate_admins', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('estate_id');
-            $table->unsignedBigInteger('user_id');
+            $table->foreignId('estate_id')->nullable();
+            $table->foreignId('user_id')->nullable();
             $table->string('status')->default(User::ACTIVE);
             $table->string('role')->default(User::ESTATE_ADMIN);
             $table->timestamps();

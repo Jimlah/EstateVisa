@@ -71,7 +71,7 @@ class User extends Authenticatable
         return $this->hasOne(Admin::class);
     }
 
-    public function estate_admin()
+    public function estateAdmin()
     {
         return $this->hasMany(EstateAdmin::class);
     }
@@ -81,14 +81,9 @@ class User extends Authenticatable
         return $this->belongsToMany(Estate::class, 'estate_admins', 'user_id', 'estate_id');
     }
 
-    public function houseOwner()
-    {
-        return $this->hasMany(HouseOwner::class);
-    }
-
     public function houses()
     {
-        return $this->belongsToMany(House::class, 'house_owners', 'user_id', 'house_id');
+        return $this->hasMany(House::class);
     }
 
     public function hasRole($role)
@@ -100,14 +95,14 @@ class User extends Authenticatable
             case self::ADMIN:
                 return $this->admin?->id > 1 ? true : false;
             case self::ESTATE_SUPER_ADMIN:
-                $collection = collect($this->estate_admin);
+                $collection = collect($this->estateAdmin);
                 return $collection->where('role', self::ESTATE_SUPER_ADMIN)->contains('user_id', $this->id);
             case self::ESTATE_ADMIN:
                 $collection = collect($this->estate_admin);
                 return $collection->where('role', self::ESTATE_ADMIN)->contains('user_id', $this->id);
             default:
             case self::HOUSE_OWNER:
-                $collection = collect($this->house_owner);
+                $collection = collect($this->houses);
                 return $collection->contains('user_id', $this->id);
         }
     }

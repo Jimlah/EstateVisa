@@ -13,8 +13,6 @@ class Estate extends Model
     use UseDisable;
 
 
-    protected $with = ['user'];
-
     /**
      * The attributes that are mass assignable.
      *
@@ -29,28 +27,12 @@ class Estate extends Model
 
     protected $dateFormat = 'Y-m-d';
 
-    // Check for bugs
-    public function admin()
-    {
-        return $this->belongsToMany(User::class, 'estate_admins', 'estate_id', 'user_id')
-            ->where('estate_admins.role', '=', User::ESTATE_ADMIN)->withPivot('role', 'estate_id', 'user_id');
-    }
 
-    public function estate_admin()
+    public function admins()
     {
         return $this->hasMany(EstateAdmin::class, 'estate_id');
     }
 
-    public function user()
-    {
-        return $this->belongsToMany(User::class, 'estate_admins', 'estate_id', 'user_id')->withPivot('status', 'role', 'created_at');
-    }
-
-    public function estateSuperAdmin()
-    {
-        return $this->hasMany(EstateAdmin::class, 'estate_id')
-            ->where('estate_admins.role', '=', User::ESTATE_SUPER_ADMIN);
-    }
 
     public function houseTypes()
     {
@@ -59,11 +41,6 @@ class Estate extends Model
 
     public function houses()
     {
-        return $this->belongsToMany(House::class, 'estate_houses', 'estate_id', 'house_id');
-    }
-
-    public function houseOwners()
-    {
-        return $this->hasMany(HouseOwner::class, 'estate_id');
+        return $this->hasMany(House::class);
     }
 }

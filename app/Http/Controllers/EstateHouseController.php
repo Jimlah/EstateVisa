@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EstateHouseRequest;
 use App\Http\Resources\EstateHouseCollection;
 use App\Http\Resources\EstateHouseResource;
+use App\Models\Estate;
 use App\Models\EstateHouse;
 use App\Models\House;
 
@@ -17,8 +18,8 @@ class EstateHouseController extends Controller
      */
     public function index()
     {
-        $estateHouses = EstateHouse::estateOnly()
-            ->with(['estate', 'house', 'house.houseType'])
+        $estateHouses = House::with(['estate', 'houseType', 'user'])
+            ->estateHouses()
             ->paginate(10);
 
 
@@ -37,10 +38,9 @@ class EstateHouseController extends Controller
             'name' => $request->name,
             'address' => $request->address,
             'description' => $request->description,
-            'house_type_id' => $request->house_type_id
+            'house_type_id' => $request->house_type_id,
+            'estate_id' => $request->estate ?? auth()->user()->estate->first->id
         ]);
-
-        $house->estate()->attach(auth()->user()->estate[0]->id);
 
 
         return $this->response_success("New House Created");
@@ -52,9 +52,10 @@ class EstateHouseController extends Controller
      * @param  \App\Models\EstateHouse  $estateHouse
      * @return \Illuminate\Http\Response
      */
-    public function show(EstateHouse $estateHouse)
+    public function show(House $house)
     {
-        return $this->response_data(EstateHouseResource::make($estateHouse));
+        $house = $house->with(['estate', 'houseType', 'user', "user.profile"])->get();
+        return $this->response_data(new EstateHouseResource($house));
     }
 
     /**
@@ -64,9 +65,9 @@ class EstateHouseController extends Controller
      * @param  \App\Models\EstateHouse  $estateHouse
      * @return \Illuminate\Http\Response
      */
-    public function update(EstateHouseRequest $request, EstateHouse $estateHouse)
+    public function update(EstateHouseRequest $request, House $house)
     {
-        $estateHouse->house->update($request->only(
+        $house->update($request->only(
             [
                 'name',
                 'address',
@@ -74,7 +75,6 @@ class EstateHouseController extends Controller
                 'house_type_id'
             ]
         ));
-
 
         return $this->response_success("House Updated");
     }
@@ -85,10 +85,9 @@ class EstateHouseController extends Controller
      * @param  \App\Models\EstateHouse  $estateHouse
      * @return \Illuminate\Http\Response
      */
-    public function destroy(EstateHouse $estateHouse)
+    public function destroy(House $house)
     {
-        $estateHouse->house->delete();
-        $estateHouse->delete();
+        $house->delete();
 
         return $this->response_success("House Deleted");
     }

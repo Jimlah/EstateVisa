@@ -34,7 +34,7 @@ class EstateController extends Controller
      */
     public function index()
     {
-        $data = Estate::paginate(10);
+        $data = Estate::with('admins')->paginate(10);
         return $this->response_data(new EstateCollection($data));
     }
 
@@ -57,9 +57,8 @@ class EstateController extends Controller
             'address' => $request->address,
         ]);
 
-        EstateAdmin::create([
+        $admin = $estate->admins()->create([
             'user_id' => $user->id,
-            'estate_id' => $estate->id,
             'role' => User::ESTATE_SUPER_ADMIN
         ]);
 
@@ -95,7 +94,7 @@ class EstateController extends Controller
         $estate->address = $request->address;
         $estate->logo = $request->logo;
 
-        $user = $estate->estateSuperAdmin->first()->user;
+        $user = $estate->admins->first()->user;
 
         $storeUserAction->update($request, $user);
         $storeProfileAction->update($request, $user->profile);
@@ -113,7 +112,9 @@ class EstateController extends Controller
      */
     public function destroy(Estate $estate)
     {
-        $estate->estate_admin()->delete();
+        $estate->admins->each(function ($admin) {
+            $admin->delete();
+        });
         $estate->delete();
 
         return $this->response_success("Estate Deleted");
@@ -128,7 +129,7 @@ class EstateController extends Controller
      * */
     public function activate(Estate $estate)
     {
-        $estate->estate_admin->each(function ($admin) {
+        $estate->admins->each(function ($admin) {
             $admin->activate();
         });
 
@@ -139,7 +140,7 @@ class EstateController extends Controller
 
     public function suspend(Estate $estate)
     {
-        $estate->estate_admin->each(function ($admin) {
+        $estate->admins->each(function ($admin) {
             $admin->suspend();
         });
 
@@ -150,9 +151,10 @@ class EstateController extends Controller
 
     public function deactivate(Estate $estate)
     {
-        $estate->estate_admin->each(function ($admin) {
+        $estate->admins->each(function ($admin) {
             $admin->deactivate();
         });
+
         $estate->deactivate();
 
         return $this->response_success("Estate Deactivated");

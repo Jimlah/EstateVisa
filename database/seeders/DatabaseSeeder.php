@@ -2,13 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use App\Models\Admin;
 use App\Models\Estate;
-use App\Models\House;
-use App\Models\HouseOwner;
-use App\Models\User;
 use Illuminate\Database\Seeder;
-use Database\Seeders\EstateHouseSeeder;
+use Database\Seeders\HouseSeeder;
 use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder
@@ -36,8 +34,7 @@ class DatabaseSeeder extends Seeder
             EstateSeeder::class,
             EstateAdminSeeder::class,
             HouseTypeSeeder::class,
-            EstateHouseSeeder::class,
-            HouseOwnerSeeder::class,
+            HouseSeeder::class,
         ]);
         $this->command->info('Seeded: Admin, Estate, EstateAdmin, HouseType, EstateHouse');
 
@@ -53,21 +50,16 @@ class DatabaseSeeder extends Seeder
         ]);
         $this->command->info('Created Admin admin@admin.com');
 
-        Estate::find(1)->estate_admin()->first()->user()->update([
+        Estate::find(1)->admins()->first()->user()->update([
             'email' => 'superadmin@estate.com',
             'password' => bcrypt('password')
         ]);
         $this->command->info('Created Estate Super Admin superadmin@estate.com');
 
-        Estate::find(1)->estate_admin()->latest()->first()->user()->update([
+        Estate::find(1)->admins()->latest()->first()->user()->update([
             'email' => 'admin@estate.com',
             'password' => bcrypt('password')
         ]);
         $this->command->info('Created Estate Admin admin@estate.com');
-
-        HouseOwner::find(1)->user()->update([
-            'email' => 'houseowner@house.com',
-            'password' => bcrypt('password')
-        ]);
     }
 }

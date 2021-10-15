@@ -20,7 +20,6 @@ class Profile extends Model
         'phone_number',
         'gender',
         'user_id',
-        'estate_id',
     ];
 
     public function user()

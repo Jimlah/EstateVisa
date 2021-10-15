@@ -11,15 +11,18 @@ class House extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
+        'estate_id',
         'name',
         'address',
         'house_type_id',
+        'status',
         'description'
     ];
 
     public function estate()
     {
-        return $this->belongsToMany(Estate::class, 'estate_houses', 'house_id', 'estate_id');
+        return $this->belongsTo(Estate::class);
     }
 
     public function houseType()
@@ -27,13 +30,18 @@ class House extends Model
         return $this->belongsTo(HouseType::class, 'house_type_id');
     }
 
-    public function houseOwner()
-    {
-        return $this->hasOne(HouseOwner::class, 'house_id');
-    }
-
     public function user()
     {
-        return $this->belongsToMany(User::class, 'house_owners', 'house_id', 'user_id');
+        return $this->belongsTo(User::class);
+    }
+
+    public function scopeEstateHouses($query)
+    {
+        return $query->where('estate_id', auth()->user()->estate->first()->id);
+    }
+
+    public function scopeUserHouses($query)
+    {
+        return $query->where('user_id', auth()->user()->id);
     }
 }

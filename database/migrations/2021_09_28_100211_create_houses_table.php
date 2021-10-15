@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Models\User;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class CreateHousesTable extends Migration
 {
@@ -15,10 +16,13 @@ class CreateHousesTable extends Migration
     {
         Schema::create('houses', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable();
+            $table->foreignId('estate_id')->nullable();
             $table->string('name');
             $table->string('address');
             $table->foreignId('house_type_id')->nullable();
             $table->text('description')->nullable();
+            $table->string('status')->nullable(User::ACTIVE);
             $table->timestamps();
         });
     }

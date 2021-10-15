@@ -19,29 +19,6 @@ class EstateAdmin extends Model
         'status'
     ];
 
-    protected $with = [
-        'user',
-        'estate',
-        'user.profile'
-    ];
-
-    protected static function booted()
-    {
-        static::addGlobalScope('orderDesc', function ($builder) {
-            $builder->orderBy('created_at', 'desc');
-        });
-    }
-
-    public function scopeOwner($query)
-    {
-        return $query->where('role', User::ESTATE_SUPER_ADMIN);
-    }
-
-    public function scopeEstateOnly($query)
-    {
-        return $query->where('estate_id', auth()->user()->estate_admin[0]->estate_id);
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class);
