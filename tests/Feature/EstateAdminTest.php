@@ -37,8 +37,15 @@ class EstateAdminTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson(function (AssertableJson $json) {
-                $json->has('data')
-                    ->etc();
+                $json->has('data', function (AssertableJson $json) {
+                    $json->has('data', function (AssertableJson $json) {
+                        $json->first(function (AssertableJson $json) {
+                            $json->has('id')
+                                ->etc();
+                        })
+                            ->etc();
+                    })->etc();
+                })->etc();
             });
     }
 

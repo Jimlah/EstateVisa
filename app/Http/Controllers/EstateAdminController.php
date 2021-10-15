@@ -30,7 +30,10 @@ class EstateAdminController extends Controller
      */
     public function index()
     {
-        $estateAdmin = EstateAdmin::with(['user', 'user.profile'])->paginate(10);
+        $estateAdmin = EstateAdmin::with(['user', 'user.profile', 'estate'])
+            ->admin()
+            ->estateOnly()
+            ->paginate(10);
 
         return $this->response_data(new EstateAdminCollection($estateAdmin));
     }
@@ -49,7 +52,7 @@ class EstateAdminController extends Controller
 
         $user->estate()->attach($estate);
 
-        $user = new User();
+        // $user = new User();
 
 
 
@@ -64,7 +67,7 @@ class EstateAdminController extends Controller
      */
     public function show(EstateAdmin $estateAdmin)
     {
-        $estateAdmin = $estateAdmin->load(['user', 'user.profile']);
+        $estateAdmin = $estateAdmin->with(['user', 'user.profile']);
         return $this->response_data(new EstateAdminResource($estateAdmin));
     }
 
@@ -77,8 +80,13 @@ class EstateAdminController extends Controller
      */
     public function update(EstateAdminRequest $request, EstateAdmin $estateAdmin, StoreUserAction $storeUserAction, StoreProfileAction $storeProfileAction)
     {
-        $storeUserAction->update($request, $estateAdmin->user);
-        $profile = $storeProfileAction->update($request, $estateAdmin->user->profile);
+        $estateAdmin
+            ->user()
+            ->update($request->only('email'));
+        $estateAdmin
+            ->user
+            ->profile()
+            ->update($request->only('first_name', 'last_name', 'phone_number', 'gender'));
 
         return $this->response_success('Admin has been updated');
     }
