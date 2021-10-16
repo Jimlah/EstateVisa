@@ -23,7 +23,6 @@ class EstateAdminTest extends TestCase
     {
         parent::setUp();
         $this->seed([
-            AdminSeeder::class,
             EstateSeeder::class,
             EstateAdminSeeder::class
         ]);

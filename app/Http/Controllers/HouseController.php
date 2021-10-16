@@ -17,7 +17,7 @@ class HouseController extends Controller
      */
     public function index()
     {
-        $houses = House::with('houseUser')->userHouse()->paginate(10);
+        $houses = House::with('houseUsers')->estateHouses()->paginate(10);
 
         return $this->response_data(HouseResource::collection($houses));
     }
@@ -30,7 +30,14 @@ class HouseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $estate = auth()->user()->estate->first();
+
+        $house = House::create($request->all());
+        $house->estate()->associate($estate);
+
+        $house->save();
+
+        return $this->response_success("House Created Successfully");
     }
 
     /**
@@ -41,7 +48,7 @@ class HouseController extends Controller
      */
     public function show(House $house)
     {
-        //
+        return $this->response_data(HouseResource::make($house->load('houseUsers')));
     }
 
     /**
@@ -51,13 +58,9 @@ class HouseController extends Controller
      * @param  \App\Models\House  $house
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, House $house, StoreUserAction $storeUserAction, StoreProfileAction $storeProfileAction)
+    public function update(Request $request, House $house)
     {
-        $user = $storeUserAction->execute($request);
-        $profile = $storeProfileAction->execute($request, $user);
-
-
-        $house->update(['user_id' => null, 'estate_id' => $house->estate_id]);
+        $house->update($request->all());
 
         return $this->response_success('User attached to House successfully');
     }
@@ -71,7 +74,7 @@ class HouseController extends Controller
      */
     public function destroy(House $house)
     {
-        $house->update(['user_id' => null]);
+        $house->delete();
 
         return $this->response_success('User detached from House successfully');
     }

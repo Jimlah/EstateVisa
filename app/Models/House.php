@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\HouseType;
 use App\Models\HouseUser;
+use App\Models\UserHouse;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -37,6 +38,20 @@ class House extends Model
 
     public function houseUsers()
     {
-        return $this->hasMany(HouseUser::class);
+        return $this->hasMany(UserHouse::class);
+    }
+
+    public function owner()
+    {
+        return  $this->houseUsers()
+            ->where('is_owner', true)
+            ->first();
+    }
+
+    public function members()
+    {
+        return $this->houseUsers()
+            ->where('is_owner', false)
+            ->get();
     }
 }
