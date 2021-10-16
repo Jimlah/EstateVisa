@@ -7,19 +7,15 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Estate;
 use App\Models\Profile;
-use App\Models\EstateAdmin;
 use App\Exports\EstateExport;
 use App\Imports\EstateImport;
 use App\Models\Admin;
 use Database\Seeders\AdminSeeder;
 use Illuminate\Http\UploadedFile;
 use Maatwebsite\Excel\Facades\Excel;
-use Database\Seeders\EstateAdminSeeder;
 use Database\Seeders\EstateSeeder;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class EstateTest extends TestCase
 {

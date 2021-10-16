@@ -19,8 +19,8 @@ class EstateSeeder extends Seeder
      */
     public function run()
     {
-        Estate::factory()->count(20)->create()->each(function ($estate) {
-            $estate->admins()->save(EstateAdmin::factory()->create());
+        $estate = Estate::factory()->count(20)->create()->each(function ($estate) {
+            $estate->admins()->save(EstateAdmin::factory()->owner()->create());
         });
     }
 }

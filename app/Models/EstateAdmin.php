@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Trait\UseDisable;
+use Facade\Ignition\QueryRecorder\Query;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -31,7 +32,7 @@ class EstateAdmin extends Model
 
     public function scopeAdmin($query)
     {
-        return $query->where('is_owner', User::ESTATE_ADMIN);
+        return $query->where('is_owner', false);
     }
 
     public function scopeEstateOnly($query)

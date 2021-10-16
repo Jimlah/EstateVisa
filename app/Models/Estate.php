@@ -33,6 +33,13 @@ class Estate extends Model
         return $this->hasMany(EstateAdmin::class, 'estate_id');
     }
 
+    public function owner()
+    {
+        return $this->admins()
+            ->where('is_owner', 1)
+            ->first();
+    }
+
 
     public function houseTypes()
     {
