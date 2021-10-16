@@ -367,7 +367,7 @@ class EstateTest extends TestCase
         $user = Admin::all()->skip(1)->random()->user;
         $estate = Estate::all()->random();
 
-        $response = $this->actingAs(static::$admin, 'api')
+        $response = $this->actingAs($user, 'api')
             ->getJson(route('estates.show', $estate->id));
 
         $response->assertStatus(200)
