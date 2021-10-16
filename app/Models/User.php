@@ -93,7 +93,7 @@ class User extends Authenticatable
                 $collection = collect($this->estateAdmin);
                 return $collection->where('is_owner', true)->contains('user_id', $this->id);
             case self::ESTATE_ADMIN:
-                $collection = collect($this->estate_admin);
+                $collection = collect($this->estateAdmin);
                 return $collection->where('is_owner', false)->contains('user_id', $this->id);
             default:
             case self::HOUSE_OWNER:
