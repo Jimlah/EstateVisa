@@ -24,195 +24,195 @@ class EstateAdminTest extends TestCase
      *
      * @return void
      */
-    public function test_api_estate_super_admin_can_view_all_admin()
-    {
-        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
-            ->getJson(route('estate-admins.index'));
+    // public function test_api_estate_super_admin_can_view_all_admin()
+    // {
+    //     $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+    //         ->getJson(route('estate-admins.index'));
 
-        $response->assertStatus(200)
-            ->assertJson(function (AssertableJson $json) {
-                $json->has('data', function (AssertableJson $json) {
-                    $json->has('data', function (AssertableJson $json) {
-                        $json->first(function (AssertableJson $json) {
-                            $json->has('id')
-                                ->etc();
-                        })
-                            ->etc();
-                    })->etc();
-                })->etc();
-            });
-    }
+    //     $response->assertStatus(200)
+    //         ->assertJson(function (AssertableJson $json) {
+    //             $json->has('data', function (AssertableJson $json) {
+    //                 $json->has('data', function (AssertableJson $json) {
+    //                     $json->first(function (AssertableJson $json) {
+    //                         $json->has('id')
+    //                             ->etc();
+    //                     })
+    //                         ->etc();
+    //                 })->etc();
+    //             })->etc();
+    //         });
+    // }
 
-    public function test_api_estate_super_admin_can_create_new_admin_for_is_estate()
-    {
-        $attributes = array_merge(
-            User::factory()->make()->toArray(),
-            Profile::factory()->make()->toArray()
-        );
+    // public function test_api_estate_super_admin_can_create_new_admin_for_is_estate()
+    // {
+    //     $attributes = array_merge(
+    //         User::factory()->make()->toArray(),
+    //         Profile::factory()->make()->toArray()
+    //     );
 
-        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
-            ->postJson(route('estate-admins.store'), $attributes);
+    //     $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+    //         ->postJson(route('estate-admins.store'), $attributes);
 
-        $response->assertStatus(200)
-            ->assertJson(function (AssertableJson $json) {
-                $json->has('message')
-                    ->has('status')
-                    ->etc();
-            });
-    }
+    //     $response->assertStatus(200)
+    //         ->assertJson(function (AssertableJson $json) {
+    //             $json->has('message')
+    //                 ->has('status')
+    //                 ->etc();
+    //         });
+    // }
 
 
-    public function test_api_estate_super_admin_can_get_a_single_admin_for_his_estate()
-    {
+    // public function test_api_estate_super_admin_can_get_a_single_admin_for_his_estate()
+    // {
 
-        $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->except(1)->first();
+    //     $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->except(1)->first();
 
-        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
-            ->getJson(route('estate-admins.show', $estateAdmin->id));
+    //     $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+    //         ->getJson(route('estate-admins.show', $estateAdmin->id));
 
-        $response->assertStatus(200)
-            ->assertJson(function (AssertableJson $json) {
-                $json->has('data')
-                    ->etc();
-            });
-    }
+    //     $response->assertStatus(200)
+    //         ->assertJson(function (AssertableJson $json) {
+    //             $json->has('data')
+    //                 ->etc();
+    //         });
+    // }
 
-    public function test_api_estate_super_admin_can_update_a_single_admin_for_his_estate()
-    {
+    // public function test_api_estate_super_admin_can_update_a_single_admin_for_his_estate()
+    // {
 
-        $estateAdmin = $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->except(1)->first();
+    //     $estateAdmin = $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->except(1)->first();
 
-        $attributes = array_merge(
-            User::factory()->make()->toArray(),
-            Profile::factory()->make()->toArray()
-        );
+    //     $attributes = array_merge(
+    //         User::factory()->make()->toArray(),
+    //         Profile::factory()->make()->toArray()
+    //     );
 
-        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
-            ->putJson(route('estate-admins.update', $estateAdmin->id), $attributes);
+    //     $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+    //         ->putJson(route('estate-admins.update', $estateAdmin->id), $attributes);
 
-        $response->assertStatus(200)
-            ->assertJson(function (AssertableJson $json) {
-                $json->has('message')
-                    ->has('status')
-                    ->etc();
-            });
+    //     $response->assertStatus(200)
+    //         ->assertJson(function (AssertableJson $json) {
+    //             $json->has('message')
+    //                 ->has('status')
+    //                 ->etc();
+    //         });
 
-        $this->assertDatabaseHas('users', [
-            'email' => $attributes['email']
-        ]);
-    }
+    //     $this->assertDatabaseHas('users', [
+    //         'email' => $attributes['email']
+    //     ]);
+    // }
 
-    public function test_api_estate_super_admin_can_delete_a_single_admin_for_his_estate()
-    {
+    // public function test_api_estate_super_admin_can_delete_a_single_admin_for_his_estate()
+    // {
 
-        $estateAdmin = $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->except(1)->first();
+    //     $estateAdmin = $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->except(1)->first();
 
-        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
-            ->deleteJson(route('estate-admins.destroy', $estateAdmin['id']));
+    //     $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+    //         ->deleteJson(route('estate-admins.destroy', $estateAdmin['id']));
 
-        $response->assertStatus(200)
-            ->assertJson(function (AssertableJson $json) {
-                $json->has('message')
-                    ->has('status')
-                    ->etc();
-            });
+    //     $response->assertStatus(200)
+    //         ->assertJson(function (AssertableJson $json) {
+    //             $json->has('message')
+    //                 ->has('status')
+    //                 ->etc();
+    //         });
 
-        $this->assertDatabaseMissing('estate_admins', [
-            'id' => $estateAdmin['id']
-        ]);
-    }
+    //     $this->assertDatabaseMissing('estate_admins', [
+    //         'id' => $estateAdmin['id']
+    //     ]);
+    // }
 
-    public function test_api_estate_super_admin_can_deactivate()
-    {
+    // public function test_api_estate_super_admin_can_deactivate()
+    // {
 
-        $estateAdmin = $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->except(1)->first();
+    //     $estateAdmin = $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->except(1)->first();
 
-        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
-            ->patchJson(route('estate-admins.deactivate', $estateAdmin['id']));
+    //     $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+    //         ->patchJson(route('estate-admins.deactivate', $estateAdmin['id']));
 
-        $response->assertStatus(200)
-            ->assertJson(function (AssertableJson $json) {
-                $json->has('message')
-                    ->has('status')
-                    ->etc();
-            });
+    //     $response->assertStatus(200)
+    //         ->assertJson(function (AssertableJson $json) {
+    //             $json->has('message')
+    //                 ->has('status')
+    //                 ->etc();
+    //         });
 
-        $this->assertDatabaseHas('estate_admins', [
-            'id' => $estateAdmin['id'],
-            'status' => User::DEACTIVATED
-        ]);
-    }
+    //     $this->assertDatabaseHas('estate_admins', [
+    //         'id' => $estateAdmin['id'],
+    //         'status' => User::DEACTIVATED
+    //     ]);
+    // }
 
-    public function test_api_estate_super_admin_can_activate()
-    {
+    // public function test_api_estate_super_admin_can_activate()
+    // {
 
-        $estateAdmin = $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->except(1)->first();
+    //     $estateAdmin = $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->except(1)->first();
 
-        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
-            ->patchJson(route('estate-admins.activate', $estateAdmin['id']));
+    //     $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+    //         ->patchJson(route('estate-admins.activate', $estateAdmin['id']));
 
-        $response->assertStatus(200)
-            ->assertJson(function (AssertableJson $json) {
-                $json->has('message')
-                    ->has('status')
-                    ->etc();
-            });
+    //     $response->assertStatus(200)
+    //         ->assertJson(function (AssertableJson $json) {
+    //             $json->has('message')
+    //                 ->has('status')
+    //                 ->etc();
+    //         });
 
-        $this->assertDatabaseHas('estate_admins', [
-            'id' => $estateAdmin['id'],
-            'status' => User::ACTIVE
-        ]);
-    }
+    //     $this->assertDatabaseHas('estate_admins', [
+    //         'id' => $estateAdmin['id'],
+    //         'status' => User::ACTIVE
+    //     ]);
+    // }
 
-    public function test_api_estate_super_admin_can_suspend()
-    {
+    // public function test_api_estate_super_admin_can_suspend()
+    // {
 
-        $estateAdmin = $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->except(1)->first();
+    //     $estateAdmin = $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->except(1)->first();
 
-        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
-            ->patchJson(route('estate-admins.suspend', $estateAdmin['id']));
+    //     $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+    //         ->patchJson(route('estate-admins.suspend', $estateAdmin['id']));
 
-        $response->assertStatus(200)
-            ->assertJson(function (AssertableJson $json) {
-                $json->has('message')
-                    ->has('status')
-                    ->etc();
-            });
+    //     $response->assertStatus(200)
+    //         ->assertJson(function (AssertableJson $json) {
+    //             $json->has('message')
+    //                 ->has('status')
+    //                 ->etc();
+    //         });
 
-        $this->assertDatabaseHas('estate_admins', [
-            'id' => $estateAdmin['id'],
-            'status' => User::SUSPENDED
-        ]);
-    }
+    //     $this->assertDatabaseHas('estate_admins', [
+    //         'id' => $estateAdmin['id'],
+    //         'status' => User::SUSPENDED
+    //     ]);
+    // }
 
-    public function test_api_estate_super_admin_can_export()
-    {
-        Excel::fake();
-        $estateAdmin = $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->skip(1)->first();
+    // public function test_api_estate_super_admin_can_export()
+    // {
+    //     Excel::fake();
+    //     $estateAdmin = $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->skip(1)->first();
 
-        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
-            ->getJson(route('estate-admins.export', $estateAdmin['id']));
+    //     $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+    //         ->getJson(route('estate-admins.export', $estateAdmin['id']));
 
-        $response->assertStatus(200);
-        Excel::assertStored('laravel-excel/estateAdmins.xlsx', function (EstateAdminExport $export) {
-            return true;
-        });
-    }
+    //     $response->assertStatus(200);
+    //     Excel::assertStored('laravel-excel/estateAdmins.xlsx', function (EstateAdminExport $export) {
+    //         return true;
+    //     });
+    // }
 
-    public function test_api_estate_super_admin_can_import()
-    {
-        Excel::fake();
-        Storage::fake('excel');
-        $estateAdmin = $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->except(1)->first();
-        // $uploadedFile = new UploadedFile(Storage::path('test\estateAdmins.xlsx'), 'estateAdmins.xlsx', null, null, true);
-        $uploadedFile = UploadedFile::fake()->create('estateAdmins.xlsx');
+    // public function test_api_estate_super_admin_can_import()
+    // {
+    //     Excel::fake();
+    //     Storage::fake('excel');
+    //     $estateAdmin = $estateAdmin = static::$estateSuperAdmin->estate->random()->first()->admins->except(1)->first();
+    //     // $uploadedFile = new UploadedFile(Storage::path('test\estateAdmins.xlsx'), 'estateAdmins.xlsx', null, null, true);
+    //     $uploadedFile = UploadedFile::fake()->create('estateAdmins.xlsx');
 
-        $response = $this->actingAs(static::$estateSuperAdmin, 'api')
-            ->postJson(route('estate-admins.import', $estateAdmin['id']), ['file' => $uploadedFile]);
+    //     $response = $this->actingAs(static::$estateSuperAdmin, 'api')
+    //         ->postJson(route('estate-admins.import', $estateAdmin['id']), ['file' => $uploadedFile]);
 
-        $response->assertStatus(200);
-        Excel::assertQueued($uploadedFile->getPath(), function (EstateAdminImport $import) {
-            return true;
-        });
-    }
+    //     $response->assertStatus(200);
+    //     Excel::assertQueued($uploadedFile->getPath(), function (EstateAdminImport $import) {
+    //         return true;
+    //     });
+    // }
 }

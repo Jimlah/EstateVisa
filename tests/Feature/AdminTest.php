@@ -22,11 +22,12 @@ use Illuminate\Support\Facades\Storage;
 class AdminTest extends TestCase
 {
 
-
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
+        $this->seed(AdminSeeder::class);
     }
+
 
     /**
      * A basic feature test example.
@@ -35,7 +36,8 @@ class AdminTest extends TestCase
      */
     public function test_api_super_admin_can_get_all_admins()
     {
-        $response = $this->actingAs(static::$superAdmin, 'api')
+        $user = Admin::first()->user;
+        $response = $this->actingAs($user, 'api')
             ->getJson(route('admins.index'));
 
         $response->assertStatus(200)
@@ -49,6 +51,7 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_create_admin()
     {
+        $user = Admin::first()->user;
         Mail::fake();
 
         $data = array_merge(
@@ -56,7 +59,7 @@ class AdminTest extends TestCase
             Profile::factory()->make()->toArray()
         );
 
-        $response = $this->actingAs(static::$superAdmin, 'api')
+        $response = $this->actingAs($user, 'api')
             ->postJson(route('admins.store'), $data);
 
         $response->assertStatus(200)
@@ -90,7 +93,9 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_get_a_single_admin()
     {
-        $response = $this->actingAs(static::$superAdmin, 'api')
+        $user = Admin::first()->user;
+
+        $response = $this->actingAs($user, 'api')
             ->getJson(route('admins.show', 1));
 
         $response->assertStatus(200)
@@ -103,14 +108,15 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_update_admin()
     {
-        $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
+        $user = Admin::first()->user;
+        $admin = Admin::all()->skip(1)->random();
 
         $data = array_merge(
             User::factory()->make()->toArray(),
             Profile::factory()->make()->toArray()
         );
 
-        $response = $this->actingAs(static::$superAdmin, 'api')
+        $response = $this->actingAs($user, 'api')
             ->putJson(route('admins.update', $admin->id), $data);
 
         $response->assertStatus(200)
@@ -131,9 +137,10 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_delete_an_admin()
     {
-        $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
+        $user = Admin::first()->user;
+        $admin = Admin::all()->skip(1)->random();
 
-        $response = $this->actingAs(static::$superAdmin, 'api')
+        $response = $this->actingAs($user, 'api')
             ->deleteJson(route('admins.destroy', $admin->id));
 
         $response->assertStatus(200)
@@ -158,9 +165,10 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_enable_an_admin()
     {
-        $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
+        $user = Admin::first()->user;
+        $admin = Admin::all()->skip(1)->random();
 
-        $response = $this->actingAs(static::$superAdmin, 'api')
+        $response = $this->actingAs($user, 'api')
             ->patchJson(route('admins.activate', $admin->id));
 
         $response->assertStatus(200)
@@ -179,9 +187,10 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_deactivate_an_admin()
     {
-        $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
+        $user = Admin::first()->user;
+        $admin = Admin::all()->skip(1)->random();
 
-        $response = $this->actingAs(static::$superAdmin, 'api')
+        $response = $this->actingAs($user, 'api')
             ->patchJson(route('admins.deactivate', $admin->id));
 
         $response->assertStatus(200)
@@ -199,9 +208,10 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_suspend_an_admin()
     {
-        $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
+        $user = Admin::first()->user;
+        $admin = Admin::all()->skip(1)->random();
 
-        $response = $this->actingAs(static::$superAdmin, 'api')
+        $response = $this->actingAs($user, 'api')
             ->patchJson(route('admins.suspend', $admin->id));
 
         $response->assertStatus(200)
@@ -219,16 +229,14 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_export_admins()
     {
-
+        $user = Admin::first()->user;
         Excel::fake();
 
-        $admin = Admin::find($this->faker->numberBetween(1, Admin::count()));
-
-        $response = $this->actingAs(static::$superAdmin, 'api')
+        $response = $this->actingAs($user, 'api')
             ->getJson(route('admins.export'));
 
         $response->assertStatus(200);
-        Excel::assertStored('laravel-excel/admins.xlsx', 'local', function (AdminExport $export) use ($admin) {
+        Excel::assertStored('laravel-excel/admins.xlsx', 'local', function (AdminExport $export) {
             return true;
         });
     }
@@ -236,14 +244,14 @@ class AdminTest extends TestCase
 
     public function test_api_super_admin_can_import_admins()
     {
-
+        $user = Admin::first()->user;
         Excel::fake();
         Storage::fake('excels');
 
         // $uploadedFile = new UploadedFile(Storage::path('test/admins.xlsx'), 'admins.xlsx', null, null, true);
         $uploadedFile = UploadedFile::fake()->create('admins.xlsx');
 
-        $response = $this->actingAs(static::$superAdmin, 'api')
+        $response = $this->actingAs($user, 'api')
             ->postJson(route('admins.import'), [
                 'file' => $uploadedFile
             ]);
@@ -257,8 +265,9 @@ class AdminTest extends TestCase
 
     public function test_api_other_user_can_not_get_admins()
     {
+        $user = Admin::all()->skip(1)->random()->user;
 
-        $response = $this->actingAs($this->create_admin(), 'api')
+        $response = $this->actingAs($user, 'api')
             ->getJson(route('admins.index'));
 
         $response->assertStatus(403);
@@ -266,8 +275,8 @@ class AdminTest extends TestCase
 
     public function test_api_other_user_can_not_create_admin()
     {
-
-        $response = $this->actingAs($this->create_admin(), 'api')
+        $user = Admin::all()->skip(1)->random()->user;
+        $response = $this->actingAs($user, 'api')
             ->postJson(route('admins.store'));
 
         $response->assertStatus(403);
@@ -275,7 +284,8 @@ class AdminTest extends TestCase
 
     public function test_api_other_user_can_not_delete()
     {
-        $response = $this->actingAs($this->create_admin(), 'api')
+        $user = Admin::all()->skip(1)->random()->user;
+        $response = $this->actingAs($user, 'api')
             ->deleteJson(route('admins.destroy', $this->faker->numberBetween(1, Admin::count())));
 
         $response->assertStatus(403);
@@ -283,7 +293,8 @@ class AdminTest extends TestCase
 
     public function test_api_other_user_can_not_update()
     {
-        $response = $this->actingAs($this->create_admin(), 'api')
+        $user = Admin::all()->skip(1)->random()->user;
+        $response = $this->actingAs($user, 'api')
             ->patchJson(route('admins.update', $this->faker->numberBetween(1, Admin::count())));
 
         $response->assertStatus(403);
@@ -291,7 +302,8 @@ class AdminTest extends TestCase
 
     public function test_api_other_user_can_not_show_a_single_admin()
     {
-        $response = $this->actingAs($this->create_admin(), 'api')
+        $user = Admin::all()->skip(1)->random()->user;
+        $response = $this->actingAs($user, 'api')
             ->getJson(route('admins.show', $this->faker->numberBetween(1, Admin::count())));
 
         $response->assertStatus(403);
@@ -299,7 +311,8 @@ class AdminTest extends TestCase
 
     public function test_api_other_user_can_not_activate_an_admin()
     {
-        $response = $this->actingAs($this->create_admin(), 'api')
+        $user = Admin::all()->skip(1)->random()->user;
+        $response = $this->actingAs($user, 'api')
             ->patchJson(route('admins.activate', $this->faker->numberBetween(1, Admin::count())));
 
         $response->assertStatus(403);
@@ -307,7 +320,8 @@ class AdminTest extends TestCase
 
     public function test_api_other_user_can_not_deactivate_an_admin()
     {
-        $response = $this->actingAs($this->create_admin(), 'api')
+        $user = Admin::all()->skip(1)->random()->user;
+        $response = $this->actingAs($user, 'api')
             ->patchJson(route('admins.deactivate', $this->faker->numberBetween(1, Admin::count())));
 
         $response->assertStatus(403);
@@ -315,7 +329,8 @@ class AdminTest extends TestCase
 
     public function test_api_other_user_can_not_suspend_an_admin()
     {
-        $response = $this->actingAs($this->create_admin(), 'api')
+        $user = Admin::all()->skip(1)->random()->user;
+        $response = $this->actingAs($user, 'api')
             ->patchJson(route('admins.suspend', $this->faker->numberBetween(1, Admin::count())));
 
         $response->assertStatus(403);

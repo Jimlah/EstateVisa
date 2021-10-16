@@ -25,7 +25,6 @@ class AuthTest extends TestCase
      *  */
     public function test_api_login()
     {
-        $this->withoutExceptionHandling();
         User::unsetEventDispatcher();
         $user =  User::factory()->create();
 
