@@ -12,11 +12,6 @@ use Tests\TestCase;
 class HouseOwnerTest extends TestCase
 {
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
     /**
      * A basic feature test example.
      *

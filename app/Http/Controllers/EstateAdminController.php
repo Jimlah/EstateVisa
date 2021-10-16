@@ -67,7 +67,7 @@ class EstateAdminController extends Controller
      */
     public function show(EstateAdmin $estateAdmin)
     {
-        return $this->response_data(new EstateAdminResource($estateAdmin));
+        return $this->response_data(new EstateAdminResource($estateAdmin->load(['user', 'user.profile', 'estate'])));
     }
 
     /**

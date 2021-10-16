@@ -18,12 +18,6 @@ use Symfony\Component\Yaml\Exception\DumpException;
 
 class EstateAdminTest extends TestCase
 {
-    use RefreshDatabase;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
 
     /**
      * A basic feature test example.

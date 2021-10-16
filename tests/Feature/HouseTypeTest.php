@@ -10,11 +10,6 @@ use Tests\TestCase;
 class HouseTypeTest extends TestCase
 {
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
     /**
      * A basic feature test example.
      *

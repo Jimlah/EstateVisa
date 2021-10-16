@@ -21,11 +21,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class EstateTest extends TestCase
 {
 
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
     /**
      * A basic feature test example.
      *
