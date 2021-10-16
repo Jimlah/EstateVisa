@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Estate;
+use App\Models\EstateAdmin;
 use App\Models\House;
 use App\Models\Profile;
 use App\Models\HouseType;
@@ -18,6 +19,8 @@ class EstateSeeder extends Seeder
      */
     public function run()
     {
-        Estate::factory()->count(20)->create();
+        Estate::factory()->count(20)->create()->each(function ($estate) {
+            $estate->admins()->save(EstateAdmin::factory()->create());
+        });
     }
 }

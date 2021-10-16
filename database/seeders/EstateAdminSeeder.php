@@ -23,7 +23,6 @@ class EstateAdminSeeder extends Seeder
     public function run()
     {
         Estate::all()->each(function (Estate $estate) {
-            $estate->admins()->save(EstateAdmin::factory()->owner()->make());
             $estate->admins()->saveMany(EstateAdmin::factory(4)->make());
         });
 
