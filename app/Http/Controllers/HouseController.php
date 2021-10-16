@@ -17,7 +17,7 @@ class HouseController extends Controller
      */
     public function index()
     {
-        $houses = House::with('user')->userHouse()->paginate(10);
+        $houses = House::with('houseUser')->userHouse()->paginate(10);
 
         return $this->response_data(HouseResource::collection($houses));
     }

@@ -17,7 +17,6 @@ class HouseSeeder extends Seeder
     {
         Estate::all()->each(function (Estate $estate) {
             $estate->houses()->saveMany(House::factory(rand(10, 15))->make());
-            $estate->houses()->saveMany(House::factory(rand(10, 15))->hasUser()->make());
         });
     }
 }

@@ -59,7 +59,7 @@ class EstateController extends Controller
 
         $admin = $estate->admins()->create([
             'user_id' => $user->id,
-            'role' => User::ESTATE_SUPER_ADMIN
+            'is_owner' => User::ESTATE_SUPER_ADMIN
         ]);
 
         return $this->response_success("New Estate Created");

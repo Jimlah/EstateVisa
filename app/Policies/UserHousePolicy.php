@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\HouseOwner;
 use App\Models\User;
+use App\Models\UserHouse;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class HouseOwnerPolicy
+class UserHousePolicy
 {
     use HandlesAuthorization;
 
@@ -25,10 +25,10 @@ class HouseOwnerPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\HouseOwner  $houseOwner
+     * @param  \App\Models\UserHouse  $userHouse
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, HouseOwner $houseOwner)
+    public function view(User $user, UserHouse $userHouse)
     {
         //
     }
@@ -48,10 +48,10 @@ class HouseOwnerPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\HouseOwner  $houseOwner
+     * @param  \App\Models\UserHouse  $userHouse
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, HouseOwner $houseOwner)
+    public function update(User $user, UserHouse $userHouse)
     {
         //
     }
@@ -60,10 +60,10 @@ class HouseOwnerPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\HouseOwner  $houseOwner
+     * @param  \App\Models\UserHouse  $userHouse
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, HouseOwner $houseOwner)
+    public function delete(User $user, UserHouse $userHouse)
     {
         //
     }
@@ -72,10 +72,10 @@ class HouseOwnerPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\HouseOwner  $houseOwner
+     * @param  \App\Models\UserHouse  $userHouse
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, HouseOwner $houseOwner)
+    public function restore(User $user, UserHouse $userHouse)
     {
         //
     }
@@ -84,10 +84,10 @@ class HouseOwnerPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\HouseOwner  $houseOwner
+     * @param  \App\Models\UserHouse  $userHouse
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, HouseOwner $houseOwner)
+    public function forceDelete(User $user, UserHouse $userHouse)
     {
         //
     }

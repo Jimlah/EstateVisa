@@ -16,7 +16,7 @@ class EstateHouseController extends Controller
      */
     public function index()
     {
-        $estateHouses = House::with(['estate', 'houseType', 'user'])
+        $estateHouses = House::with(['estate', 'houseType'])
             ->estateHouses()
             ->paginate(10);
 
@@ -52,7 +52,7 @@ class EstateHouseController extends Controller
      */
     public function show(House $house)
     {
-        $house = $house->with(['estate', 'houseType', 'user', "user.profile"])->get();
+        $house = $house->with(['estate', 'houseType'])->get();
         return $this->response_data(new EstateHouseResource($house));
     }
 
@@ -63,10 +63,10 @@ class EstateHouseController extends Controller
      * @param  \App\Models\House  $estateHouse
      * @return \Illuminate\Http\Response
      */
-    public function update(EstateHouseRequest $request, $id)
+    public function update(EstateHouseRequest $request, House $house)
     {
 
-        $house = House::findOrFail($id);
+        // $house = House::findOrFail($id);
 
         $house->update([
             'name' => $request->name,
@@ -85,9 +85,9 @@ class EstateHouseController extends Controller
      * @param  \App\Models\House  $estateHouse
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(House $house)
     {
-        $house = House::findOrFail($id);
+        // $house = House::findOrFail($id);
         $house->delete();
 
         return $this->response_success("House Deleted");

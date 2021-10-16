@@ -15,7 +15,7 @@ class EstateAdmin extends Model
     protected $fillable = [
         'user_id',
         'estate_id',
-        'role',
+        'is_owner',
         'status'
     ];
 
@@ -31,7 +31,7 @@ class EstateAdmin extends Model
 
     public function scopeAdmin($query)
     {
-        return $query->where('role', User::ESTATE_ADMIN);
+        return $query->where('is_owner', User::ESTATE_ADMIN);
     }
 
     public function scopeEstateOnly($query)

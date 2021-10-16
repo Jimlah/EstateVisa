@@ -36,7 +36,7 @@ class EstateExport implements FromCollection, WithHeadings, WithMapping, ShouldA
             'Address',
             'Code',
             'Logo',
-            'Role',
+            'Is_owner',
             'Created At',
         ];
     }
@@ -55,7 +55,7 @@ class EstateExport implements FromCollection, WithHeadings, WithMapping, ShouldA
             'Address' => $estate->estate->address,
             'Code' => $estate->estate->code,
             'Logo' => $estate->estate->logo,
-            'Role' => $estate->role,
+            'Is_owner' => $estate->is_owner,
             'Created At' => $estate->created_at->format('d/m/Y H:i:s'),
         ];
     }

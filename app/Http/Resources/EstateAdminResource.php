@@ -23,7 +23,7 @@ class EstateAdminResource extends JsonResource
                 return $this->user->email;
             }),
             'status' => $this->stat,
-            'role' => $this->role,
+            'is_owner' => $this->is_owner,
             'estate' => $this->whenLoaded('estate', function () {
                 return $this->estate->name;
             }),

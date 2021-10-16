@@ -45,7 +45,7 @@ class EstateImport implements ToCollection, WithHeadingRow, ShouldQueue, WithChu
                     'logo' => $value['logo'],
                 ])->admin()->save(new EstateAdmin([
                     'user_id' => $user->id,
-                    'role' => User::ESTATE_SUPER_ADMIN,
+                    'is_owner' => User::ESTATE_SUPER_ADMIN,
                 ]));
             });
         }

@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEstateAdminsTable extends Migration
+class CreateUserHousesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,12 +14,12 @@ class CreateEstateAdminsTable extends Migration
      */
     public function up()
     {
-        Schema::create('estate_admins', function (Blueprint $table) {
+        Schema::create('user_houses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('estate_id')->nullable();
+            $table->foreignId('house_id')->nullable();
             $table->foreignId('user_id')->nullable();
+            $table->string('is_owner')->default(false);
             $table->string('status')->default(User::ACTIVE);
-            $table->boolean('is_owner')->default(false);
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ class CreateEstateAdminsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('estate_admins');
+        Schema::dropIfExists('user_houses');
     }
 }

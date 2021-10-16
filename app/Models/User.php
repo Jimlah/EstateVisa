@@ -81,11 +81,6 @@ class User extends Authenticatable
         return $this->belongsToMany(Estate::class, 'estate_admins', 'user_id', 'estate_id');
     }
 
-    public function houses()
-    {
-        return $this->hasMany(House::class);
-    }
-
     public function hasRole($role)
     {
         switch ($role) {

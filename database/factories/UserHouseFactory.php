@@ -2,19 +2,18 @@
 
 namespace Database\Factories;
 
-use App\Models\Estate;
 use App\Models\User;
-use App\Models\EstateAdmin;
+use App\Models\UserHouse;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class EstateAdminFactory extends Factory
+class UserHouseFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = EstateAdmin::class;
+    protected $model = UserHouse::class;
 
     /**
      * Define the model's default state.
@@ -30,11 +29,6 @@ class EstateAdminFactory extends Factory
         ];
     }
 
-    /**
-     * Indicate that the model is_owner should be estate super admin.
-     *
-     * @return $this
-     */
     public function owner()
     {
         return $this->state(function (array $attributes) {

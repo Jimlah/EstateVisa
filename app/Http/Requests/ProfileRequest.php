@@ -34,7 +34,7 @@ class ProfileRequest extends FormRequest
     public function messages()
     {
         return [
-            'role_id.required' => "Role is required"
+            'is_owner_id.required' => "Is_owner is required"
         ];
     }
 }
