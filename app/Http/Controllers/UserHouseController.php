@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\UserHouseCollection;
+use App\Http\Resources\UserHouseResource;
 use App\Models\UserHouse;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,11 @@ class UserHouseController extends Controller
      */
     public function index()
     {
-        return $this->response_data(new UserHouseCollection(UserHouse::all()));
+        $userHouses = UserHouse::with(['user', 'house', 'house.estate'])
+            ->userHouse()
+            ->paginate(10);
+
+        return $this->response_data(new UserHouseCollection($userHouses));
     }
 
     /**
@@ -26,7 +31,6 @@ class UserHouseController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
@@ -37,7 +41,9 @@ class UserHouseController extends Controller
      */
     public function show(UserHouse $userHouse)
     {
-        //
+        $userHouse = $userHouse->load(['user', 'house', 'house.estate']);
+
+        return $this->response_data(UserHouseResource::make($userHouse));
     }
 
     /**

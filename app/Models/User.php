@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\House;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -79,6 +80,11 @@ class User extends Authenticatable
     public function estate()
     {
         return $this->belongsToMany(Estate::class, 'estate_admins', 'user_id', 'estate_id');
+    }
+
+    public function userHouses()
+    {
+        return $this->hasMany(UserHouse::class);
     }
 
     public function hasRole($role)

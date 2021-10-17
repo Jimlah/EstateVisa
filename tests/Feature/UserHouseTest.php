@@ -2,13 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Models\House;
 use Database\Seeders\EstateAdminSeeder;
 use Database\Seeders\EstateSeeder;
 use Database\Seeders\HouseSeeder;
 use Database\Seeders\HouseTypeSeeder;
 use Database\Seeders\UserHouseSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class UserHouseTest extends TestCase
@@ -31,10 +30,27 @@ class UserHouseTest extends TestCase
      *
      * @return void
      */
-    public function test_example()
+    public function test_house_owner_can_get_all_his_houses()
     {
-        $response = $this->get('/');
+        $user = House::all()->random()->owner()->user;
 
-        $response->assertStatus(200);
+        $response = $this->actingAs($user, 'api')
+            ->getJson(route('user-houses.index'));
+
+        $response->assertStatus(200)
+            ->assertJson(fn ($json) => $json->has('data')->etc());
+    }
+
+
+    public function test_house_owner_can_get_his_house()
+    {
+        $user = House::all()->random()->owner()->user;
+        $house = $user->userHouses->random()->house;
+
+        $response = $this->actingAs($user, 'api')
+            ->getJson(route('user-houses.show', $house->id));
+
+        $response->assertStatus(200)
+            ->assertJson(fn ($json) => $json->has('data')->etc());
     }
 }

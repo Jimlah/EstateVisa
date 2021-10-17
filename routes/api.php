@@ -68,6 +68,7 @@ Route::middleware(['json.response', 'cors'])->group(function () {
         Route::apiResource('house-types', HouseTypeController::class);
         Route::apiResource('houses', HouseController::class);
         Route::apiResource('houses/{house}/owner', HouseOwnerController::class);
+        Route::apiResource('user-houses', UserHouseController::class);
 
         // our routes to be protected will go in here
     });
