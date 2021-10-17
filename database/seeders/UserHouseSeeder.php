@@ -17,7 +17,7 @@ class UserHouseSeeder extends Seeder
     public function run()
     {
         House::all()->each(function (House $house) {
-            $house->houseUsers()->save(UserHouse::factory()->houseOwner()->make());
+            $house->houseUsers()->save(UserHouse::factory()->owner()->make());
 
             $house->houseUsers()->saveMany(UserHouse::factory(4)->make());
         });

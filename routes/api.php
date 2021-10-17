@@ -1,14 +1,15 @@
 <?php
 
+use App\Models\UserHouse;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HouseController;
 use App\Http\Controllers\EstateController;
 use App\Http\Controllers\HouseTypeController;
+use App\Http\Controllers\UserHouseController;
 use App\Http\Controllers\HouseOwnerController;
 use App\Http\Controllers\EstateAdminController;
-use App\Http\Controllers\EstateHouseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,9 +66,8 @@ Route::middleware(['json.response', 'cors'])->group(function () {
         Route::resourceWithExtra("admins", AdminController::class, 'admin');
         Route::resourceWithExtra("estate-admins", EstateAdminController::class, 'estateAdmin');
         Route::apiResource('house-types', HouseTypeController::class);
-        Route::apiResource('house', HouseController::class);
-
-        Route::apiResource('house-owner', HouseOwnerController::class);
+        Route::apiResource('houses', HouseController::class);
+        Route::apiResource('houses/{house}/owner', HouseOwnerController::class);
 
         // our routes to be protected will go in here
     });

@@ -29,7 +29,7 @@ class HouseTest extends TestCase
         $user = Estate::all()->random()->owner()->user;
 
         $response = $this->actingAs($user, 'api')
-            ->getJson(route('house.index'));
+            ->getJson(route('houses.index'));
 
         $response->assertStatus(200)
             ->assertJson(
@@ -45,7 +45,7 @@ class HouseTest extends TestCase
         $user = Estate::all()->random()->admins->random()->user;
 
         $response = $this->actingAs($user, 'api')
-            ->getJson(route('house.index'));
+            ->getJson(route('houses.index'));
 
         $response->assertStatus(200)
             ->assertJson(
@@ -71,7 +71,7 @@ class HouseTest extends TestCase
 
 
         $response = $this->actingAs($user, 'api')
-            ->postJson(route('house.store'), $attributes);
+            ->postJson(route('houses.store'), $attributes);
 
         $response->assertStatus(200)
             ->assertJson(
@@ -97,7 +97,7 @@ class HouseTest extends TestCase
 
 
         $response = $this->actingAs($user, 'api')
-            ->postJson(route('house.store'), $attributes);
+            ->postJson(route('houses.store'), $attributes);
 
         $response->assertStatus(200)
             ->assertJson(
@@ -123,7 +123,7 @@ class HouseTest extends TestCase
         );
 
         $response = $this->actingAs($user, 'api')
-            ->putJson(route('house.update', $house->id), $attributes);
+            ->putJson(route('houses.update', $house->id), $attributes);
 
         $response->assertStatus(200)
             ->assertJson(
@@ -149,7 +149,7 @@ class HouseTest extends TestCase
         );
 
         $response = $this->actingAs($user, 'api')
-            ->putJson(route('house.update', $house->id), $attributes);
+            ->putJson(route('houses.update', $house->id), $attributes);
 
         $response->assertStatus(200)
             ->assertJson(
@@ -166,7 +166,7 @@ class HouseTest extends TestCase
         $house = $user->estate->random()->houses->random();
 
         $response = $this->actingAs($user, 'api')
-            ->deleteJson(route('house.destroy', $house->id));
+            ->deleteJson(route('houses.destroy', $house->id));
 
         $response->assertStatus(200)
             ->assertJson(
@@ -184,7 +184,7 @@ class HouseTest extends TestCase
         $house = $user->estate->random()->houses->random();
 
         $response = $this->actingAs($user, 'api')
-            ->deleteJson(route('house.destroy', $house->id));
+            ->deleteJson(route('houses.destroy', $house->id));
 
         $response->assertStatus(200)
             ->assertJson(

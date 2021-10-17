@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserHouseCollection;
 use App\Models\UserHouse;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class UserHouseController extends Controller
      */
     public function index()
     {
-        //
+        return $this->response_data(new UserHouseCollection(UserHouse::all()));
     }
 
     /**
