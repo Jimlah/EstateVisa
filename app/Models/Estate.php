@@ -50,4 +50,9 @@ class Estate extends Model
     {
         return $this->hasMany(House::class);
     }
+
+    public function visitors()
+    {
+        return $this->hasMany(Visitor::class);
+    }
 }
