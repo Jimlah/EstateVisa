@@ -51,7 +51,6 @@ class House extends Model
     public function members()
     {
         return $this->houseUsers()
-            ->where('is_owner', false)
-            ->get();
+            ->where('is_owner', false);
     }
 }
