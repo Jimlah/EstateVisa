@@ -19,12 +19,6 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication, WithFaker, RefreshDatabase;
 
-    protected static $superAdmin = null;
-    protected static $admin = null;
-    protected static $estateSuperAdmin = null;
-    protected static $estateAdmin = null;
-    protected static $houseOwner = null;
-
     protected function setUp(): void
     {
         parent::setUp();

@@ -29,8 +29,8 @@ class VisitorFactory extends Factory
             'phone' => $this->faker->phoneNumber,
             'address' => $this->faker->address,
             'sent_by' => User::class,
-            'visited_at' =>  $this->faker->dateTimeBetween('-1 years', 'now'),
-            'expired_at' => $this->faker->dateTimeBetween('now', '+1 years'),
+            'visited_at' =>  $this->faker->dateTimeBetween('-1 years', 'now')->format('Y-m-d H:i:s'),
+            'expired_at' => $this->faker->dateTimeBetween('now', '+1 years')->format('Y-m-d H:i:s'),
         ];
     }
 

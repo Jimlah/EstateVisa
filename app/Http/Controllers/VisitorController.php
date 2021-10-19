@@ -6,7 +6,9 @@ use App\Http\Requests\VisitorFormRequest;
 use App\Http\Resources\VisitorCollection;
 use App\Http\Resources\VisitorResource;
 use App\Models\Visitor;
+use App\Notifications\GatePassIssued;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use phpDocumentor\Reflection\Types\This;
 
 class VisitorController extends Controller
@@ -31,7 +33,25 @@ class VisitorController extends Controller
      */
     public function store(VisitorFormRequest $request)
     {
-        Visitor::create($request->validated());
+
+        $visitor = Visitor::create([
+            'user_id' => auth()->user()->id,
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'estate_id' => $request->estate_id,
+            'sent_by' => User::class,
+            'expired_at' => $request->expired_at ?? now()->addDays(1),
+        ]);
+
+        Notification::send(
+            $visitor->estate->admins->each(function ($admin) {
+                return $admin->user;
+            }),
+            new GatePassIssued($visitor)
+        );
 
         return $this->response_success('Created a new visitor');
     }
@@ -44,7 +64,7 @@ class VisitorController extends Controller
      */
     public function show(Visitor $visitor)
     {
-        return $this->response_data(VisitorResource::make($visitor->load((['user', 'estate']))));
+        return $this->response_data(VisitorResource::make($visitor->load(['user', 'estate'])));
     }
 
     /**
@@ -56,7 +76,14 @@ class VisitorController extends Controller
      */
     public function update(VisitorFormRequest $request, Visitor $visitor)
     {
-        $visitor->update($request->validated());
+        $visitor->update([
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'expired_at' => $request->expired_at ?? $visitor->expired_at,
+        ]);
 
         return $this->response_success('Updated a visitor');
     }

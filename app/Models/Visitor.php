@@ -18,7 +18,10 @@ class Visitor extends Model
         'lastname',
         'email',
         'phone',
-        'message',
+        'address',
+        'sent_by',
+        'expired_at',
+        'visited_at',
     ];
 
     public function user()

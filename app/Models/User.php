@@ -87,6 +87,11 @@ class User extends Authenticatable
         return $this->hasMany(UserHouse::class);
     }
 
+    public function visitors()
+    {
+        return $this->hasMany(Visitor::class);
+    }
+
     public function hasRole($role)
     {
         switch ($role) {
