@@ -38,8 +38,8 @@ class VisitorTest extends TestCase
 
     public function test_api_house_users_can_get_all_visitor()
     {
-        $house = UserHouse::all()->random();
-        $user = $house->user;
+        $visitor = Visitor::all()->random()->load('user');
+        $user = $visitor->user;
 
 
         $response = $this->actingAs($user, 'api')
@@ -56,9 +56,8 @@ class VisitorTest extends TestCase
 
     public function test_api_house_users_can_get_visitor_by_id()
     {
-        $house = UserHouse::all()->random();
-        $user = $house->user;
-        $visitor = $user->visitors->random();
+        $visitor = Visitor::all()->random()->load('user');
+        $user = $visitor->user;
 
         $response = $this->actingAs($user, 'api')
             ->getJson(route('visitors.show', $visitor->id));
