@@ -58,7 +58,7 @@ class VisitorTest extends TestCase
     {
         $house = UserHouse::all()->random();
         $user = $house->user;
-        $visitor = $user->visitors()->random();
+        $visitor = $user->visitors->random();
 
         $response = $this->actingAs($user, 'api')
             ->getJson(route('visitors.show', $visitor->id));
