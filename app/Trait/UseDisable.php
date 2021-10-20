@@ -21,4 +21,22 @@ trait UseDisable
     {
         $this->update(['status' => User::DEACTIVATED]);
     }
+
+    public function getStatusAttribute()
+    {
+        switch ($this->attributes['status']) {
+            case User::ACTIVE:
+                return 'Active';
+                break;
+            case User::SUSPENDED:
+                return 'Suspended';
+                break;
+            case User::DEACTIVATED:
+                return 'Suspended';
+                break;
+            default:
+                return 'Unknown';
+                break;
+        }
+    }
 }

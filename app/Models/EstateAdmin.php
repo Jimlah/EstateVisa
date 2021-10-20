@@ -20,9 +20,16 @@ class EstateAdmin extends Model
         'status'
     ];
 
+    protected $with = [
+        'user'
+    ];
+
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)
+            ->withDefault([
+                'email' => 'N/A'
+            ]);
     }
 
     public function estate()
@@ -38,23 +45,5 @@ class EstateAdmin extends Model
     public function scopeEstateOnly($query)
     {
         return $query->where('estate_id', auth()->user()->estate->first()->id);
-    }
-
-    public function getStatAttribute()
-    {
-        switch ($this->status) {
-            case User::ACTIVE:
-                return 'Active';
-                break;
-            case User::SUSPENDED:
-                return 'Suspended';
-                break;
-            case User::DEACTIVATED:
-                return 'Suspended';
-                break;
-            default:
-                return 'Unknown';
-                break;
-        }
     }
 }

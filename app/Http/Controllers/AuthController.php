@@ -44,7 +44,7 @@ class AuthController extends Controller
     {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->remember_me)) {
             $token = auth()->user()->createToken('Application')->accessToken;
-            $response = ['token' => $token, 'user' => UserResource::make(auth()->user()), "message" => "Login Successful", "status" => "success"];
+            $response = ['token' => $token, 'user' => UserResource::make(auth()->user()), 'role' => auth()->user()->roles, "message" => "Login Successful", "status" => "success"];
             return response()->json($response, 200);
         }
 

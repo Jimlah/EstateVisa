@@ -11,7 +11,6 @@ class StoreUserAction
 {
     public function execute(Request $request)
     {
-        resolve(UserRequest::class);
         $user = User::firstOrCreate([
             'email' => $request->email,
             'password' => bcrypt($request->password),

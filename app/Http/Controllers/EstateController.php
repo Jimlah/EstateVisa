@@ -34,7 +34,7 @@ class EstateController extends Controller
      */
     public function index()
     {
-        $data = Estate::with('admins')->paginate(10);
+        $data = Estate::latest('id')->paginate(10);
         return $this->response_data(new EstateCollection($data));
     }
 
@@ -59,7 +59,7 @@ class EstateController extends Controller
 
         $admin = $estate->admins()->create([
             'user_id' => $user->id,
-            'is_owner' => User::ESTATE_SUPER_ADMIN
+            'is_owner' => true,
         ]);
 
         return $this->response_success("New Estate Created");

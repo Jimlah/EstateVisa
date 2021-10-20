@@ -22,10 +22,13 @@ class Estate extends Model
         'name',
         'code',
         'address',
-        'logo'
+        'logo',
+        'status'
     ];
 
     protected $dateFormat = 'Y-m-d';
+
+    protected $with = ['admins', 'admins.user', 'admins.user.profile'];
 
 
     public function admins()
