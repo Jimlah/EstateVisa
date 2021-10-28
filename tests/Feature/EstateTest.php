@@ -82,7 +82,7 @@ class EstateTest extends TestCase
 
         $this->assertDatabaseHas('estate_admins', [
             'user_id' => User::all()->last()->id,
-            'is_owner' => User::ESTATE_SUPER_ADMIN,
+            'is_owner' => true,
         ]);
     }
 
@@ -115,7 +115,7 @@ class EstateTest extends TestCase
 
         $this->assertDatabaseHas('estate_admins', [
             'user_id' => User::all()->last()->id,
-            'is_owner' => User::ESTATE_SUPER_ADMIN,
+            'is_owner' => true,
         ]);
 
         $this->assertDatabaseHas('estates', [
