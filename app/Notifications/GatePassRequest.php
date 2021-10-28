@@ -7,19 +7,22 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class GatePassRequest extends Notification
+class GatePassRequest extends Notification implements ShouldQueue
 {
     use Queueable;
+
+    public $visitor;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($visitor)
     {
-        //
+        $this->visitor = $visitor;
     }
+
 
     /**
      * Get the notification's delivery channels.
@@ -29,7 +32,7 @@ class GatePassRequest extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['database'];
     }
 
     /**
@@ -41,9 +44,9 @@ class GatePassRequest extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->line('The introduction to the notification.')
+            ->action('Notification Action', url('/'))
+            ->line('Thank you for using our application!');
     }
 
     /**
@@ -55,7 +58,9 @@ class GatePassRequest extends Notification
     public function toArray($notifiable)
     {
         return [
-            //
+            'type' => 'Gate Pass',
+            'message' => 'A New Gate has been Issued',
+            'id' => $this->visitor->id,
         ];
     }
 }
