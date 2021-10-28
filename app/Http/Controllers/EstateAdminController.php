@@ -30,7 +30,11 @@ class EstateAdminController extends Controller
      */
     public function index()
     {
-        $estateAdmin = EstateAdmin::with(['user', 'user.profile', 'estate'])
+        $estateAdmin = EstateAdmin::with([
+            'user',
+            'estate',
+            'user.profile'
+        ])
             ->admin()
             ->estateOnly()
             ->paginate(10);
