@@ -23,9 +23,14 @@ class AdminRequest extends FormRequest
      */
     public function rules()
     {
+        $rule = [
+            'email' => 'required|email|unique:users,email',
+        ];
+
         return array_merge(
             (new UserRequest())->rules(),
-            (new ProfileRequest())->rules()
+            (new ProfileRequest())->rules(),
+            $rule
         );
     }
 }
