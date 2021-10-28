@@ -58,14 +58,6 @@ Route::middleware(['json.response', 'cors'])->group(function () {
 
     Route::middleware(['auth:api'])->group(function () {
 
-        Route::get('/email/verify', function () {
-            return response()
-                ->json([
-                    'message' => 'Verification email has been sent!',
-                    'status' => "success"
-                ]);
-        })->middleware('auth')->name('verification.notice');
-
         Route::resourceWithExtra("estates", EstateController::class, 'estate');
         Route::resourceWithExtra("admins", AdminController::class, 'admin');
         Route::resourceWithExtra("estate-admins", EstateAdminController::class, 'estateAdmin');
