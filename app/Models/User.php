@@ -53,11 +53,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime:Y-m-d',
-        'created_at' => 'datetime:Y-m-d',
-        'updated_at' => 'datetime:Y-m-d'
-    ];
+
 
     public function profile()
     {
@@ -94,6 +90,11 @@ class User extends Authenticatable
         return $this->hasMany(Visitor::class);
     }
 
+    public function houses()
+    {
+        return $this->belongsToMany(House::class, 'user_houses', 'user_id', 'house_id');
+    }
+
     public function hasRole($role)
     {
         switch ($role) {
@@ -108,10 +109,14 @@ class User extends Authenticatable
             case self::ESTATE_ADMIN:
                 $collection = collect($this->estateAdmin);
                 return $collection->where('is_owner', false)->contains('user_id', $this->id);
-            default:
             case self::HOUSE_OWNER:
-                $collection = collect($this->houses);
+                $collection = collect($this->userHouses->where('is_owner', true));
                 return $collection->contains('user_id', $this->id);
+            case self::HOUSE_MEMBER:
+                $collection = collect($this->houses->where('is_owner', false));
+                return $collection->contains('user_id', $this->id);
+            default:
+                return false;
         }
     }
 
@@ -123,6 +128,7 @@ class User extends Authenticatable
             self::ESTATE_SUPER_ADMIN => $this->hasRole(self::ESTATE_SUPER_ADMIN),
             self::ESTATE_ADMIN => $this->hasRole(self::ESTATE_ADMIN),
             self::HOUSE_OWNER => $this->hasRole(self::HOUSE_OWNER),
+            self::HOUSE_MEMBER => $this->hasRole(self::HOUSE_MEMBER),
         ];
     }
 }

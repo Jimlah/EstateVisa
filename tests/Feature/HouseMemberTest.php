@@ -27,6 +27,7 @@ class HouseMemberTest extends TestCase
             HouseSeeder::class,
             UserHouseSeeder::class,
         ]);
+        $this->withoutExceptionHandling();
     }
 
     /**
@@ -36,7 +37,7 @@ class HouseMemberTest extends TestCase
      */
     public function test_house_owner_can_get_is_house_members()
     {
-        $user = House::all()->random()->owner()->user;
+        $user = House::all()->random()->owner->user;
         $house  = $user->userHouses->random()->house;
 
         $response = $this->actingAs($user, 'api')
@@ -47,7 +48,7 @@ class HouseMemberTest extends TestCase
 
     public function test_api_house_owner_can_add_a_new_member_to_his_house()
     {
-        $user = House::all()->random()->owner()->user;
+        $user = House::all()->random()->owner->user;
         $house  = $user->userHouses->random()->house;
 
         $attributes = array_merge(
@@ -69,7 +70,7 @@ class HouseMemberTest extends TestCase
 
     public function test_api_house_owner_can_update_a_member_of_his_house()
     {
-        $user = House::all()->random()->owner()->user;
+        $user = House::all()->random()->owner->user;
         $house  = $user->userHouses->random()->house;
 
         $member = $house->members()->inRandomOrder()->first();
@@ -93,7 +94,7 @@ class HouseMemberTest extends TestCase
 
     public function test_api_house_owner_can_delete_a_member_of_his_house()
     {
-        $user = House::all()->random()->owner()->user;
+        $user = House::all()->random()->owner->user;
         $house  = $user->userHouses->random()->house;
 
         $member = $house->members()->inRandomOrder()->first();
@@ -112,7 +113,7 @@ class HouseMemberTest extends TestCase
 
     public function test_api_house_owner_can_get_a_member_of_his_house()
     {
-        $user = House::all()->random()->owner()->user;
+        $user = House::all()->random()->owner->user;
         $house  = $user->userHouses->random()->house;
 
         $member = $house->members()->inRandomOrder()->first();
@@ -128,6 +129,4 @@ class HouseMemberTest extends TestCase
                     ->etc()
             );
     }
-
-
 }

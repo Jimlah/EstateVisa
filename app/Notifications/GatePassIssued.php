@@ -59,7 +59,7 @@ class GatePassIssued extends Notification implements ShouldQueue
     {
         return [
             'type' => 'Gate Pass',
-            'message' => 'A New Gate has been Issued',
+            'message' => 'A New Gate Pass has been Issued',
             'id' => $this->visitor->id,
         ];
     }

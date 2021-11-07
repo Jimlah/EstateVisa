@@ -37,7 +37,7 @@ class HouseMemberController extends Controller
         $user = $storeUserAction->execute($request);
         $storeProfileAction->execute($request, $user);
 
-        $userHouse = $house->houseUsers()->create(
+        $house->houseUsers()->create(
             [
                 'user_id' => $user->id,
             ]

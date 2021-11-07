@@ -35,7 +35,7 @@ class HouseOwnerTest extends TestCase
      */
     public function test_estate_super_admin_can_add_user_to_a_house()
     {
-        $user = Estate::all()->random()->owner()->user;
+        $user = Estate::all()->random()->owner->user;
         $house = $user->estate->random()->houses->random();
 
         $attributes = array_merge(
@@ -58,9 +58,9 @@ class HouseOwnerTest extends TestCase
 
     public function test_estate_super_admin_can_remove_user_from_a_house()
     {
-        $user = Estate::all()->random()->owner()->user;
+        $user = Estate::all()->random()->owner->user;
         $house = $user->estate->random()->houses->random();
-        $houseOwner = $house->owner();
+        $houseOwner = $house->owner;
 
         $response = $this->actingAs($user, 'api')
             ->deleteJson(route('owner.destroy', [$house->id, $houseOwner->id]));
@@ -76,9 +76,9 @@ class HouseOwnerTest extends TestCase
 
     public function test_estate_super_admin_can_update_user_from_a_house()
     {
-        $user = Estate::all()->random()->owner()->user;
+        $user = Estate::all()->random()->owner->user;
         $house = $user->estate->random()->houses->random();
-        $houseOwner = $house->owner();
+        $houseOwner = $house->owner;
 
         $attributes = array_merge(
             User::factory()->make()->toArray(),
@@ -99,9 +99,9 @@ class HouseOwnerTest extends TestCase
 
     public function test_estate_admin_can_view_user_house_info()
     {
-        $user = Estate::all()->random()->owner()->user;
+        $user = Estate::all()->random()->owner->user;
         $house = $user->estate->random()->houses->random();
-        $houseOwner = $house->owner();
+        $houseOwner = $house->owner;
 
         $response = $this->actingAs($user, 'api')
             ->getJson(route('owner.show', [$house->id, $houseOwner->id]));

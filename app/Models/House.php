@@ -50,4 +50,9 @@ class House extends Model
         return $this->houseUsers()
             ->where('is_owner', false);
     }
+
+    public function user()
+    {
+        return $this->belongsToMany(User::class, 'user_houses');
+    }
 }
