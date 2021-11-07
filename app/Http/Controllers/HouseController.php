@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\StoreProfileAction;
 use App\Actions\StoreUserAction;
+use App\Http\Resources\HouseCollection;
 use App\Http\Resources\HouseResource;
 use App\Models\House;
 use Illuminate\Http\Request;
@@ -17,9 +18,9 @@ class HouseController extends Controller
      */
     public function index()
     {
-        $houses = House::with('houseUsers')->estateHouses()->paginate(10);
+        $houses = House::with('owner')->estateHouses()->paginate(10);
 
-        return $this->response_data(HouseResource::collection($houses));
+        return $this->response_data(new HouseCollection($houses));
     }
 
     /**

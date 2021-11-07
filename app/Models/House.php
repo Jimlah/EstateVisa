@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\HouseType;
-use App\Models\HouseUser;
 use App\Models\UserHouse;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -43,9 +42,7 @@ class House extends Model
 
     public function owner()
     {
-        return  $this->houseUsers()
-            ->where('is_owner', true)
-            ->first();
+        return  $this->hasOne(UserHouse::class)->where('is_owner', true);
     }
 
     public function members()

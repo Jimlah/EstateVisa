@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Trait\UseDisable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class UserHouse extends Model
 {
-    use HasFactory;
+    use HasFactory, UseDisable;
 
     protected $fillable = [
         'user_id',

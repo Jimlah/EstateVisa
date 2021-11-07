@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\StoreProfileAction;
-use App\Actions\StoreUserAction;
-use App\Http\Requests\HouseOwnerRequest;
-use App\Http\Resources\UserHouseResource;
 use App\Models\House;
 use App\Models\UserHouse;
 use Illuminate\Http\Request;
+use App\Actions\StoreUserAction;
+use App\Actions\StoreProfileAction;
+use App\Http\Resources\HouseCollection;
+use App\Http\Requests\HouseOwnerRequest;
+use App\Http\Resources\UserHouseResource;
 
 class HouseOwnerController extends Controller
 {
@@ -19,7 +20,6 @@ class HouseOwnerController extends Controller
      */
     public function __construct()
     {
-
     }
 
     /**
@@ -29,7 +29,9 @@ class HouseOwnerController extends Controller
      */
     public function index()
     {
-        //
+        $houses = House::with('owner')->estateHouses()->paginate(10);
+
+        return $this->response_data(new HouseCollection($houses));
     }
 
     /**

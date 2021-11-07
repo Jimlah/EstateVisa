@@ -58,7 +58,7 @@ class AuthController extends Controller
     {
         $token = auth('api')->user()->token();
         $token->revoke();
-        $response = ['message' => 'You have been successfully logged out!'];
+        $response = ['message' => 'You have been successfully logged out!', 'status' => 'success'];
         return response()->json($response, 200);
     }
 

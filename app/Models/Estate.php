@@ -38,9 +38,7 @@ class Estate extends Model
 
     public function owner()
     {
-        return $this->admins()
-            ->where('is_owner', 1)
-            ->first();
+        return $this->hasOne(EstateAdmin::class, 'estate_id')->where('is_owner', true);
     }
 
 
