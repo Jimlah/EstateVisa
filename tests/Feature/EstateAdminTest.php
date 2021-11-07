@@ -31,7 +31,7 @@ class EstateAdminTest extends TestCase
 
     public function test_api_estate_super_admin_can_view_all_admin()
     {
-        $user = Estate::all()->random()->owner()->user;
+        $user = Estate::all()->random()->owner->user;
 
         $response = $this->actingAs($user, 'api')
             ->getJson(route('estate-admins.index'));
@@ -52,7 +52,7 @@ class EstateAdminTest extends TestCase
 
     public function test_api_estate_super_admin_can_create_new_admin_for_is_estate()
     {
-        $user = Estate::all()->random()->owner()->user;
+        $user = Estate::all()->random()->owner->user;
 
         $attributes = array_merge(
             User::factory()->make()->toArray(),
@@ -73,7 +73,7 @@ class EstateAdminTest extends TestCase
 
     public function test_api_estate_super_admin_can_get_a_single_admin_for_his_estate()
     {
-        $user = Estate::all()->random()->owner()->user;
+        $user = Estate::all()->random()->owner->user;
 
         $admin = $user->estate->random()->admins->random();
 
@@ -90,7 +90,7 @@ class EstateAdminTest extends TestCase
     public function test_api_estate_super_admin_can_update_a_single_admin_for_his_estate()
     {
 
-        $user = Estate::all()->random()->owner()->user;
+        $user = Estate::all()->random()->owner->user;
 
         $admin = $user->estate->random()->admins->random();
 
@@ -116,7 +116,7 @@ class EstateAdminTest extends TestCase
 
     public function test_api_estate_super_admin_can_delete_a_single_admin_for_his_estate()
     {
-        $user = Estate::all()->random()->owner()->user;
+        $user = Estate::all()->random()->owner->user;
 
         $admin = $user->estate->random()->admins->random();
 
@@ -137,7 +137,7 @@ class EstateAdminTest extends TestCase
 
     public function test_api_estate_super_admin_can_deactivate()
     {
-        $user = Estate::all()->random()->owner()->user;
+        $user = Estate::all()->random()->owner->user;
 
         $admin = $user->estate->random()->admins->random();
 
@@ -159,7 +159,7 @@ class EstateAdminTest extends TestCase
 
     public function test_api_estate_super_admin_can_activate()
     {
-        $user = Estate::all()->random()->owner()->user;
+        $user = Estate::all()->random()->owner->user;
 
         $admin = $user->estate->random()->admins->random();
 
@@ -182,7 +182,7 @@ class EstateAdminTest extends TestCase
     public function test_api_estate_super_admin_can_suspend()
     {
 
-        $user = Estate::all()->random()->owner()->user;
+        $user = Estate::all()->random()->owner->user;
 
         $admin = $user->estate->random()->admins->random();
 
@@ -204,7 +204,7 @@ class EstateAdminTest extends TestCase
 
     public function test_api_estate_super_admin_can_export()
     {
-        $user = Estate::all()->random()->owner()->user;
+        $user = Estate::all()->random()->owner->user;
 
         $admin = $user->estate->random()->admins->random();
 
@@ -222,7 +222,7 @@ class EstateAdminTest extends TestCase
     public function test_api_estate_super_admin_can_import()
     {
 
-        $user = Estate::all()->random()->owner()->user;
+        $user = Estate::all()->random()->owner->user;
         $admin = $user->estate->random()->admins->random();
 
         Excel::fake();

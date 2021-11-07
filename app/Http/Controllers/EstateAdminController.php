@@ -51,12 +51,10 @@ class EstateAdminController extends Controller
     public function store(EstateAdminRequest $request, StoreUserAction $storeUserAction, StoreProfileAction $storeProfileAction)
     {
         $user = $storeUserAction->execute($request);
-        $profile = $storeProfileAction->execute($request, $user);
+        $storeProfileAction->execute($request, $user);
         $estate = $request->user()->estate->first();
 
         $user->estate()->attach($estate);
-
-        // $user = new User();
 
 
 
