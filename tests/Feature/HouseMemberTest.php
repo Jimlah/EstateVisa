@@ -96,7 +96,7 @@ class HouseMemberTest extends TestCase
         $user = House::all()->random()->owner->user;
         $house  = $user->userHouses->random()->house;
 
-        $member = $house->members->ransom();
+        $member = $house->members->random();
 
         $response = $this->actingAs($user, 'api')
             ->deleteJson(route('member.destroy', [$house->id, $member->id]));
