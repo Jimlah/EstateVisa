@@ -129,7 +129,7 @@ class EstateAdminController extends Controller
     public function export()
     {
         $filename = 'laravel-excel/estateAdmins.xlsx';
-        $excel = Excel::store(new EstateAdminExport(), $filename);
+        Excel::store(new EstateAdminExport(), $filename);
 
         $url = Storage::url("local/", $filename);
 
@@ -141,7 +141,7 @@ class EstateAdminController extends Controller
     public function import(Request $request)
     {
         $file = $request->file('file');
-        $data = (new EstateAdminImport)->queue($file->getPath());
+        (new EstateAdminImport)->queue($file->getPath());
 
         return $this->response_success('Estate Admin has been imported');
     }

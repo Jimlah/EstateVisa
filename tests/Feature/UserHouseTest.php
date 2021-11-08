@@ -32,7 +32,7 @@ class UserHouseTest extends TestCase
      */
     public function test_house_owner_can_get_all_his_houses()
     {
-        $user = House::all()->random()->owner()->user;
+        $user = House::all()->random()->owner->user;
 
         $response = $this->actingAs($user, 'api')
             ->getJson(route('user-houses.index'));
@@ -44,7 +44,7 @@ class UserHouseTest extends TestCase
 
     public function test_house_owner_can_get_his_house()
     {
-        $user = House::all()->random()->owner()->user;
+        $user = House::all()->random()->owner->user;
         $house = $user->userHouses->random()->house;
 
         $response = $this->actingAs($user, 'api')

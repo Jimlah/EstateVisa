@@ -34,7 +34,7 @@ class HouseTypeTest extends TestCase
      */
     public function test_api_super_admin_can_get_all_house_types()
     {
-        $user = Estate::all()->random()->owner()->user;
+        $user = Estate::all()->random()->owner->user;
         $response = $this->actingAs($user, 'api')
             ->getJson(route('house-types.index'));
 
@@ -60,7 +60,7 @@ class HouseTypeTest extends TestCase
 
     public function test_api_super_admin_create_house_type()
     {
-        $user = Estate::all()->random()->owner()->user;
+        $user = Estate::all()->random()->owner->user;
         $response = $this->actingAs($user, 'api')
             ->postJson(route('house-types.store'), [
                 'name' => 'test'
@@ -100,7 +100,7 @@ class HouseTypeTest extends TestCase
 
     public function test_api_super_admin_update_house_type()
     {
-        $user = Estate::all()->random()->owner()->user;
+        $user = Estate::all()->random()->owner->user;
 
         $houseType = $user->estate->random()->houseTypes->random();
 
@@ -148,7 +148,7 @@ class HouseTypeTest extends TestCase
 
     public function test_api_super_admin_delete_house_type()
     {
-        $user = Estate::all()->random()->owner()->user;
+        $user = Estate::all()->random()->owner->user;
 
         $houseType = $user->estate->random()->houseTypes->random();
 
