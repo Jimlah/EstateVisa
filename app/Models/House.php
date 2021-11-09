@@ -47,8 +47,7 @@ class House extends Model
 
     public function members()
     {
-        return $this->houseUsers()
-            ->where('is_owner', false);
+        return $this->hasMany(UserHouse::class)->where('is_owner', false);
     }
 
     public function user()

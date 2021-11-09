@@ -24,7 +24,15 @@ class HouseResource extends JsonResource
             'status' => $this->whenLoaded('owner', function () {
                 return $this->owner->status ?? "Not Available Yet";
             }),
+            'members' => $this->whenLoaded('members', function () {
+                return $this->members->map(function ($member) {
+                    return new UserResource($member->user);
+                });
+            }),
             'created_at' => $this->created_at->format('Y-m-d'),
+            'user_house_id' => $this->whenLoaded('houseUsers', function () {
+                return $this->houseUsers->first()->id ?? null;
+            }),
         ];
     }
 }

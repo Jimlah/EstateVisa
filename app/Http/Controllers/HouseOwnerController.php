@@ -90,6 +90,8 @@ class HouseOwnerController extends Controller
      */
     public function destroy(House $house, UserHouse $userHouse)
     {
+        // Bug: Add removal of members from house
+        // $userHouse->house->members()->detach($userHouse->user_id);
         $userHouse->delete();
 
         return $this->response_success('House owner successfully deleted');
