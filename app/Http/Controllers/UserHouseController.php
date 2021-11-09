@@ -16,9 +16,7 @@ class UserHouseController extends Controller
      */
     public function index()
     {
-        $userHouses = UserHouse::with(['user', 'house', 'house.estate'])
-            ->userHouse()
-            ->paginate(10);
+        $userHouses = UserHouse::userHouse()->with('house')->paginate(10);
 
         return $this->response_data(new UserHouseCollection($userHouses));
     }

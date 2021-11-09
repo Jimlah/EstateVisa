@@ -20,7 +20,7 @@ class VisitorController extends Controller
      */
     public function index()
     {
-        $visitors =  Visitor::with(['user', 'user.profile'])->userOnly()->paginate(10);
+        $visitors =  Visitor::with(['user', 'user.profile'])->userOnly()->latest()->paginate(10);
 
         return $this->response_data(new VisitorCollection($visitors));
     }

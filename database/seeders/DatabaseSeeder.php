@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Admin;
 use App\Models\Estate;
 use App\Models\UserHouse;
+use App\Models\Visitor;
 use Illuminate\Database\Seeder;
 use Database\Seeders\HouseSeeder;
 use Illuminate\Support\Facades\Artisan;
@@ -69,6 +70,12 @@ class DatabaseSeeder extends Seeder
             'email' => 'owner@house.com',
             'password' => bcrypt('password')
         ]);
+
+        // $user = UserHouse::find(1);
+        // $userId = $user->user;
+        // $user->house->estate->visitors()->saveMany(Visitor::factory(10)
+        //     ->make(['user_id', $userId->id]));
+
         $this->command->info('Created House Owner owner@house.com');
 
         UserHouse::where('is_owner', false)->get()->random()->user()->update([

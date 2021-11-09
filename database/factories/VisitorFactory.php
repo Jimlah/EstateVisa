@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Estate;
 use App\Models\User;
 use App\Models\Visitor;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -37,7 +38,7 @@ class VisitorFactory extends Factory
 
     public function expireNow()
     {
-        return $this->state(function (array $attributes) {
+        return $this->state(function () {
             return [
                 'expired_at' => now(),
             ];
@@ -46,7 +47,7 @@ class VisitorFactory extends Factory
 
     public function sentByEstate()
     {
-        return $this->state(function (array $attributes) {
+        return $this->state(function () {
             return [
                 'sent_by' => Estate::class,
             ];

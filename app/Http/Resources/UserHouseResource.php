@@ -14,6 +14,13 @@ class UserHouseResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'house' => $this->whenLoaded('house', function () {
+                return new HouseResource($this->house);
+            }),
+            'created_at' => $this->created_at->format('Y-m-d'),
+            'updated_at' => $this->updated_at,
+        ];
     }
 }
