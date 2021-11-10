@@ -39,7 +39,7 @@ class UserHouseController extends Controller
      */
     public function show(UserHouse $userHouse)
     {
-        $userHouse = $userHouse->load(['user', 'house', 'house.estate']);
+        $userHouse = $userHouse->load(['user', 'house', 'house.members']);
 
         return $this->response_data(UserHouseResource::make($userHouse));
     }
