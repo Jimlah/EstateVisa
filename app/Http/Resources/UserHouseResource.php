@@ -19,7 +19,7 @@ class UserHouseResource extends JsonResource
             'house' => $this->whenLoaded('house', function () {
                 return new HouseResource($this->house);
             }),
-            'created_at' => $this->created_at->format('Y-m-d'),
+            'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
     }
