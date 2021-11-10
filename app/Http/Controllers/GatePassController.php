@@ -7,8 +7,7 @@ use App\Models\Visitor;
 use Illuminate\Http\Request;
 use App\Http\Resources\VisitorCollection;
 use App\Http\Resources\VisitorResource;
-use App\Notifications\GatePassRequest;
-use Illuminate\Support\Facades\Notification;
+use App\Models\Estate;
 
 class GatePassController extends Controller
 {
@@ -40,11 +39,9 @@ class GatePassController extends Controller
             'phone' => $request->phone,
             'address' => $request->address,
             'estate_id' => auth()->user()->estate->random()->id,
-            'sent_by' => User::class,
+            'sent_by' => Estate::class,
             'expired_at' => $request->expired_at ?? now()->addDays(1),
         ]);
-
-        $visitor->user->notify(new GatePassRequest($visitor));
 
         return $this->response_success('Created a new visitor');
     }

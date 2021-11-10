@@ -38,7 +38,8 @@ class VisitorTest extends TestCase
 
     public function test_api_house_users_can_get_all_visitor()
     {
-        $visitor = Visitor::all()->random()->load('user');
+        $this->withoutExceptionHandling();
+        $visitor = Visitor::all()->random();
         $user = $visitor->user;
 
 
