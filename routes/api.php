@@ -11,8 +11,8 @@ use App\Http\Controllers\UserHouseController;
 use App\Http\Controllers\HouseOwnerController;
 use App\Http\Controllers\EstateAdminController;
 use App\Http\Controllers\GatePassController;
-use App\Http\Controllers\HouseMember;
 use App\Http\Controllers\HouseMemberController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\VisitorController;
 
 /*
@@ -68,6 +68,7 @@ Route::middleware(['json.response', 'cors'])->group(function () {
         Route::apiResource('user-houses/{house}/member', HouseMemberController::class);
         Route::apiResource('visitors', VisitorController::class);
         Route::apiResource('gate-passes', GatePassController::class);
+        Route::apiResource('notifications', NotificationController::class);
 
 
         // our routes to be protected will go in here

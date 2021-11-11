@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class GatePassRequest extends Notification implements ShouldQueue
+class GatePassRequest extends Notification
 {
     use Queueable;
 
