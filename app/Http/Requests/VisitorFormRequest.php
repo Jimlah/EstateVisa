@@ -29,14 +29,14 @@ class VisitorFormRequest extends FormRequest
             'email' => 'required|email',
             'phone' => 'required|min:10',
             'address' => 'required|min:10',
-            'estate_id' => 'sometimes|required|integer'
+            'house_id' => 'sometimes|required|integer'
         ];
     }
 
     public function messages()
     {
         return [
-            'estate_id.required' => 'Estate is required'
+            'house_id.required' => 'house is required'
         ];
     }
 }

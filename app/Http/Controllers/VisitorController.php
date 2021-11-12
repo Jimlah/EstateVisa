@@ -8,6 +8,7 @@ use App\Notifications\GatePassRequest;
 use App\Http\Resources\VisitorResource;
 use App\Http\Requests\VisitorFormRequest;
 use App\Http\Resources\VisitorCollection;
+use App\Models\House;
 
 class VisitorController extends Controller
 {
@@ -31,26 +32,19 @@ class VisitorController extends Controller
      */
     public function store(VisitorFormRequest $request)
     {
+        $house = House::findOrFail($request->house_id);
 
-        Visitor::create([
-            'user_id' => auth()->user()->id,
+        auth()->user()->visitors()->create([
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'email' => $request->email,
             'phone' => $request->phone,
+            'gender' => $request->gender,
             'address' => $request->address,
-            'estate_id' => $request->estate_id,
+            'estate_id' => $house?->estate?->id,
             'sent_by' => User::class,
             'expired_at' => $request->expired_at ?? now()->addDays(1),
         ]);
-
-        // if ($visitor->sent_by == User::class) {
-        //     $visitor->estate->admins->each(function ($admin) use ($visitor) {
-        //         $admin->user->notify(new GatePassIssued($visitor));
-        //     });
-        // } else {
-        //     $visitor->user->notify(new GatePassRequest($visitor));
-        // }
 
         return $this->response_success('Created a new visitor');
     }
