@@ -20,7 +20,7 @@ class CreateVisitorsTable extends Migration
             $table->string('firstname');
             $table->string('lastname');
             $table->string('email')->unique();
-            $table->string('gender');
+            $table->string('gender')->nullable();
             $table->string('phone');
             $table->string('address')->nullable();
             $table->string('sent_by');
