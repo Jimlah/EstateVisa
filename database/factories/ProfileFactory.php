@@ -25,10 +25,10 @@ class ProfileFactory extends Factory
     {
         $faker = FakerFactory::create();
         return [
-            'firstname' => $faker->firstName,
-            'lastname' => $faker->lastname,
+            'firstname' => $faker->firstName(),
+            'lastname' => $faker->lastname(),
             'gender' => $faker->randomElement(["male", "female"]),
-            'phone_number' => $faker->phoneNumber,
+            'phone_number' => $faker->phoneNumber(),
         ];
     }
 }

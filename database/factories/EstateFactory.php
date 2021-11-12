@@ -27,7 +27,7 @@ class EstateFactory extends Factory
         $faker = FakerFactory::create();
 
         return [
-            'name' => $faker->name,
+            'name' => $faker->company(),
             'code' => $faker->unique()->word(),
             'address' => $faker->address,
             'logo' => $faker->imageUrl,
