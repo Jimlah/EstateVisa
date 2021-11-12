@@ -74,7 +74,6 @@ class VisitorTest extends TestCase
 
     public function test_api_house_users_can_create_a_visitor_with_valid_data()
     {
-        Notification::fake();
         $userHouse = UserHouse::all()->random();
         $user = $userHouse->user;
 
@@ -96,13 +95,6 @@ class VisitorTest extends TestCase
                     ->has('message')
                     ->etc()
             );
-
-        Notification::assertSentTo(
-            $userHouse->house->estate->admins->each(function ($admin) {
-                return $admin->user;
-            }),
-            GatePassIssued::class
-        );
     }
 
     public function test_api_house_users_can_update_a_visitor_with_valid_data()

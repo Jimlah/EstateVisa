@@ -49,7 +49,7 @@ class HouseController extends Controller
      */
     public function show(House $house)
     {
-        return $this->response_data(HouseResource::make($house->load('houseUsers', 'owner', 'members')));
+        return $this->response_data(HouseResource::make($house->with('houseUsers', 'owner', 'members', 'owner.user', 'owner.user.profile', 'members.user', 'members.user.profile')));
     }
 
     /**
