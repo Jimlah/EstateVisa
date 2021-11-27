@@ -43,8 +43,8 @@ class AuthController extends Controller
     public function login(UserLoginRequest $request)
     {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->remember_me)) {
-            $token = auth()->user()->createToken('Application')->accessToken;
-            $response = ['token' => $token, 'user' => UserResource::make(auth()->user()), 'role' => auth()->user()->roles(), "message" => "Login Successful", "status" => "success"];
+            $token = Auth::user()->createToken('Application')->accessToken;
+            $response = ['token' => $token, 'user' => UserResource::make(auth()->user()), 'role' => Auth::user()->roles(), "message" => "Login Successful", "status" => "success"];
             return response()->json($response, 200);
         }
 
@@ -56,7 +56,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $token = auth('api')->user()->token();
+        $token = Auth::user()->token();
         $token->revoke();
         $response = ['message' => 'You have been successfully logged out!', 'status' => 'success'];
         return response()->json($response, 200);

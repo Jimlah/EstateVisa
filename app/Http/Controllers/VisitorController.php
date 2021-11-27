@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\House;
 use App\Models\Visitor;
+use Illuminate\Support\Facades\Auth;
 use App\Notifications\GatePassIssued;
 use App\Notifications\GatePassRequest;
 use App\Http\Resources\VisitorResource;
 use App\Http\Requests\VisitorFormRequest;
 use App\Http\Resources\VisitorCollection;
-use App\Models\House;
 
 class VisitorController extends Controller
 {
@@ -34,7 +35,7 @@ class VisitorController extends Controller
     {
         $house = House::findOrFail($request->house_id);
 
-        auth()->user()->visitors()->create([
+        Auth::user()->visitors()->create([
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'email' => $request->email,

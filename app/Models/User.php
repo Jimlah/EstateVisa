@@ -120,7 +120,7 @@ class User extends Authenticatable
         }
     }
 
-    public function roles()
+    public function roles(): array
     {
         return [
             self::SUPER_ADMIN => $this->hasRole(self::SUPER_ADMIN),
